@@ -133,7 +133,7 @@ class App extends Component {
                     {/* <Route path="/menu/management" component={ManageMenu} /> */}
                     <Route 
                         path="/menu/management"
-                        render={(props) => <ManageMenu {...props} reloadMenu={this.fetchSideBarMenu} />}
+                        render={(props) => <ManageMenu {...props} reloadMenu={this.fetchSideBarMenu()} />}
                     />
                 </Content>
                 <Footer style={{ textAlign: 'center' }}>
