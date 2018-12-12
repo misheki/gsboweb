@@ -1,1 +1,1 @@
-global.URL = 'http://backofficeapitemplate.test/';
+global.URL = 'http://bo.globalsim.lan/';
