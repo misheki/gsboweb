@@ -111,6 +111,9 @@ class App extends Component {
                 <Menu theme="dark" mode="inline">
                     {sidebar_menus}
                 </Menu>
+                <div>
+                    <Button onClick={() => sessionStorage.removeItem('access_token'); this.setState({ isLoggedIn : false });}>Logout</Button>
+                </div>
             </Sider>
         );
     }
@@ -125,7 +128,7 @@ class App extends Component {
                     <Route path="/menu/management" component={ManageMenu} />
                 </Content>
                 <Footer style={{ textAlign: 'center' }}>
-                    backofficewebtemplate ©2018
+                    Global Sim ©2018
                 </Footer>
             </Layout>
         );
