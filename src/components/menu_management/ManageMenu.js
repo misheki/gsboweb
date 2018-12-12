@@ -109,7 +109,7 @@ class ManageMenu extends Component {
                     if (result.result === 'GOOD') {
                         form.resetFields();
                         this.setState({ visibleMenu: false, clickAdd: false });
-                        window.location.reload();
+                        // window.location.reload();
                     }
                 })
         });
