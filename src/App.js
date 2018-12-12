@@ -35,7 +35,6 @@ class App extends Component {
     }
 
     fetchSideBarMenu() {
-        console.log('fetchsidebarmenu');
         var access_token = sessionStorage.getItem('access_token');
 
         showSideBarMenu(access_token)
@@ -128,14 +127,14 @@ class App extends Component {
         return (
             <Layout>
                 <Content>
-                    <Route path="/user/management/user" component={ManageUser} />
-                    <Route path="/user/management/role" component={ManageRole} />
-                    <Route path="/user/management/permission" component={ManagePermission} />
-                    {/* <Route path="/menu/management" component={ManageMenu} /> */}
-                    <Route 
-                        path="/menu/management"
-                        render={(props) => <ManageMenu {...props} reloadMenu={this.fetchSideBarMenu.bind(this)} />}
-                    />
+                    <Route path="/user/management/user"
+                        render={(props) => <ManageMenu {...props} reloadMenu={this.fetchSideBarMenu.bind(this)} />}/>
+                    <Route path="/user/management/role"
+                        render={(props) => <ManageMenu {...props} reloadMenu={this.fetchSideBarMenu.bind(this)} />}/>
+                    <Route path="/user/management/permission"
+                        render={(props) => <ManageMenu {...props} reloadMenu={this.fetchSideBarMenu.bind(this)} />}/>
+                    <Route path="/menu/management"
+                        render={(props) => <ManageMenu {...props} reloadMenu={this.fetchSideBarMenu.bind(this)} />}/>
                 </Content>
                 <Footer style={{ textAlign: 'center' }}>
                     Global Sim ©2018
