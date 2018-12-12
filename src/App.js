@@ -52,6 +52,11 @@ class App extends Component {
         this.setState({ collapsed });
     }
 
+    logout() {
+        sessionStorage.removeItem('access_token'); 
+        this.setState({ isLoggedIn : false });
+    }
+
     sidebar() {
         const { sidebar } = this.state;
         const sidebar_menus = sidebar.map((item) => {
@@ -112,7 +117,7 @@ class App extends Component {
                     {sidebar_menus}
                 </Menu>
                 <div>
-                    <Button onClick={() => sessionStorage.removeItem('access_token'); this.setState({ isLoggedIn : false });}>Logout</Button>
+                    <Button onClick={() => this.logout()}>Logout</Button>
                 </div>
             </Sider>
         );
