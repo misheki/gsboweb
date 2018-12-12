@@ -23,6 +23,10 @@ class ManageMenu extends Component {
     }
 
     componentDidMount() {
+        this.loadPage();
+    }
+
+    loadPage() {
         this.showListRole();
         this.showListMenu();
         this.showListSubMenu();
@@ -109,6 +113,8 @@ class ManageMenu extends Component {
                     if (result.result === 'GOOD') {
                         form.resetFields();
                         this.setState({ visibleMenu: false, clickAdd: false });
+                        this.loadPage();
+                        this.props.reloadMenu();
                         // window.location.reload();
                     }
                 })

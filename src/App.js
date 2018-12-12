@@ -116,7 +116,7 @@ class App extends Component {
                 <Menu theme="dark" mode="inline">
                     {sidebar_menus}
                 </Menu>
-                <div>
+                <div className="logo">
                     <Button onClick={() => this.logout()}>Logout</Button>
                 </div>
             </Sider>
@@ -130,7 +130,10 @@ class App extends Component {
                     <Route path="/user/management/user" component={ManageUser} />
                     <Route path="/user/management/role" component={ManageRole} />
                     <Route path="/user/management/permission" component={ManagePermission} />
-                    <Route path="/menu/management" component={ManageMenu} />
+                    {/* <Route path="/menu/management" component={ManageMenu} /> */}
+                    <Route 
+                        path="/menu/management" component={ManageMenu}
+                        render={(props) => <ManageMenu {...props} reloadMenu={this.fetchSideBarMenu} />
                 </Content>
                 <Footer style={{ textAlign: 'center' }}>
                     Global Sim ©2018
