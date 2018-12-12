@@ -35,6 +35,7 @@ class App extends Component {
     }
 
     fetchSideBarMenu() {
+        console.log('fetchsidebarmenu');
         var access_token = sessionStorage.getItem('access_token');
 
         showSideBarMenu(access_token)
@@ -133,7 +134,7 @@ class App extends Component {
                     {/* <Route path="/menu/management" component={ManageMenu} /> */}
                     <Route 
                         path="/menu/management"
-                        render={(props) => <ManageMenu {...props} reloadMenu={this.fetchSideBarMenu()} />}
+                        render={(props) => <ManageMenu {...props} reloadMenu={this.fetchSideBarMenu} />}
                     />
                 </Content>
                 <Footer style={{ textAlign: 'center' }}>
