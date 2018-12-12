@@ -128,11 +128,11 @@ class App extends Component {
             <Layout>
                 <Content>
                     <Route path="/user/management/user"
-                        render={(props) => <ManageMenu {...props} reloadMenu={this.fetchSideBarMenu.bind(this)} />}/>
+                        render={(props) => <ManageUser {...props} reloadMenu={this.fetchSideBarMenu.bind(this)} />}/>
                     <Route path="/user/management/role"
-                        render={(props) => <ManageMenu {...props} reloadMenu={this.fetchSideBarMenu.bind(this)} />}/>
+                        render={(props) => <ManageRole {...props} reloadMenu={this.fetchSideBarMenu.bind(this)} />}/>
                     <Route path="/user/management/permission"
-                        render={(props) => <ManageMenu {...props} reloadMenu={this.fetchSideBarMenu.bind(this)} />}/>
+                        render={(props) => <ManagePermission {...props} reloadMenu={this.fetchSideBarMenu.bind(this)} />}/>
                     <Route path="/menu/management"
                         render={(props) => <ManageMenu {...props} reloadMenu={this.fetchSideBarMenu.bind(this)} />}/>
                 </Content>
