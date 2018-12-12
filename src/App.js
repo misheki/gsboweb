@@ -132,8 +132,9 @@ class App extends Component {
                     <Route path="/user/management/permission" component={ManagePermission} />
                     {/* <Route path="/menu/management" component={ManageMenu} /> */}
                     <Route 
-                        path="/menu/management" component={ManageMenu}
-                        render={(props) => <ManageMenu {...props} reloadMenu={this.fetchSideBarMenu} />
+                        path="/menu/management"
+                        render={(props) => <ManageMenu {...props} reloadMenu={this.fetchSideBarMenu} />}
+                    />
                 </Content>
                 <Footer style={{ textAlign: 'center' }}>
                     Global Sim ©2018
