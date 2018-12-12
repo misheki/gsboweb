@@ -187,7 +187,7 @@ class ManageRole extends Component {
                                 )}
                             </FormItem>
 
-                            <FormItem label="Permission">
+                            <FormItem label="Permissions">
                                 {getFieldDecorator('permission', {
                                     initialValue: role.permissions_id,
                                     rules: [{ required: true, message: 'Please check the permissions!' }]
