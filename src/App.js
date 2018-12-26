@@ -8,6 +8,13 @@ import { showSideBarMenu } from './helpers/AdminControl';
 import ManageUser from './components/user_management/ManageUser';
 import ManageMenu from './components/menu_management/ManageMenu';
 import ManageRole from './components/user_management/ManageRole';
+import NewOrder from './components/order_management/NewOrder';
+import PendingOrder from './components/order_management/PendingOrder';
+import ReadyToShip from './components/order_management/ReadyToShip';
+import Completed from './components/order_management/Completed';
+import ProductPackage from './components/stock_management/ProductPackage';
+import ImportStock from './components/stock_management/ImportStock';
+import ViewStock from './components/stock_management/ViewStock';
 
 import Login from './components/Login';
 import ManagePermission from './components/user_management/ManagePermission';
@@ -108,6 +115,7 @@ class App extends Component {
         return (
             <Sider
                 collapsible
+                width={250}
                 collapsed={this.state.collapsed}
                 onCollapse={(this.onCollapse)}>
                 <div className="logo">
@@ -116,8 +124,10 @@ class App extends Component {
                 <Menu theme="dark" mode="inline">
                     {sidebar_menus}
                 </Menu>
-                <div className="logo">
-                    <Button onClick={() => this.logout()}>Logout</Button>
+                <div style={{ paddingTop: '40px', textAlign: 'center' }}>
+                    <Link to="/">
+                        <Button type="primary" onClick={() => this.logout()}>Logout</Button>
+                    </Link>
                 </div>
             </Sider>
         );
@@ -135,6 +145,20 @@ class App extends Component {
                         render={(props) => <ManagePermission {...props} reloadMenu={this.fetchSideBarMenu.bind(this)} />}/>
                     <Route path="/menu/management"
                         render={(props) => <ManageMenu {...props} reloadMenu={this.fetchSideBarMenu.bind(this)} />}/>
+                    <Route path="/stock/management/product/package"
+                        render={(props) => <ProductPackage {...props} reloadMenu={this.fetchSideBarMenu.bind(this)} />}/>
+                    <Route path="/stock/management/import/stock"
+                        render={(props) => <ImportStock {...props} reloadMenu={this.fetchSideBarMenu.bind(this)} />}/>
+                    <Route path="/stock/management/view/stock"
+                        render={(props) => <ViewStock {...props} reloadMenu={this.fetchSideBarMenu.bind(this)} />}/>
+                    <Route path="/order/management/new/order"
+                        render={(props) => <NewOrder {...props} reloadMenu={this.fetchSideBarMenu.bind(this)} />}/>
+                    <Route path="/order/management/pending/order"
+                        render={(props) => <PendingOrder {...props} reloadMenu={this.fetchSideBarMenu.bind(this)} />}/>
+                    <Route path="/order/management/ready/to/ship"
+                        render={(props) => <ReadyToShip {...props} reloadMenu={this.fetchSideBarMenu.bind(this)} />}/>
+                    <Route path="/order/management/completed"
+                        render={(props) => <Completed {...props} reloadMenu={this.fetchSideBarMenu.bind(this)} />}/>
                 </Content>
                 <Footer style={{ textAlign: 'center' }}>
                     Global Sim ©2018
