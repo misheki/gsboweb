@@ -48,12 +48,12 @@ class ProductPackage extends Component {
                         // rowKey={pakages => packages.id}
                         >
                         <Column title="ID" dataIndex="id" key="id" />
-                        <Column title="Provider ID" dataIndex="provider_id" key="rovider_id" />
                         <Column title="SKU" dataIndex="sku" key="sku" />
+                        <Column title="Code" dataIndex="code" key="code" />
                         <Column title="Name" dataIndex="name" key="name" />
                         <Column title="Cost Price" dataIndex="cost_price" key="cost_price" />
                         <Column title="Description" dataIndex="description" key="description" />
-                        <Column title="Activation" dataIndex="activation" key="activation" />
+                        <Column title="Req Activation" dataIndex="activation" key="activation" />
                     </Table>
 
                     <Modal

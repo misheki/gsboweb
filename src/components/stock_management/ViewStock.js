@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Layout,  Table  } from 'antd';
+import { Layout,  Table, AutoComplete, Input, Button, Icon  } from 'antd';
 
 
 const { Header } = Layout;
@@ -21,7 +21,20 @@ class ViewStock extends Component {
             <Header style={{ color: 'white', fontSize: '30px' }}>
                 <span>View Stock</span>
             </Header>
-            <div style={{ padding: '30px' }}>
+            <div className="global-search-wrapper" >
+                <AutoComplete
+                    className="global-search"
+                    size="large"
+                    // onSearch={(search) => this.setState({ search })}
+                    placeholder="Search..">
+                    <Input suffix={(
+                        <Button className="search-btn" size="large" type="primary" >
+                            <Icon type="search" />
+                        </Button>
+                    )} />
+                </AutoComplete>
+            </div>
+            <div style={{ padding: '30px', paddingTop:'0px' }}>
                  <Table
                     // dataSource={packages}
                     // rowKey={pakages => packages.id}
