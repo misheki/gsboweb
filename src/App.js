@@ -127,13 +127,13 @@ class App extends Component {
         return (
             <Layout>
                 <Content>
-                    <Route path="/user/management/user"
+                    <Route path="/users"
                         render={(props) => <ManageUser {...props} reloadMenu={this.fetchSideBarMenu.bind(this)} />}/>
-                    <Route path="/user/management/role"
+                    <Route path="/roles"
                         render={(props) => <ManageRole {...props} reloadMenu={this.fetchSideBarMenu.bind(this)} />}/>
-                    <Route path="/user/management/permission"
+                    <Route path="/permissions"
                         render={(props) => <ManagePermission {...props} reloadMenu={this.fetchSideBarMenu.bind(this)} />}/>
-                    <Route path="/menu/management"
+                    <Route path="/menu-management"
                         render={(props) => <ManageMenu {...props} reloadMenu={this.fetchSideBarMenu.bind(this)} />}/>
                 </Content>
                 <Footer style={{ textAlign: 'center' }}>

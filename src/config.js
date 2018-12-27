@@ -1,1 +1,1 @@
-global.URL = 'http://bo.globalsim.lan/';
+global.URL = 'http://api.globalsim.my/';
