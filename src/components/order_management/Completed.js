@@ -41,9 +41,8 @@ class Completed extends Component {
                     // rowKey={pakages => packages.id}
                     >
                     <Column title="Order Number" dataIndex="order_number" key="order_number" />
-                    <Column title="Product Items" dataIndex="items" key="items" />
-                    <Column title="Quantity" dataIndex="quantity" key="quantity" />
-                    <Column title="Unit Prize" dataIndex="unit_prize" key="unit_prize" />
+                    <Column title="Order Date" dataIndex="items" key="items" />
+                    <Column title="Customer Name" dataIndex="quantity" key="quantity" />
                     <Column title="Total" dataIndex="total" key="total" />
                     <Column title="Order Status" dataIndex="status" key="status" />
                 </Table>

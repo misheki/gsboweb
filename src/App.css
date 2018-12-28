@@ -105,6 +105,10 @@
   float: right;
 }
 
-.button-right{
+.button-right {
   float: right
+}
+
+.input-field {
+  margin-bottom: 10px
 }
