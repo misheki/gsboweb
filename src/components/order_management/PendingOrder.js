@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Layout,  Table, Steps, Button, message, Form, Input, Select, Col, Row, Divider   } from 'antd';
+import { listPending } from '../../helpers/OrderController';
 
 const Option = Select.Option;
 const Step = Steps.Step;
@@ -21,7 +22,22 @@ class PendingOrder extends Component {
         super(props);
         this.state = {
             current: 0,
+            pending_orders: []
         };
+    }
+
+    componentDidMount() {
+        this.showOrderlistPending();
+    }
+
+    showOrderlistPending() {
+        var access_token = sessionStorage.getItem('access_token');
+        listPending(access_token)
+            .then(result => {
+                if (result.result === 'GOOD') {
+                    this.setState({ pending_orders: result.data });
+                }
+            })
     }
 
     next() {
@@ -35,7 +51,7 @@ class PendingOrder extends Component {
     }
 
     render() {
-        const { current } = this.state;
+        const { current, pending_orders } = this.state;
         const { getFieldDecorator } = this.props.form;
 
         const steps = [{
@@ -192,16 +208,15 @@ class PendingOrder extends Component {
             <Header style={{ color: 'white', fontSize: '30px' }}>
                 <span>Pending Order</span>
             </Header>
-            <div style={{ padding: '30px'}}>
+            <div style={{ padding: '30px' }}>
                  <Table
-                    // dataSource={packages}
-                    // rowKey={pakages => packages.id}
-                    >
-                    <Column title="Order Number" dataIndex="order_number" key="order_number" />
-                    <Column title="Order Date" dataIndex="items" key="items" />
-                    <Column title="Customer Name" dataIndex="items" key="items" />
-                    <Column title="Total" dataIndex="total" key="total" />
-                    <Column title="Order Status" dataIndex="status" key="status" />
+                    dataSource={pending_orders}
+                    rowKey={pending_orders => pending_orders.id}>
+                    <Column title="Order Number" dataIndex="order_ref_num" key="order_ref_num" />
+                    <Column title="Order Date" dataIndex="created_at" key="created_at" />
+                    <Column title="Customer Name" dataIndex="customer_name" key="customer_name" />
+                    <Column title="Total" dataIndex="total_amount" key="total_amount" />
+                    <Column title="Order Status" dataIndex="order_status" key="order_status" />
                     <Column title="Action" dataIndex="action" key="action" />
                 </Table>
             </div>
