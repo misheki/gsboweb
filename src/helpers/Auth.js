@@ -8,8 +8,10 @@ export const login = (username, password) => {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    client_id: 1,
-                    client_secret: 'qLQ1BhhDBbLmae6daoTITfxS6tc2QhSVVxMjnza0',
+                    // client_id: 1,
+                    // client_secret: 'qLQ1BhhDBbLmae6daoTITfxS6tc2QhSVVxMjnza0',
+                    client_id: 2,
+                    client_secret: 'xQ16SqJugjoFsppm6VUhbhFXDnjX0sptActpvaJW',
                     grant_type: 'password',
                     scope: '*',
                     username,
