@@ -217,7 +217,14 @@ class PendingOrder extends Component {
                     <Column title="Customer Name" dataIndex="customer_name" key="customer_name" />
                     <Column title="Total" dataIndex="total_amount" key="total_amount" />
                     <Column title="Order Status" dataIndex="order_status" key="order_status" />
-                    <Column title="Action" dataIndex="action" key="action" />
+                    <Column
+                            title='Action'
+                            key="action"
+                            render={(record) => (
+                                <div>
+                                    <Button style={{ margin:'10px' }} type="primary" >Process Order</Button>
+                                </div>
+                            )} />
                 </Table>
             </div>
             <div style={{padding:'30px'}}>
