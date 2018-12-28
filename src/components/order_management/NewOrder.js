@@ -53,22 +53,6 @@ class NewOrder extends Component {
 
     render() {
         const { getFieldDecorator, getFieldValue } = this.props.form;
-        const formItemLayout = {
-            labelCol: {
-              xs: { span: 24 },
-              sm: { span: 4 },
-            },
-            wrapperCol: {
-              xs: { span: 24 },
-              sm: { span: 20 },
-            },
-          };
-          const formItemLayoutWithOutLabel = {
-            wrapperCol: {
-              xs: { span: 24, offset: 0 },
-              sm: { span: 20, offset: 4 },
-            },
-          };
           getFieldDecorator('keys', { initialValue: [] });
           const keys = getFieldValue('keys');
           const formItems = keys.map((k, index) => (

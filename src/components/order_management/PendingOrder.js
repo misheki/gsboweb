@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Layout,  Table, Steps, Button, message, Form, Input, Select, Row  } from 'antd';
+import { Layout,  Table, Steps, Button, message, Form, Input, Select  } from 'antd';
 
 const Option = Select.Option;
 const Step = Steps.Step;
@@ -17,15 +17,12 @@ wrapperCol: { span: 8, offset: 6 },
 const steps = [{
   title: 'Customer Details',
   content: <Form> 
-                <Row>
-                    <Form.Item  {...formItemLayout} label="Name">
-                        <Input name="name" />
-                    </Form.Item>
-                    <Form.Item  {...formItemLayout} label="Contact Number">
-                        <Input name="contact_num" />
-                    </Form.Item>
-                </Row>
-                
+                <Form.Item  {...formItemLayout} label="Name">
+                    <Input name="name" />
+                </Form.Item>
+                <Form.Item  {...formItemLayout} label="Contact Number">
+                    <Input name="contact_num" />
+                </Form.Item>
                 <Form.Item  {...formItemLayout} label="Email">
                     <Input name="email" />
                 </Form.Item>
