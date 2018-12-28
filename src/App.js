@@ -115,7 +115,7 @@ class App extends Component {
         return (
             <Sider
                 collapsible
-                width={250}
+                width={220}
                 collapsed={this.state.collapsed}
                 onCollapse={(this.onCollapse)}>
                 <div className="logo">
