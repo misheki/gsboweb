@@ -49,8 +49,7 @@ class Completed extends Component {
             </div>
             </div>
             );   
-        }
-       
+        }      
 }
 
 export default Completed;

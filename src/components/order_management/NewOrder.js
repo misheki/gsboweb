@@ -125,7 +125,7 @@ class NewOrder extends Component {
                             )}
                         </FormItem>
                     </Col>
-                    <Col span={6}>
+                    <Col span={8}>
                         <FormItem>
                             {getFieldDecorator(`package_details[${k}]package_id`, {
                                 rules: [{ required: true, message: '' }]
@@ -138,7 +138,7 @@ class NewOrder extends Component {
                             )}
                         </FormItem>
                     </Col>
-                    <Col span={2}>
+                    <Col span={4}>
                         <FormItem>
                             {getFieldDecorator(`package_details[${k}]quantity`, {
                                 rules: [{ required: true, message: '' }]
@@ -147,7 +147,7 @@ class NewOrder extends Component {
                             )}
                         </FormItem>
                     </Col>
-                    <Col span={2}>
+                    <Col span={4}>
                         <FormItem>
                             {getFieldDecorator(`package_details[${k}]unit_price`, {
                                 rules: [{ required: true, message: '' }]
@@ -290,13 +290,13 @@ class NewOrder extends Component {
                                 <Col span={6}>
                                     <p>SKU</p>
                                 </Col>
-                                <Col span={6}>
+                                <Col span={8}>
                                     <p>Code-Package</p>
                                 </Col>
-                                <Col span={2}>
+                                <Col span={4}>
                                     <p>Quantity</p>
                                 </Col>
-                                <Col span={3}>
+                                <Col span={4}>
                                     <p>Unit Price</p>
                                 </Col>
                                 {/* <Col span={3}>
