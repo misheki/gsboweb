@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Layout,  Table, Modal, Button, Form, Input, Switch } from 'antd';
+import { Layout,  Table, Modal, Button, Form, Input, Switch, Select } from 'antd';
 
 
 const { Header } = Layout;
@@ -62,23 +62,25 @@ class ProductPackage extends Component {
                         title={"Add new package"}
                         footer={<Button type="primary">Add Package</Button>}>
                         <Form layout="vertical">
-                            <FormItem label="Provider ID">
-                                {getFieldDecorator('order', {
-                                    rules: [{ required: true, message: 'Please input the provider id!' }]
-                                })(
-                                    <Input name="provider_id" />
-                                )}
-                            </FormItem>
 
-                            <FormItem label="SKU">
+                            <FormItem label="SKU ID">
                                 {getFieldDecorator('sku', {
                                     rules: [{ required: true, message: 'Please input the product SKU!' }]
                                 })(
-                                    <Input name="sku" />
+                                    <Select  />
                                 )}
 
                             </FormItem>
-                            <FormItem label="Name">
+
+                            <FormItem label="Code">
+                                {getFieldDecorator('name', {
+                                    rules: [{ required: true, message: 'Please input the product name!' }]
+                                })(
+                                    <Input name="name" />
+                                )}
+                            </FormItem> 
+
+                            <FormItem label="Package Name">
                                 {getFieldDecorator('name', {
                                     rules: [{ required: true, message: 'Please input the product name!' }]
                                 })(

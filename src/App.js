@@ -145,19 +145,19 @@ class App extends Component {
                         render={(props) => <ManagePermission {...props} reloadMenu={this.fetchSideBarMenu.bind(this)} />}/>
                     <Route path="/menu-management"
                         render={(props) => <ManageMenu {...props} reloadMenu={this.fetchSideBarMenu.bind(this)} />}/>
-                    <Route path="/stock/management/product/package"
+                    <Route path="/product-packages"
                         render={(props) => <ProductPackage {...props} reloadMenu={this.fetchSideBarMenu.bind(this)} />}/>
-                    <Route path="/stock/management/import/stock"
+                    <Route path="/import-stocks"
                         render={(props) => <ImportStock {...props} reloadMenu={this.fetchSideBarMenu.bind(this)} />}/>
-                    <Route path="/stock/management/view/stock"
+                    <Route path="/view-stocks"
                         render={(props) => <ViewStock {...props} reloadMenu={this.fetchSideBarMenu.bind(this)} />}/>
-                    <Route path="/order/management/new/order"
+                    <Route path="/new-order"
                         render={(props) => <NewOrder {...props} reloadMenu={this.fetchSideBarMenu.bind(this)} />}/>
-                    <Route path="/order/management/pending/order"
+                    <Route path="/pending-orders"
                         render={(props) => <PendingOrder {...props} reloadMenu={this.fetchSideBarMenu.bind(this)} />}/>
-                    <Route path="/order/management/ready/to/ship"
+                    <Route path="/ready-to-ship-orders"
                         render={(props) => <ReadyToShip {...props} reloadMenu={this.fetchSideBarMenu.bind(this)} />}/>
-                    <Route path="/order/management/completed"
+                    <Route path="/completed-orders"
                         render={(props) => <Completed {...props} reloadMenu={this.fetchSideBarMenu.bind(this)} />}/>
                 </Content>
                 <Footer style={{ textAlign: 'center' }}>

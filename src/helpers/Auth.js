@@ -9,7 +9,7 @@ export const login = (username, password) => {
                 },
                 body: JSON.stringify({
                     client_id: 1,
-                    client_secret: 'qTPxZ9gSBvx7oZEiMtolW8UC9RNwOMLXkVOPwIgf',
+                    client_secret: 'qLQ1BhhDBbLmae6daoTITfxS6tc2QhSVVxMjnza0',
                     grant_type: 'password',
                     scope: '*',
                     username,
