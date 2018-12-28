@@ -1,13 +1,17 @@
 import React, { Component } from 'react';
-import { Layout,  Table, Modal, Form, Input, Button  } from 'antd';
+import { Layout,  Table, Modal, Form, Input, Button, Row, Col, Select  } from 'antd';
 
 
 const { Header } = Layout;
 const { Column } = Table;
 const FormItem = Form.Item;
 const formItemLayout = {
-    labelCol: { span: 4 },
-    wrapperCol: { span: 12 },
+    labelCol: { span: 3 },
+    wrapperCol: { span: 14 },
+  };
+const formLayoutInline = {
+    labelCol: { span: 8 },
+    wrapperCol: { span: 16 },
   };
 const formTailLayout = {
     labelCol: { span: 4 },
@@ -32,13 +36,46 @@ class NewOrder extends Component {
             </Header>
             <div style={{padding:'30px'}}>
                  <Form>
-                    <FormItem {...formItemLayout} label="Order Number">
-                        {getFieldDecorator('order_number', {
-                            rules: [{ required: true, message: '' }]
-                        })(
-                            <Input name="order_number" />
-                        )}
-                    </FormItem>
+                    <Row gutter={24}>
+                            <Col span={10} >
+                                <FormItem {...formLayoutInline} label="Order Number">
+                                    {getFieldDecorator('order_number', {
+                                        rules: [{ required: true, message: '' }]
+                                    })(
+                                        <Input name="order_number" />
+                                    )}
+                                </FormItem>
+                            </Col>
+                            <Col span={10}>
+                                <FormItem {...formLayoutInline} label="Sale Channel">
+                                    {getFieldDecorator('sale_channel', {
+                                        rules: [{ required: true, message: '' }]
+                                    })(
+                                        <Select />
+                                    )}
+                                </FormItem>
+                            </Col>
+                    </Row>
+                    <Row gutter={24}>
+                            <Col span={10} >
+                                <FormItem {...formLayoutInline} label="Customer Name">
+                                    {getFieldDecorator('order_number', {
+                                        rules: [{ required: true, message: '' }]
+                                    })(
+                                        <Input name="order_number" />
+                                    )}
+                                </FormItem>
+                            </Col>
+                            <Col span={10}> 
+                                <FormItem {...formLayoutInline} label="Contact Number">
+                                    {getFieldDecorator('sale_channel', {
+                                        rules: [{ required: true, message: '' }]
+                                    })(
+                                        <Input />
+                                    )}
+                                </FormItem>
+                            </Col>
+                    </Row>
 
                     <FormItem  {...formItemLayout} label="SKU">
                         {getFieldDecorator('sku', {
@@ -64,7 +101,7 @@ class NewOrder extends Component {
                         )}
                     </FormItem>
 
-                    <FormItem   {...formItemLayout} label="Unit Prize">
+                    <FormItem   {...formItemLayout} label="Unit Price">
                         {getFieldDecorator('unit_prize', {
                             rules: [{ required: true, message: '' }]
                         })(
@@ -135,6 +172,104 @@ class NewOrder extends Component {
                             Add order
                         </Button>
                     </FormItem>   
+
+                    <Form layout="vertical">
+                                <FormItem label='aaaaa'>
+                                    {getFieldDecorator('name', {
+                                       
+                                    })(
+                                        <Input disabled />
+                                    )}
+                                </FormItem>
+                                <Row gutter={8}>
+                                    <Col span={12}>
+                                        <FormItem label='ffff'>
+                                            {getFieldDecorator('registration_number', {
+                                              
+                                            })(
+                                                <Input disabled />
+                                            )}
+                                        </FormItem>
+                                    </Col>
+                                    <Col span={12}>
+                                        <FormItem label='kkk'>
+                                            {getFieldDecorator('business_category_code', {
+                                              
+                                            })(
+                                                // <Select placeholder="Select your business category" disabled>
+                                                //     {business_categories.map((business_category) =>
+                                                //         <Option key={business_category.code} value={business_category.code}>{business_category.name}</Option>
+                                                //     )}
+                                                // </Select>
+                                                <Input disabled />
+                                            )}
+                                        </FormItem>
+                                    </Col>
+                                </Row>
+                                <FormItem label='tttt'>
+                                    {getFieldDecorator('business_name', {
+                                     
+                                    })(
+                                        <Input disabled />
+                                    )}
+                                </FormItem>
+                                <FormItem label='jjj'>
+                                    {getFieldDecorator('owner_name', {
+                                       
+                                    })(
+                                        <Input disabled />
+                                    )}
+                                </FormItem>
+                                <FormItem label='hhh'>
+                                    {getFieldDecorator('address', {
+                                        
+                                    })(
+                                        <Input disabled />
+                                    )}
+                                </FormItem>
+                                <Row gutter={8}>
+                                    <Col span={12}>
+                                        <FormItem label='tt'>
+                                            {getFieldDecorator('phone', {
+                                               
+                                            })(
+                                                <Input disabled />
+                                            )}
+                                        </FormItem>
+                                    </Col>
+                                    <Col span={12}>
+                                        <FormItem label='ggg'>
+                                            {getFieldDecorator('mobile_number', {
+                                                
+                                            })(
+                                                <Input disabled />
+                                            )}
+                                        </FormItem>
+                                    </Col>
+                                </Row>
+
+                                <Row gutter={8}>
+                                    <Col span={14}>
+                                        <FormItem label='gg'>
+                                            {getFieldDecorator('website', {
+                                          
+                                            })(
+                                                <Input disabled />
+                                            )}
+                                        </FormItem>
+                                    </Col>
+                                    <Col span={10}>
+                                        <FormItem label='ll'>
+                                            {getFieldDecorator('status', {
+                                             
+                                            })(
+                                                <Select />
+                                               
+                                            )}
+                                        </FormItem>
+                                    </Col>
+                                </Row>
+                            </Form>
                 </Form>
             </div>
                
