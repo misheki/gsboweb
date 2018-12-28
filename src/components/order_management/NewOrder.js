@@ -53,190 +53,184 @@ class NewOrder extends Component {
 
     render() {
         const { getFieldDecorator, getFieldValue } = this.props.form;
-        const formItemLayout = {
-            labelCol: {
-              xs: { span: 24 },
-              sm: { span: 4 },
-            },
-            wrapperCol: {
-              xs: { span: 24 },
-              sm: { span: 20 },
-            },
-          };
-          const formItemLayoutWithOutLabel = {
-            wrapperCol: {
-              xs: { span: 24, offset: 0 },
-              sm: { span: 20, offset: 4 },
-            },
-          };
-
           getFieldDecorator('keys', { initialValue: [] });
           const keys = getFieldValue('keys');
           const formItems = keys.map((k, index) => (
               <Form key={k}>
-                <Row gutter={16}>
-                        <Col span={12}>
-                            <FormItem label="SKU ID">
-                                {getFieldDecorator('order_number', {
-                                    rules: [{ required: true, message: '' }]
-                                })(
+                <Row gutter={8}>
+                        <Col span={2}>
+                            <FormItem >
+                                <Input />
+                            </FormItem>
+                        </Col>
+                        <Col span={6}>
+                            <FormItem >
                                     <Select />
-                                )}
                             </FormItem>
                         </Col>
-                        <Col span={12}>
-                            <FormItem label="Package">
-                                {getFieldDecorator('order_number', {
-                                    rules: [{ required: true, message: '' }]
-                                })(
-                                    <Select />
-                                )}
+                        <Col span={6}>
+                            <FormItem >
+                                <Select />
                             </FormItem>
                         </Col>
-                </Row>
-                <Row gutter={24}>
-                        <Col span={8}>
-                            <FormItem label="Quantity">
-                                {getFieldDecorator('order_number', {
-                                    rules: [{ required: true, message: '' }]
-                                })(
-                                    <Select />
-                                )}
+                        <Col span={2}>
+                            <FormItem >
+                                <Input />
                             </FormItem>
                         </Col>
-                        <Col span={8}>
-                            <FormItem label="Unit Price">
-                                {getFieldDecorator('order_number', {
-                                    rules: [{ required: true, message: '' }]
-                                })(
-                                    <Input />
-                                )}
+                        <Col span={3}>
+                            <FormItem >
+                                <Input />
                             </FormItem>
                         </Col>
-                        <Col span={8}>
-                            <FormItem label="Total Price">
-                                {getFieldDecorator('order_number', {
-                                    rules: [{ required: true, message: '' }]
-                                })(
-                                    <Input disabled />
-                                )}
-                           {keys.length > 1 ? (
+                        <Col span={3}>
+                            <FormItem>
+                                <Input disabled/>
+                               
+                            </FormItem>
+                        </Col>
+                        <Col span={2}> {keys.length > 1 ? (
                                     <Icon
                                     className="dynamic-delete-button"
                                     type="minus-circle-o"
                                     disabled={keys.length === 1}
                                     onClick={() => this.remove(k)}
                                     />
-                             ) : null}
-                            </FormItem>
-                        </Col>
-                    </Row>
+                                ) : null}  </Col>
                   
+                    </Row>
+                    
               </Form>
           
           ));
-
+       
          return (
             <div>
             <Header style={{ color: 'white', fontSize: '30px' }}>
                 <span>New Order</span>
             </Header>
-            <div style={{padding:'30px', width:'80%'}}>
+            <div style={{padding:'30px', width:'90%'}}>
                 <Form layout="vertical">
-                    <Row gutter={16}>
-                        <Col span={12}>
-                            <FormItem label="Order Number">
-                                {getFieldDecorator('order_number', {
-                                    rules: [{ required: true, message: '' }]
-                                })(
-                                    <Input name="order_number" />
-                                )}
-                            </FormItem>
-                        </Col>
-                        <Col span={12}>
-                            <FormItem label="Sale Channel">
-                                {getFieldDecorator('order_number', {
-                                    rules: [{ required: true, message: '' }]
-                                })(
-                                    <Select />
-                                )}
-                            </FormItem>
-                        </Col>
-                    </Row>
-                    <FormItem  label="Customer Name">
-                        {getFieldDecorator('order_number', {
-                            rules: [{ required: true, message: '' }]
-                        })(
-                            <Input name="order_number" />
-                        )}
-                    </FormItem>
-                    <Row gutter={8}>
-                        <Col span={12}>
-                            <FormItem label="Email">
-                                {getFieldDecorator('email', {
-                                    rules: [{ 
-                                    type: 'email', message: 'The input is not valid E-mail!',
-                                    required: true, message: '' }]
-                                })(
-                                    <Input name="email" />
-                                )}
-                            </FormItem> 
-                        </Col>
-                        <Col span={12}>
-                            <FormItem label="Contact Number">
-                                {getFieldDecorator('contact_num', {
-                                    rules: [{ required: true, message: '' }]
-                                })(
-                                    <Input name="contact_num" />
-                                )}
-                            </FormItem>  
-                        </Col>
-                    </Row>
-                    <FormItem  label="Shipping Adddress">
-                        {getFieldDecorator('order_number', {
-                            rules: [{ required: true, message: '' }]
-                        })(
-                            <Input name="order_number" />
-                        )}
-                    </FormItem>
-                    <Row gutter={8}>
-                        <Col span={14}>
-                            <FormItem label='State'>
-                                {getFieldDecorator('website', {
-                                
-                                })(
-                                    <Select />
-                                )}
-                            </FormItem>
-                        </Col>
-                        <Col span={10}>
-                            <FormItem label='Postcode'>
-                                {getFieldDecorator('status', {
+                    <div style={{backgroundColor:'white', padding:'20px', marginBottom:'10px'}}>
+                    <h3 style={{paddingBottom:'10px'}}>Customer Details</h3>
+                        <Row gutter={16}>
+                            <Col span={12}>
+                                <FormItem label="Order Number">
+                                    {getFieldDecorator('order_number', {
+                                        rules: [{ required: true, message: '' }]
+                                    })(
+                                        <Input name="order_number" />
+                                    )}
+                                </FormItem>
+                            </Col>
+                            <Col span={12}>
+                                <FormItem label="Sale Channel">
+                                    {getFieldDecorator('order_number', {
+                                        rules: [{ required: true, message: '' }]
+                                    })(
+                                        <Select />
+                                    )}
+                                </FormItem>
+                            </Col>
+                        </Row>
+                        <FormItem  label="Customer Name">
+                            {getFieldDecorator('order_number', {
+                                rules: [{ required: true, message: '' }]
+                            })(
+                                <Input name="order_number" />
+                            )}
+                        </FormItem>
+                        <Row gutter={8}>
+                            <Col span={12}>
+                                <FormItem label="Email">
+                                    {getFieldDecorator('email', {
+                                        rules: [{ 
+                                        type: 'email', message: 'The input is not valid E-mail!',
+                                        required: true, message: '' }]
+                                    })(
+                                        <Input name="email" />
+                                    )}
+                                </FormItem> 
+                            </Col>
+                            <Col span={12}>
+                                <FormItem label="Contact Number">
+                                    {getFieldDecorator('contact_num', {
+                                        rules: [{ required: true, message: '' }]
+                                    })(
+                                        <Input name="contact_num" />
+                                    )}
+                                </FormItem>  
+                            </Col>
+                        </Row>
+                        <FormItem  label="Shipping Adddress">
+                            {getFieldDecorator('order_number', {
+                                rules: [{ required: true, message: '' }]
+                            })(
+                                <Input name="order_number" />
+                            )}
+                        </FormItem>
+                        <Row gutter={8}>
+                            <Col span={14}>
+                                <FormItem label='State'>
+                                    {getFieldDecorator('website', {
                                     
-                                })(
-                                    <Input />
-                                    
-                                )}
-                            </FormItem>
-                        </Col>
-                    </Row>
-                    <h3 style={{paddingBottom:'10px'}}>Package Details</h3>
-                    <Form>
-                        {formItems}
+                                    })(
+                                        <Select />
+                                    )}
+                                </FormItem>
+                            </Col>
+                            <Col span={10}>
+                                <FormItem label='Postcode'>
+                                    {getFieldDecorator('status', {
+                                        
+                                    })(
+                                        <Input />
+                                        
+                                    )}
+                                </FormItem>
+                            </Col>
+                        </Row>
+                    </div>
+                    <div style={{backgroundColor:'white', padding:'10px', marginBottom:'20px'}}>
+                        <h3 style={{paddingBottom:'10px'}}>Package Details</h3>
                         <Form.Item >
-                            <Button type="dashed" onClick={this.add} style={{ width: '100%' }}>
+                            <Button type="dashed" onClick={this.add} style={{ width: '20%', }}>
                                 <Icon type="plus" /> Add Package
                             </Button>
                         </Form.Item>
-                    </Form>
-                    <FormItem>
-                        <Button type="primary">
-                            Add order
-                        </Button>
-                    </FormItem>   
-
-               
+                        <Row gutter={8} style={{backgroundColor:'#e8e8e8', padding:'10px', paddingBottom:'0px', marginBottom:'10px' }}>
+                                <Col span={2}>
+                                    <p>ID</p>
+                                </Col>
+                                <Col span={6}>
+                                    <p>SKU</p>
+                                </Col>
+                                <Col span={6}>
+                                    <p>Package</p>
+                                </Col>
+                                <Col span={2}>
+                                    <p>Quantity</p>
+                                </Col>
+                                <Col span={3}>
+                                    <p>Unit Price</p>
+                                </Col>
+                                <Col span={3}>
+                                    <p>Total</p>
+                                </Col>
+                                <Col span={1}>
+                                    <p style={{color:'#e8e8e8'}}>  </p>
+                                </Col>
+                        </Row>
+                        {formItems}
+                    </div>
+                    
+                        <FormItem>
+                            <Button  className="button-right" type="primary">
+                                Add order
+                            </Button>
+                        </FormItem>   
                 </Form>
+           
 
             </div>  
     </div>
