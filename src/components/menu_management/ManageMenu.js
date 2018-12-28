@@ -93,7 +93,8 @@ class ManageMenu extends Component {
                     if (result.result === 'GOOD') {
                         form.resetFields();
                         this.setState({ visibleMenu: false, clickAdd: false });
-                        window.location.reload();
+                        this.loadPage();
+                        this.props.reloadMenu();
                     }
                 })
         });
@@ -115,7 +116,6 @@ class ManageMenu extends Component {
                         this.setState({ visibleMenu: false, clickAdd: false });
                         this.loadPage();
                         this.props.reloadMenu();
-                        // window.location.reload();
                     }
                 })
         });
@@ -132,7 +132,8 @@ class ManageMenu extends Component {
                     .then(result => {
                         if (result.result === 'GOOD') {
                             this.handleMenuCancel();
-                            window.location.reload();
+                            this.loadPage();
+                            this.props.reloadMenu();
                         }
                     })
             }
@@ -176,7 +177,8 @@ class ManageMenu extends Component {
                     if (result.result === 'GOOD') {
                         form.resetFields();
                         this.setState({ visibleSubMenu: false, clickAdd: false });
-                        window.location.reload();
+                        this.loadPage();
+                        this.props.reloadMenu();
                     }
                 })
         });
@@ -196,7 +198,8 @@ class ManageMenu extends Component {
                     if (result.result === 'GOOD') {
                         form.resetFields();
                         this.setState({ visibleSubMenu: false, clickAdd: false });
-                        window.location.reload();
+                        this.loadPage();
+                        this.props.reloadMenu();
                     }
                 })
         });
@@ -213,7 +216,8 @@ class ManageMenu extends Component {
                     .then(result => {
                         if (result.result === 'GOOD') {
                             this.handleSubMenuCancel();
-                            window.location.reload();
+                            this.loadPage();
+                            this.props.reloadMenu();
                         }
                     })
             }

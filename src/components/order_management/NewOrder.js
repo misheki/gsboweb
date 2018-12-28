@@ -1,213 +1,325 @@
 import React, { Component } from 'react';
-import { Layout,  Table, Modal, Form, Input, Button  } from 'antd';
-
+import { Layout, Form, Input, Button, Row, Col, Select, Icon, Modal } from 'antd';
+import { createOrder, saleChannelList } from '../../helpers/OrderController';
+import { listSku } from '../../helpers/SkuController';
+import { listPackage } from '../../helpers/PackageController';
 
 const { Header } = Layout;
-const { Column } = Table;
 const FormItem = Form.Item;
-const formItemLayout = {
-    labelCol: { span: 4 },
-    wrapperCol: { span: 12 },
-  };
-const formTailLayout = {
-    labelCol: { span: 4 },
-    wrapperCol: { span: 8, offset: 8 },
-  };
+const Option = Select.Option;
+let id = 0;
 
 class NewOrder extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-           
+            skus: [],
+            packages: [],
+            sale_channels: [],
+            loading: false
         };
     }
 
+    componentDidMount() {
+        this.showListSku();
+        this.showListPackage();
+        this.showCourierList();
+    }
+
+    showListSku() {
+        var access_token = sessionStorage.getItem('access_token');
+        listSku(access_token)
+            .then(result => {
+                if (result.result === 'GOOD') {
+                    this.setState({ skus: result.data });
+                }
+            })
+    }
+
+    showListPackage() {
+        var access_token = sessionStorage.getItem('access_token');
+        listPackage(access_token)
+            .then(result => {
+                if (result.result === 'GOOD') {
+                    this.setState({ packages: result.data });
+                }
+            })
+    }
+
+    showCourierList() {
+        var access_token = sessionStorage.getItem('access_token');
+        saleChannelList(access_token)
+            .then(result => {
+                if (result.result === 'GOOD') {
+                    this.setState({ sale_channels: result.data });
+                }
+            })
+    }
+
+    remove = (k) => {
+        const { form } = this.props;
+        const keys = form.getFieldValue('keys');
+        if (keys.length === 1) {
+            return;
+        }
+    
+        form.setFieldsValue({
+            keys: keys.filter(key => key !== k),
+        });
+    }
+    
+    add = () => {
+        const { form } = this.props;
+        const keys = form.getFieldValue('keys');
+        const nextKeys = keys.concat(++id);
+        form.setFieldsValue({
+            keys: nextKeys,
+        });
+    }
+    
+    handleSubmit = (e) => {
+        e.preventDefault();
+        var access_token = sessionStorage.getItem('access_token');
+        const { form } = this.props;
+
+        form.validateFields((err, values) => {
+            if (err) {
+                return;
+            }
+
+            this.setState({ loading: true });
+            createOrder(values.sale_channel_id, values.order_ref_num, values.customer_name, values.customer_email, values.customer_contact_num, values.customer_address, values.customer_postcode, values.customer_state, values.package_details, access_token)
+                .then(result => {
+                    if (result.result === 'GOOD') {
+                        this.setState({ loading: false });
+                        form.resetFields();
+                        Modal.success({
+                            title: 'Success',
+                            content: 'You have successfully created a new order.',
+                        });
+                    }
+                })
+        });
+    }
+
     render() {
-        const { getFieldDecorator } = this.props.form;
+        const { getFieldDecorator, getFieldValue } = this.props.form;
+        const { skus, packages, sale_channels, loading } = this.state;
+
+        getFieldDecorator('keys', { initialValue: [0] });
+        const keys = getFieldValue('keys');
+        const formItems = keys.map((k, index) => (
+            <React.Fragment key={k}>
+                <Row gutter={8}>
+                    <Col span={6}>
+                        <FormItem>
+                            {getFieldDecorator(`package_details[${k}]sku_id`, {
+                                rules: [{ required: true, message: '' }]
+                            })(
+                                <Select placeholder="Please select the product SKU">
+                                    {skus.map((sku) =>
+                                        <Option key={sku.id} value={sku.id}>{sku.sku}</Option>
+                                    )}
+                                </Select>
+                            )}
+                        </FormItem>
+                    </Col>
+                    <Col span={6}>
+                        <FormItem>
+                            {getFieldDecorator(`package_details[${k}]package_id`, {
+                                rules: [{ required: true, message: '' }]
+                            })(
+                                <Select placeholder="Please select the product package">
+                                    {packages.map((product_package) =>
+                                        <Option key={product_package.id} value={product_package.id}>{product_package.code + ' - ' + product_package.name}</Option>
+                                    )}
+                                </Select>
+                            )}
+                        </FormItem>
+                    </Col>
+                    <Col span={2}>
+                        <FormItem>
+                            {getFieldDecorator(`package_details[${k}]quantity`, {
+                                rules: [{ required: true, message: '' }]
+                            })(
+                                <Input />
+                            )}
+                        </FormItem>
+                    </Col>
+                    <Col span={2}>
+                        <FormItem>
+                            {getFieldDecorator(`package_details[${k}]unit_price`, {
+                                rules: [{ required: true, message: '' }]
+                            })(
+                                <Input />
+                            )}
+                        </FormItem>
+                    </Col>
+                    {/* <Col span={3}>
+                        <FormItem>
+                            {getFieldDecorator(`package_details[${k}]total_price`, {
+                                rules: [{ required: true, message: '' }]
+                            })(
+                                <Input />
+                            )}
+                        </FormItem>
+                    </Col>
+                    <Col span={3}>
+                        <FormItem>
+                            <Input disabled/>
+                            
+                        </FormItem>
+                    </Col> */}
+                    <Col span={2}> {keys.length > 1 ? (
+                        <Icon
+                            className="dynamic-delete-button"
+                            type="minus-circle-o"
+                            disabled={keys.length === 1}
+                            onClick={() => this.remove(k)} />
+                            ) : null} 
+                        </Col>
+                </Row>
+            </React.Fragment>
+        ));
+       
          return (
             <div>
-            <Header style={{ color: 'white', fontSize: '30px' }}>
-                <span>New Order</span>
-            </Header>
-            <div style={{padding:'30px'}}>
-                 <Form>
-                    <FormItem {...formItemLayout} label="Order Number">
-                        {getFieldDecorator('order_number', {
-                            rules: [{ required: true, message: '' }]
-                        })(
-                            <Input name="order_number" />
-                        )}
-                    </FormItem>
+                <Header style={{ color: 'white', fontSize: '30px' }}>
+                    <span>New Order</span>
+                </Header>
+                <div style={{padding:'30px', width:'90%'}}>
+                    <Form layout="vertical">
+                        <div style={{backgroundColor:'white', padding:'20px', marginBottom:'10px'}}>
+                            <h3 style={{paddingBottom:'10px'}}>Customer Details</h3>
+                            <Row gutter={16}>
+                                <Col span={12}>
+                                    <FormItem label="Order Number">
+                                        {getFieldDecorator('order_ref_num', {
+                                            rules: [{ required: true, message: '' }]
+                                        })(
+                                            <Input />
+                                        )}
+                                    </FormItem>
+                                </Col>
+                                <Col span={12}>
+                                    <FormItem label="Sale Channel">
+                                        {getFieldDecorator('sale_channel_id', {
+                                            rules: [{ required: true, message: '' }]
+                                        })(
+                                            <Select placeholder="Please select the courier">
+                                                {sale_channels.map((sale_channel) =>
+                                                    <Option key={sale_channel.id} value={sale_channel.id}>{sale_channel.name}</Option>
+                                                )}
+                                        </Select>
+                                        )}
+                                    </FormItem>
+                                </Col>
+                            </Row>
+                            <FormItem  label="Customer Name">
+                                {getFieldDecorator('customer_name', {
+                                    rules: [{ required: true, message: '' }]
+                                })(
+                                    <Input />
+                                )}
+                            </FormItem>
+                            <Row gutter={8}>
+                                <Col span={12}>
+                                    <FormItem label="Email">
+                                        {getFieldDecorator('customer_email', {
+                                            rules: [{
+                                                type: 'email', message: 'The input is not valid E-mail!'
+                                            }, {    
+                                                required: true, message: ''
+                                            }]
+                                        })(
+                                            <Input />
+                                        )}
+                                    </FormItem> 
+                                </Col>
+                                <Col span={12}>
+                                    <FormItem label="Contact Number">
+                                        {getFieldDecorator('customer_contact_num', {
+                                            rules: [{ required: true, message: '' }]
+                                        })(
+                                            <Input />
+                                        )}
+                                    </FormItem>  
+                                </Col>
+                            </Row>
+                            <FormItem  label="Shipping Adddress">
+                                {getFieldDecorator('customer_address', {
+                                    rules: [{ required: true, message: '' }]
+                                })(
+                                    <Input />
+                                )}
+                            </FormItem>
+                            <Row gutter={8}>
+                                <Col span={14}>
+                                    <FormItem label='State'>
+                                        {getFieldDecorator('customer_state', {
+                                        
+                                        })(
+                                            <Select>
+                                                <Option value="Selangor">Selangor</Option>
+                                            </Select>
+                                        )}
+                                    </FormItem>
+                                </Col>
+                                <Col span={10}>
+                                    <FormItem label='Postcode'>
+                                        {getFieldDecorator('customer_postcode', {
+                                            
+                                        })(
+                                            <Input />
+                                            
+                                        )}
+                                    </FormItem>
+                                </Col>
+                            </Row>
+                        </div>
 
-                    <FormItem  {...formItemLayout} label="SKU">
-                        {getFieldDecorator('sku', {
-                            rules: [{ required: true, message: '' }]
-                        })(
-                            <Input name="sku" />
-                        )}
-
-                    </FormItem>
-                    <FormItem   {...formItemLayout} label="Product Packages">
-                        {getFieldDecorator('product_purchase', {
-                            rules: [{ required: true, message: '' }]
-                        })(
-                            <Input name="product_purchase" />
-                        )}
-                    </FormItem>
-
-                    <FormItem   {...formItemLayout} label="Quantity">
-                        {getFieldDecorator('quantity', {
-                            rules: [{ required: true, message: '' }]
-                        })(
-                            <Input name="quantity" />
-                        )}
-                    </FormItem>
-
-                    <FormItem   {...formItemLayout} label="Unit Prize">
-                        {getFieldDecorator('unit_prize', {
-                            rules: [{ required: true, message: '' }]
-                        })(
-                            <Input name="unit_prize" />
-                        )}
-                    </FormItem>
-
-                    <FormItem  {...formItemLayout} label="Order Date">
-                        {getFieldDecorator('date', {
-                            rules: [{ required: true, message: '' }]
-                        })(
-                            <Input name="date" />
-                        )}
-                    </FormItem>   
-                    
-                    <FormItem  {...formItemLayout} label="Total">
-                        {getFieldDecorator('total', {
-                            rules: [{ required: true, message: '' }]
-                        })(
-                            <Input name="total" />
-                        )}
-                    </FormItem> 
-                    <FormItem  {...formItemLayout} label="Customer Name">
-                        {getFieldDecorator('name', {
-                            rules: [{ required: true, message: '' }]
-                        })(
-                            <Input name="name" />
-                        )}
-                    </FormItem>
-
-                    <FormItem  {...formItemLayout} label="Contact Number">
-                        {getFieldDecorator('contact_num', {
-                            rules: [{ required: true, message: '' }]
-                        })(
-                            <Input name="contact_num" />
-                        )}
-                    </FormItem>  
-
-                    <FormItem  {...formItemLayout} label="Email">
-                        {getFieldDecorator('email', {
-                            rules: [{ 
-                             type: 'email', message: 'The input is not valid E-mail!',
-                             required: true, message: '' }]
-                        })(
-                            <Input name="email" />
-                        )}
-                    </FormItem> 
-
-                    <FormItem  {...formItemLayout} label="Billing Address">
-                        {getFieldDecorator('billing_address', {
-                            rules: [{ required: true, message: '' }]
-                        })(
-                            <Input name="billing_address" />
-                        )}
-                    </FormItem>     
-
-                    <FormItem  {...formItemLayout} label="Postcode">
-                        {getFieldDecorator('postcode', {
-                            rules: [{ required: true, message: '' }]
-                        })(
-                            <Input name="postcode" />
-                        )}
-                    </FormItem> 
-  
-
-                    <FormItem {...formTailLayout}>
-                        <Button type="primary">
-                            Add order
-                        </Button>
-                    </FormItem>   
-                </Form>
+                        <div style={{backgroundColor:'white', padding:'10px', marginBottom:'20px'}}>
+                            <h3 style={{paddingBottom:'10px'}}>Package Details</h3>
+                            <Form.Item >
+                                <Button type="dashed" onClick={this.add} style={{ width: '20%', }}>
+                                    <Icon type="plus" /> Add Package
+                                </Button>
+                            </Form.Item>
+                            <Row gutter={8} style={{backgroundColor:'#e8e8e8', padding:'10px', paddingBottom:'0px', marginBottom:'10px' }}>
+                                <Col span={6}>
+                                    <p>SKU</p>
+                                </Col>
+                                <Col span={6}>
+                                    <p>Code-Package</p>
+                                </Col>
+                                <Col span={2}>
+                                    <p>Quantity</p>
+                                </Col>
+                                <Col span={3}>
+                                    <p>Unit Price</p>
+                                </Col>
+                                {/* <Col span={3}>
+                                    <p>Total</p>
+                                </Col> */}
+                                <Col span={1}>
+                                    <p style={{color:'#e8e8e8'}}>  </p>
+                                </Col>
+                            </Row>
+                            {formItems}
+                        </div>
+                        
+                        <FormItem>
+                            <Button loading={loading} className="button-right" type="primary" onClick={this.handleSubmit}>
+                                Add order
+                            </Button>
+                        </FormItem>   
+                    </Form>
+                </div>  
             </div>
-               
-            </div>
-            );   
-        }
-       
+        );
+    }   
 }
 
 export default  Form.create()(NewOrder);
 
-// import { Steps, Button, message } from 'antd';
-
-// const Step = Steps.Step;
-
-// const steps = [{
-//   title: 'First',
-//   content: 'First-content',
-// }, {
-//   title: 'Second',
-//   content: 'Second-content',
-// }, {
-//   title: 'Last',
-//   content: 'Last-content',
-// }];
-
-// class NewOrder extends Component {
-//   constructor(props) {
-//     super(props);
-//     this.state = {
-//       current: 0,
-//     };
-//   }
-
-//   next() {
-//     const current = this.state.current + 1;
-//     this.setState({ current });
-//   }
-
-//   prev() {
-//     const current = this.state.current - 1;
-//     this.setState({ current });
-//   }
-
-//   render() {
-//     const { current } = this.state;
-//     return (
-//       <div style={{padding:'30px'}}>
-//         <Steps current={current}>
-//           {steps.map(item => <Step key={item.title} title={item.title} />)}
-//         </Steps>
-//         <div className="steps-content">{steps[current].content}</div>
-//         <div className="steps-action">
-//           {
-//             current < steps.length - 1
-//             && <Button type="primary" onClick={() => this.next()}>Next</Button>
-//           }
-//           {
-//             current === steps.length - 1
-//             && <Button type="primary" onClick={() => message.success('Processing complete!')}>Done</Button>
-//           }
-//           {
-//             current > 0
-//             && (
-//             <Button style={{ marginLeft: 8 }} onClick={() => this.prev()}>
-//               Previous
-//             </Button>
-//             )
-//           }
-//         </div>
-//       </div>
-//     );
-//   }
-// }
-
-// export default NewOrder;
