@@ -47,7 +47,7 @@ class ViewStock extends Component {
             <div>
                 <Header style={{ color: 'white', fontSize: '30px' }}>
                     <span>View Stock</span>
-                </Header>
+                </Header>    
                 <div className="global-search-wrapper" >
                     <AutoComplete
                         className="global-search"
@@ -61,7 +61,7 @@ class ViewStock extends Component {
                         )} />
                     </AutoComplete>
                 </div>
-                <div style={{ padding: '30px', paddingTop:'0px' }}>
+                <div style={{ padding:'30px', paddingTop:'0px' }}>
                     <Table
                         dataSource={stocks}
                         rowKey={stocks => stocks.id}>
