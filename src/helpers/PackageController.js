@@ -18,7 +18,6 @@ export const createPackage = (sku_id, code, name, description, cost_price, acces
             })
             .then((response) => response.json())
             .then((responseJson) => {
-                console.log(responseJson)
                 if (responseJson.result === 'GOOD') {
                     resolve(responseJson);   
                 }

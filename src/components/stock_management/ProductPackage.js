@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Layout,  Table, Modal, Button, Form, Input, Switch, Select } from 'antd';
+import { Layout,  Table, Modal, Button, Form, Input, Select } from 'antd';
 import { listPackage, createPackage } from '../../helpers/PackageController';
 import { listSku } from '../../helpers/SkuController';
 
@@ -63,7 +63,7 @@ class ProductPackage extends Component {
     handleSubmit = (e) => {
         e.preventDefault();
         var access_token = sessionStorage.getItem('access_token');
-        const { loading, require_activation } = this.state;
+        // const { require_activation } = this.state;
         const form = this.props.form;
 
         form.validateFieldsAndScroll((err, values) => {
