@@ -22,7 +22,8 @@ class PendingOrder extends Component {
         super(props);
         this.state = {
             current: 0,
-            pending_orders: []
+            pending_orders: [],
+            processOrder: false
         };
     }
 
@@ -50,10 +51,13 @@ class PendingOrder extends Component {
         this.setState({ current });
     }
 
-    render() {
+    processOrder(){
+        this.setState({ processOrder: true });       
+    }
+
+    renderProcessOrder(){
         const { current, pending_orders } = this.state;
         const { getFieldDecorator } = this.props.form;
-
         const steps = [{
             title: 'Order Details',
             content:  
@@ -140,14 +144,14 @@ class PendingOrder extends Component {
                     </Col>
                     <Col span={6}>
                         <Form.Item   label="Sim Card Number">
-                            <Input className="input-field"  />
-                            <Input  />
+                            <Input className="input-field" disabled />
+                            <Input  disabled/>
                         </Form.Item>
                     </Col>
                     <Col span={6}>
                         <Form.Item   label="Serial Number">
-                            <Input className="input-field"  />
-                            <Input  />
+                            <Input className="input-field" disabled />
+                            <Input  disabled/>
                         </Form.Item>
                     </Col>
                 </Row>
@@ -167,34 +171,41 @@ class PendingOrder extends Component {
                           <Option value="lucy">Pos Laju</Option>
                           <Option value="tom">AirPax</Option>
                       </Select>
-                  </Form.Item>
-                  <Form.Item  label="Shipping Adddress">
-                            {getFieldDecorator('order_number', {
+                    </Form.Item>
+                    <Form.Item  label="Tracking Number">
+                                {getFieldDecorator('order_number', {
                                 rules: [{ required: true, message: '' }]
                             })(
                                 <Input name="order_number" />
                             )}
-                        </Form.Item>
-                        <Row gutter={8}>
-                            <Col span={14}>
-                                <Form.Item label='State'>
-                                    {getFieldDecorator('website', {
+                    </Form.Item>
+                    <Form.Item  label="Shipping Adddress">
+                                {getFieldDecorator('order_number', {
+                                rules: [{ required: true, message: '' }]
+                            })(
+                                <Input name="order_number" />
+                            )}
+                    </Form.Item>
+                    <Row gutter={8}>
+                        <Col span={14}>
+                            <Form.Item label='State'>
+                                {getFieldDecorator('state', {
+                                 rules: [{ required: true, message: '' }]
+                                })(
+                                    <Select />
+                                )}
+                            </Form.Item>
+                        </Col>
+                        <Col span={10}>
+                            <Form.Item label='Postcode'>
+                                {getFieldDecorator('postcode', {
+                                rules: [{ required: true, message: '' }] 
+                                })(
+                                    <Input />
                                     
-                                    })(
-                                        <Select />
-                                    )}
-                                </Form.Item>
-                            </Col>
-                            <Col span={10}>
-                                <Form.Item label='Postcode'>
-                                    {getFieldDecorator('status', {
-                                        
-                                    })(
-                                        <Input />
-                                        
-                                    )}
-                                </Form.Item>
-                            </Col>
+                                )}
+                            </Form.Item>
+                        </Col>
                     </Row>
               </Form>
           },
@@ -202,58 +213,80 @@ class PendingOrder extends Component {
               title: 'Confirm Order',
               content: 'Confirm Package',
           }];
-          
-         return (
-            <div>
-            <Header style={{ color: 'white', fontSize: '30px' }}>
-                <span>Pending Order</span>
-            </Header>
-            <div style={{ padding: '30px' }}>
-                 <Table
-                    dataSource={pending_orders}
-                    rowKey={pending_orders => pending_orders.id}>
-                    <Column title="Order Number" dataIndex="order_ref_num" key="order_ref_num" />
-                    <Column title="Order Date" dataIndex="created_at" key="created_at" />
-                    <Column title="Customer Name" dataIndex="customer_name" key="customer_name" />
-                    <Column title="Total" dataIndex="total_amount" key="total_amount" />
-                    <Column title="Order Status" dataIndex="order_status" key="order_status" />
-                    <Column
-                            title='Action'
-                            key="action"
-                            render={(record) => (
-                                <div>
-                                    <Button style={{ margin:'10px' }} type="primary" >Process Order</Button>
-                                </div>
-                            )} />
-                </Table>
-            </div>
-            <div style={{padding:'30px'}}>
-                <Steps current={current}>
-                {steps.map(item => <Step key={item.title} title={item.title} />)}
-                </Steps>
-                <div className="steps-content">{steps[current].content}</div>
-                <div className="steps-action">
-                {
-                    current > 0
-                    && (
-                    <Button style={{ marginRight: 8 }} onClick={() => this.prev()}>
-                    Previous
-                    </Button>
-                    )
-                 }
-                 {
-                    current === steps.length - 1
-                    && <Button type="primary" onClick={() => message.success('Processing complete!')}>Done</Button>
-                 }
-                 {
-                    current < steps.length - 1
-                    && <Button type="primary" onClick={() => this.next()}>Next</Button>
-                }
+     
+            return(
+                <div style={{padding:'30px'}}>
+                    <Steps current={current}>
+                    {steps.map(item => <Step key={item.title} title={item.title} />)}
+                    </Steps>
+                    <div className="steps-content">{steps[current].content}</div>
+                    <div className="steps-action">
+                    {
+                        current > 0
+                        && (
+                        <Button style={{ marginRight: 8 }} onClick={() => this.prev()}>
+                        Previous
+                        </Button>
+                        )
+                    }
+                    {
+                        current === steps.length - 1
+                        && <Button type="primary" onClick={() => message.success('Processing complete!')}>Done</Button>
+                    }
+                    {
+                        current < steps.length - 1
+                        && <Button type="primary" onClick={() => this.next()}>Next</Button>
+                    }
+                    </div>
                 </div>
-            </div>
-            </div>
-            );   
+            )
+        
+    }
+
+    render() {
+        const { pending_orders } = this.state;
+
+        if (this.state.processOrder === false) {
+            return (             
+                <div>
+                <Header style={{ color: 'white', fontSize: '30px' }}>
+                    <span>Pending Order</span>
+                </Header>
+                <div style={{ padding: '30px' }}>
+                     <Table
+                        dataSource={pending_orders}
+                        rowKey={pending_orders => pending_orders.id}>
+                        <Column title="Order Number" dataIndex="order_ref_num" key="order_ref_num" />
+                        <Column title="Order Date" dataIndex="created_at" key="created_at" />
+                        <Column title="Customer Name" dataIndex="customer_name" key="customer_name" />
+                        <Column title="Total" dataIndex="total_amount" key="total_amount" />
+                        <Column title="Order Status" dataIndex="order_status" key="order_status" />
+                        <Column
+                                title='Action'
+                                key="action"
+                                render={(record) => (
+                                    <div>
+                                        <Button style={{ margin:'10px' }} type="primary" onClick={() => this.processOrder()}>Process Order</Button>
+                                    </div>
+                                )} />
+                    </Table>
+                </div>
+                </div>
+                );   
+            }
+            else {
+                return (             
+                    <div>
+                    <Header style={{ color: 'white', fontSize: '30px' }}>
+                        <span>Pending Order</span>
+                    </Header>
+                     {this.renderProcessOrder()}
+                    </div>
+                    );   
+
+            }
         }
+        
        
 }
 
