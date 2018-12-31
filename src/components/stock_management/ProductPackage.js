@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
-import { Layout,  Table, Modal, Button, Form, Input, Select } from 'antd';
-import { listPackage, createPackage } from '../../helpers/PackageController';
-import { listSku } from '../../helpers/SkuController';
+import { Layout,  Table, Modal, Button, Form, Input, Select, Switch } from 'antd';
+import { listPackage, createPackage, deletePackage, editPackage } from '../../helpers/PackageController';
+import { listSku, createSku, deleteSku, editSku } from '../../helpers/SkuController';
 
 const { Header } = Layout;
 const { Column } = Table;
 const FormItem = Form.Item;
 const Option = Select.Option;
+const confirm = Modal.confirm;
 
 class ProductPackage extends Component {
 
@@ -14,10 +15,13 @@ class ProductPackage extends Component {
         super(props);
         this.state = {
             visible: false,
+            visible_sku: false,
             packages: [],
             skus: [],
+            count:0,
             require_activation: true,
-            loading: false
+            loading: false,
+            clickView:false
         };
     }
 
@@ -30,6 +34,8 @@ class ProductPackage extends Component {
         var access_token = sessionStorage.getItem('access_token');
         listPackage(access_token)
             .then(result => {
+                console.warn(result);
+                
                 if (result.result === 'GOOD') {
                     this.setState({ packages: result.data });
                 }
@@ -49,21 +55,31 @@ class ProductPackage extends Component {
     showAddPackagesModal = () => {
         this.setState({ visible: true });
     }
+
+    showAddSkuModal = () => {
+        this.setState({ visible_sku: true });
+    }
+
+    showEditPackagesModal = () => {
+        this.setState({ visible: true, clickView: true });
+    }
+
+    showEditSkuModal = () => {
+        this.setState({ visible_sku: true, clickView: true });
+    }
     
     handleCancel = () => {
         const form = this.props.form;
         form.resetFields();
-        this.setState({ visible: false });
+        this.setState({ visible: false, visible_sku: false, clickView: false  });
     }
 
-    // onChangeSwitch = (value) => {
-    //     this.setState({ require_activation: value });
-    // }
+    onChangeSwitch = (value) => {
+        this.setState({ require_activation: value });
+    }
 
-    handleSubmit = (e) => {
-        e.preventDefault();
+    handleSubmit = () => {
         var access_token = sessionStorage.getItem('access_token');
-        // const { require_activation } = this.state;
         const form = this.props.form;
 
         form.validateFieldsAndScroll((err, values) => {
@@ -83,8 +99,154 @@ class ProductPackage extends Component {
         });
     }
 
+    handleSubmitEditPackage = () => {
+        var access_token = sessionStorage.getItem('access_token');
+        const form = this.props.form;
+
+        form.validateFieldsAndScroll((err, values) => {
+            if (err) {
+                return;
+            }
+            
+            this.setState({ loading: true });
+            editPackage(this.state.package_id, values.description, access_token)
+                .then(result => {
+                    if (result.result === 'GOOD') {
+                        this.setState({ loading: false });
+                        this.handleCancel();
+                        this.showPackageList();
+                    }
+                })
+        });
+    }
+
+
+    submitSku = () => {
+        var access_token = sessionStorage.getItem('access_token');
+        const { require_activation } = this.state;
+        const form = this.props.form;
+
+        form.validateFieldsAndScroll((err, values) => {
+            if (err) {
+                return;
+            }
+            this.setState({ loading: true });
+            createSku(values.sku, require_activation, access_token)
+                .then(result => {
+                    if (result.result === 'GOOD') {
+                        this.setState({ loading: false });
+                        this.handleCancel();
+                        this.showSkuList();
+                    }
+                })
+        });
+    }
+
+    submitEditSku = () => {
+        var access_token = sessionStorage.getItem('access_token');
+        const { require_activation } = this.state;
+        const form = this.props.form;
+
+        form.validateFieldsAndScroll((err, values) => {
+            if (err) {
+                return;
+            }
+            this.setState({ loading: true });
+            editSku(this.state.sku_id, values.sku, require_activation, access_token)
+                .then(result => {
+                    if (result.result === 'GOOD') {
+                        this.setState({ loading: false });
+                        this.handleCancel();
+                        this.showSkuList();
+                    }
+                })
+        });
+    }
+
+    handleDeleteSku() {
+        var access_token = sessionStorage.getItem('access_token');
+
+        confirm({
+            title: 'confirm',
+            content: 'Are you sure you want to delete this SKU?',
+            onOk: () => {
+                deleteSku(this.state.sku_id, access_token)
+                    .then(result => {
+                        if (result.result === 'GOOD') {
+                            Modal.success({
+                                title:'Success',
+                                content:'You have successfully deleted this package!',
+                                onOk: () => {
+                                    this.showPackageList();
+                            }});
+                        } else  if (result.result === 'STOCKEXIST') {
+                            Modal.error({
+                                title:'Error',
+                                content:'Stock Exist!',
+                                onOk: () => {
+                                    this.showPackageList();
+                            }});
+                        }
+                       
+                    })
+            }
+        })
+    }
+
+    handleDeletePackage() {
+        var access_token = sessionStorage.getItem('access_token');
+
+        confirm({
+            title: 'confirm',
+            content: 'Are you sure you want to delete this package?',
+            onOk: () => {
+                deletePackage(this.state.package_id, access_token)
+                    .then(result => {
+                        if (result.result === 'GOOD') {
+                            Modal.success({
+                                title:'Success',
+                                content:'You have successfully deleted this package!',
+                                onOk: () => {
+                                    this.showPackageList();
+                            }});
+                        } else  if (result.result === 'STOCKEXIST') {
+                            Modal.error({
+                                title:'Error',
+                                content:'Stock Exist!',
+                                onOk: () => {
+                                    this.showPackageList();
+                            }});
+                        }
+                       
+                    })
+            }
+        })
+    }
+
+    onClickSkuModal = () => {
+        this.setState({
+            sku: {
+                sku: '',
+                require_activation: '',
+            }
+        }, () => this.showAddSkuModal());
+    }
+
+    
+    onClickPackageModal = () => {
+        this.setState({
+            newpackage: {
+                sku_id: '',
+                code: '',
+                name:'',
+                cost_price:'',
+                description:''
+            }
+        }, () => this.showAddPackagesModal());
+    }
+
     render() {
-        const { packages, skus, loading } = this.state;
+        const { packages, newpackage, skus, sku, loading, clickView } = this.state;
         const { getFieldDecorator } = this.props.form;
 
          return (
@@ -94,7 +256,67 @@ class ProductPackage extends Component {
             </Header>
             <div style={{ padding: '30px' }}>
                 <Button
-                    onClick={this.showAddPackagesModal}
+                    onClick={this.onClickSkuModal}
+                    style={{ marginBottom: '30px' }}
+                    type="primary"
+                    icon="plus-circle"
+                    size={'large'}>
+                    Add SKU
+                </Button>
+
+                <Table
+                    dataSource={skus}
+                    rowKey={skus => skus.id}>
+                    {/* <Column title="No." dataIndex="id" key="id" /> */}
+                    <Column title="SKU" dataIndex="sku" key="sku" />
+                    <Column title="Required Activation" dataIndex="require_activation" key="require_activation" />
+                    <Column
+                        title='Action'
+                        key="action"
+                        render={(record) => (
+                            <div>
+                                <Button style={{ margin:'10px' }} type="primary"
+                                 onClick={() => this.setState({ sku: Object.assign({}, record), sku_id: record.id },()=> this.showEditSkuModal())}>Edit</Button>
+                                <Button style={{ margin:'10px' }} type="primary" 
+                                  onClick={() => this.setState({ sku: Object.assign({}, record), sku_id: record.id },()=> this.handleDeleteSku())}>Delete</Button>
+                            </div>
+                        )} />
+                </Table>
+
+                <Modal
+                    visible={this.state.visible_sku}
+                    onCancel={this.handleCancel}
+                    title={clickView ? 'Edit SKU' : 'Add SKU'  }
+                    footer={<Button type="primary" loading={loading} onClick={clickView ? this.submitEditSku : this.submitSku }>Save</Button>}>
+                    {sku && <Form layout="vertical">
+                        {/* <FormItem label="No">
+                            {getFieldDecorator('no', {
+                                rules: [{ required: true, message: '' }]
+                            })(
+                                <Input />
+                            )}
+                        </FormItem> */}
+                        <FormItem label="SKU">
+                            {getFieldDecorator('sku', {
+                                initialValue: sku.sku,
+                                rules: [{ required: true, message: 'Please input the product SKU!' }]
+                            })(
+                                <Input name = 'sku'/>
+                            )}
+                        </FormItem>
+                        <FormItem label="Required Activation">
+                            {getFieldDecorator('require_activation', {
+                                initialValue: sku.require_activation,
+
+                            })(
+                                <Switch onChange={this.onChangeSwitch} checkedChildren="Yes" unCheckedChildren="No" defaultChecked />
+                            )}
+                        </FormItem>
+                    </Form>}
+                </Modal>
+
+                <Button
+                    onClick={this.onClickPackageModal}
                     style={{ marginBottom: '30px' }}
                     type="primary"
                     icon="plus-circle"
@@ -104,27 +326,38 @@ class ProductPackage extends Component {
 
                 <Table
                     dataSource={packages}
-                    rowKey={packages => packages.id}>
-                    <Column title="ID" dataIndex="id" key="id" />
+                    rowKey={packages => packages.id }>
+                    {/* <Column title="ID" dataIndex="id" key="id" /> */}
                     <Column title="SKU" dataIndex="sku_name" key="sku_name" />
                     <Column title="Code" dataIndex="code" key="code" />
                     <Column title="Name" dataIndex="name" key="name" />
                     <Column title="Cost Price" dataIndex="cost_price" key="cost_price" />
-                    <Column title="Description" dataIndex="description" key="description" />
                     <Column title="Req Activation" dataIndex="require_activation" key="require_activation" />
+                    <Column
+                        title='Action'
+                        key="action"
+                        render={(record) => (
+                            <div>
+                                <Button style={{ margin:'10px' }} type="primary"
+                                 onClick={() => this.setState({ newpackage: Object.assign({}, record), package_id: record.id },()=> this.showEditPackagesModal())}>Edit</Button>
+                                <Button style={{ margin:'10px' }} type="primary"  
+                                 onClick={() => this.setState({ newpackage: Object.assign({}, record), package_id: record.id },()=> this.handleDeletePackage())}>Delete</Button>
+                            </div>
+                        )} />
                 </Table>
 
                 <Modal
                     visible={this.state.visible}
                     onCancel={this.handleCancel}
-                    title={"Add new package"}
-                    footer={<Button type="primary" loading={loading} onClick={this.handleSubmit}>Add Package</Button>}>
-                    <Form layout="vertical">
+                    title={clickView ? 'Edit Package' : 'Add new package' }
+                    footer={<Button type="primary" loading={loading} onClick={clickView ? this.handleSubmitEditPackage : this.handleSubmit }>Save</Button>}>
+                    { newpackage && <Form layout="vertical">
                         <FormItem label="SKU">
                             {getFieldDecorator('sku_id', {
+                                  initialValue: newpackage.sku_id,
                                 rules: [{ required: true, message: 'Please select the product SKU!' }]
                             })(
-                                <Select placeholder="Please select the product SKU">
+                                <Select disabled={clickView ? true : false}  placeholder="Please select the product SKU">
                                     {skus.map((sku) =>
                                         <Option key={sku.id} value={sku.id}>{sku.sku}</Option>
                                     )}
@@ -134,44 +367,43 @@ class ProductPackage extends Component {
 
                         <FormItem label="Code">
                             {getFieldDecorator('code', {
+                                initialValue: newpackage.code,
                                 rules: [{ required: true, message: 'Please input the product code!' }]
                             })(
-                                <Input />
+                                <Input disabled={clickView ? true : false}  name = 'code'/>
                             )}
                         </FormItem> 
 
                         <FormItem label="Package Name">
                             {getFieldDecorator('name', {
+                                initialValue: newpackage.name,
                                 rules: [{ required: true, message: 'Please input the product name!' }]
                             })(
-                                <Input />
+                                <Input disabled={clickView ? true : false}  name = 'name'/>
                             )}
                         </FormItem>
 
                         <FormItem label="Cost Price (RM)">
                             {getFieldDecorator('cost_price', {
+                                initialValue: newpackage.cost_price,
                                 rules: [{ required: true, message: 'Please input the product cost price!' }]
                             })(
-                                <Input />
+                                <Input disabled={clickView ? true : false}   name = 'cost_price'/>
                             )}
                         </FormItem>
 
                         <FormItem label="Description">
                             {getFieldDecorator('description', {
+                                initialValue: newpackage.description,
                                 rules: [{ required: true, message: 'Please input the product description!' }]
                             })(
-                                <Input />
+                                <Input  name = 'description' />
                             )}
                         </FormItem>
 
-                        {/* <FormItem label="Required Activation">
-                            {getFieldDecorator('require_activation', {
-                            })(
-                                <Switch onChange={this.onChangeSwitch} checkedChildren="Yes" unCheckedChildren="No" defaultChecked />
-                            )}
-                        </FormItem> */}
-                    </Form>
+                    </Form>}
                 </Modal>
+              
             </div>
         </div>
         );   

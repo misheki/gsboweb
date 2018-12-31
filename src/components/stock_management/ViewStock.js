@@ -65,10 +65,11 @@ class ViewStock extends Component {
                     <Table
                         dataSource={stocks}
                         rowKey={stocks => stocks.id}>
-                        <Column title="Package Code" dataIndex="package_code" key="package_code" />
-                        <Column title="Sim Card Number" dataIndex="sim_card_number" key="sim_card_number" />
                         <Column title="Serial Number" dataIndex="serial_number" key="serial_number" />
                         <Column title="Stock Status" dataIndex="stock_status" key="stock_status" />
+                        <Column title="Package Code" dataIndex="package_code" key="package_code" />
+                        <Column title="Sim Card Number" dataIndex="sim_card_number" key="sim_card_number" />
+                       
                         {/* <Column title="Action" dataIndex="action" key="action" /> */}
                         <Column
                             title='Action'

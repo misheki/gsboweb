@@ -160,25 +160,46 @@ class PendingOrder extends Component {
             title: 'Shipping Details',
             content:  
               <Form  layout="vertical" style={{width:'90%', paddingLeft:'40px',}}> 
-                  <Form.Item label="Courier">
-                      <Select
-                          showSearch
-                          placeholder="Please select courier"
-                          optionFilterProp="children"
-                          filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                      >
-                          <Option value="jack">Gdex</Option>
-                          <Option value="lucy">Pos Laju</Option>
-                          <Option value="tom">AirPax</Option>
-                      </Select>
-                    </Form.Item>
-                    <Form.Item  label="Tracking Number">
-                                {getFieldDecorator('order_number', {
-                                rules: [{ required: true, message: '' }]
-                            })(
-                                <Input name="order_number" />
-                            )}
-                    </Form.Item>
+                    <Row gutter={8}>
+                        <Col span={8}>
+                            <Form.Item label="Courier">
+                            {getFieldDecorator('courier', {
+                                    rules: [{ required: true, message: '' }]
+                                })(
+                                <Select
+                                    showSearch
+                                    placeholder="Please select courier"
+                                    optionFilterProp="children"
+                                    filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                                >
+                                    <Option value="jack">Gdex</Option>
+                                    <Option value="lucy">Pos Laju</Option>
+                                    <Option value="tom">AirPax</Option>
+                                </Select>
+                                )}
+                               
+                            </Form.Item>
+                        </Col>
+                        <Col span={8}>
+                            <Form.Item  label="Tracking Number">
+                                    {getFieldDecorator('tracking_number', {
+                                    rules: [{ required: true, message: '' }]
+                                })(
+                                    <Input name="tracking_number" />
+                                )}
+                            </Form.Item>
+                        </Col>
+                        <Col span={8}>
+                            <Form.Item label='Shipping Amount'>
+                                {getFieldDecorator('postcode', {
+                                rules: [{ required: true, message: '' }] 
+                                })(
+                                    <Input />
+                                    
+                                )}
+                            </Form.Item>
+                        </Col>
+                    </Row>
                     <Form.Item  label="Shipping Adddress">
                                 {getFieldDecorator('order_number', {
                                 rules: [{ required: true, message: '' }]

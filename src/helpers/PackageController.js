@@ -52,3 +52,61 @@ export const listPackage = (access_token) => {
         )
     ])
 };
+
+export const deletePackage = (package_id, access_token) => {
+    return Promise.race([
+        new Promise((resolve, reject) =>
+            fetch(global.URL + 'api/package/delete/' + package_id, {
+                method: 'DELETE',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + access_token
+                }
+            })
+            .then((response) => response.json())
+            .then((responseJson) => {
+                console.warn(responseJson);               
+                if (responseJson.result === 'GOOD') {
+                    resolve(responseJson);   
+                }
+                if (responseJson.result === 'STOCKEXIST') {
+                    resolve(responseJson);   
+                }
+                
+            })
+            .catch((error) => {
+                reject(error);
+            })
+        )
+    ])
+};
+
+export const editPackage = (package_id, description, access_token) => {
+    return Promise.race([
+        new Promise((resolve, reject) =>
+            fetch(global.URL + 'api/package/edit', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + access_token
+                },
+                body: JSON.stringify({
+                    package_id,
+                    description
+                })
+            })
+            .then((response) => response.json())
+            .then((responseJson) => {
+                console.warn(responseJson); 
+                if (responseJson.result === 'GOOD') {
+                    resolve(responseJson);   
+                }
+            })
+            .catch((error) => {
+                reject(error);
+            })
+        )
+    ])
+};
