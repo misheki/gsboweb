@@ -56,7 +56,7 @@ class PendingOrder extends Component {
     }
 
     renderProcessOrder(){
-        const { current, pending_orders } = this.state;
+        const { current } = this.state;
         const { getFieldDecorator } = this.props.form;
         const steps = [{
             title: 'Order Details',
@@ -106,7 +106,7 @@ class PendingOrder extends Component {
                             {getFieldDecorator('email', {
                                 rules: [{ 
                                 type: 'email', message: 'The input is not valid E-mail!',
-                                required: true, message: '' }]
+                                required: true }]
                             })(
                                 <Input name="email" />
                             )}
