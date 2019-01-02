@@ -82,10 +82,10 @@ export const editSku = (sku_id, sku, require_activation, access_token) => {
     ])
 };
 
-export const deleteSku = (access_token) => {
+export const deleteSku = (sku_id, access_token) => {
     return Promise.race([
         new Promise((resolve, reject) =>
-            fetch(global.URL + 'api/sku/delete', {
+            fetch(global.URL + 'api/sku/delete/' + sku_id, {
                 method: 'DELETE',
                 headers: {
                     'Accept': 'application/json',
@@ -95,11 +95,12 @@ export const deleteSku = (access_token) => {
             })
             .then((response) => response.json())
             .then((responseJson) => {
-                console.warn(responseJson);
-                
-                // if (responseJson.result === 'GOOD') {
-                //     resolve(responseJson);   
-                // }
+                if (responseJson.result === 'GOOD') {
+                    resolve(responseJson);   
+                }
+                else if (responseJson.result === 'STOCKEXIST') {
+                    resolve(responseJson);   
+                }
             })
             .catch((error) => {
                 reject(error);

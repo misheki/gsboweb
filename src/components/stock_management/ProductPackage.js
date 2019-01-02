@@ -167,7 +167,7 @@ class ProductPackage extends Component {
         var access_token = sessionStorage.getItem('access_token');
 
         confirm({
-            title: 'confirm',
+            title: 'Confirm',
             content: 'Are you sure you want to delete this SKU?',
             onOk: () => {
                 deleteSku(this.state.sku_id, access_token)
@@ -175,14 +175,14 @@ class ProductPackage extends Component {
                         if (result.result === 'GOOD') {
                             Modal.success({
                                 title:'Success',
-                                content:'You have successfully deleted this package!',
+                                content:'You have successfully deleted this SKU.',
                                 onOk: () => {
                                     this.showPackageList();
                             }});
                         } else  if (result.result === 'STOCKEXIST') {
                             Modal.error({
                                 title:'Error',
-                                content:'Stock Exist!',
+                                content:'You cannot delete this SKU because it has stocks under it.',
                                 onOk: () => {
                                     this.showPackageList();
                             }});
@@ -197,7 +197,7 @@ class ProductPackage extends Component {
         var access_token = sessionStorage.getItem('access_token');
 
         confirm({
-            title: 'confirm',
+            title: 'Confirm',
             content: 'Are you sure you want to delete this package?',
             onOk: () => {
                 deletePackage(this.state.package_id, access_token)
@@ -205,14 +205,14 @@ class ProductPackage extends Component {
                         if (result.result === 'GOOD') {
                             Modal.success({
                                 title:'Success',
-                                content:'You have successfully deleted this package!',
+                                content:'You have successfully deleted this package.',
                                 onOk: () => {
                                     this.showPackageList();
                             }});
                         } else  if (result.result === 'STOCKEXIST') {
                             Modal.error({
                                 title:'Error',
-                                content:'Stock Exist!',
+                                content:'You cannot delete this package because there are stocks under it.',
                                 onOk: () => {
                                     this.showPackageList();
                             }});

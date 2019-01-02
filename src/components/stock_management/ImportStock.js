@@ -77,6 +77,7 @@ class ImportStock extends Component {
                 </Header>
                 <div style={{ padding: '1%', margin: '3%' }}>
                     <h2>Upload a CSV file using this template: <a href={template} download>STOCKS UPLOAD TEMPLATE</a></h2>
+                    <p>Note:  Please use the format dd/mm/yyyy for the EXPIRY DATE column. </p>
                 </div> 
                 <div style={{ padding: '2%', border: '1px solid #d2d2d2', margin: '3%' }}>
                     <form onSubmit={this.onFormSubmit}>

@@ -70,7 +70,7 @@ export const deletePackage = (package_id, access_token) => {
                 if (responseJson.result === 'GOOD') {
                     resolve(responseJson);   
                 }
-                if (responseJson.result === 'STOCKEXIST') {
+                else if (responseJson.result === 'STOCKEXIST') {
                     resolve(responseJson);   
                 }
                 
