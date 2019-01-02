@@ -395,7 +395,7 @@ class ProductPackage extends Component {
                         <FormItem label="Description">
                             {getFieldDecorator('description', {
                                 initialValue: newpackage.description,
-                                rules: [{ required: true, message: 'Please input the product description!' }]
+                                rules: [{ required: false, message: 'Please input the product description!' }]
                             })(
                                 <Input  name = 'description' />
                             )}
