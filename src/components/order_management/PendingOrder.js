@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Layout,  Table, Steps, Button, message, Form, Input, Select, Col, Row, Divider   } from 'antd';
-import { listPending, showOrders } from '../../helpers/OrderController';
+import { listPending, showOrders, requestStock } from '../../helpers/OrderController';
 
 const Option = Select.Option;
 const Step = Steps.Step;
@@ -17,7 +17,8 @@ class PendingOrder extends Component {
             processOrder: false,
             order: '',
             package_details: [],
-            process_order_loading: false
+            process_order_loading: false,
+            request_stock_loading: false
         };
     }
 
@@ -55,8 +56,28 @@ class PendingOrder extends Component {
             })
     }
 
+    handleRequestStock() {
+        const { order } = this.state;
+        var order_id = order.id;
+        var form = this.props.form;
+        var access_token = sessionStorage.getItem('access_token');
+
+        form.validateFields((err, values) => {
+            if (err) {
+                return;
+            }
+
+            requestStock(order_id, values.package_details, access_token)
+                .then(result => {
+                    if (result.result === 'GOOD') {
+                        
+                    }
+                })
+        });
+    }
+
     renderProcessOrder() {
-        const { current, order, package_details } = this.state;
+        const { current, order, package_details, request_stock_loading } = this.state;
         const { getFieldDecorator } = this.props.form;
         var order_status = order.status === 'pending' ? false : true;
 
@@ -138,15 +159,10 @@ class PendingOrder extends Component {
 
                     {package_details.map((package_detail) =>
                         package_detail.stocks.map((stock) =>
-                            <Row key={stock.id} style={{paddingTop: '20px' }} gutter={16}>
-                                {/* <Col span={2}>
-                                    <Form.Item label="No">
-                                        <Input className="input-field" disabled value={stock.id} />
-                                    </Form.Item>
-                                </Col> */}
+                            <Row key={stock.id} style={{ paddingTop: '20px' }} gutter={16}>
                                 <Col span={4}>
                                     <Form.Item label="SKU">
-                                        {getFieldDecorator('sku', {
+                                        {getFieldDecorator(`package_details[${stock.id}]sku`, {
                                             initialValue: package_detail.sku
                                         })(
                                             <Input className="input-field" disabled />
@@ -155,7 +171,7 @@ class PendingOrder extends Component {
                                 </Col>
                                 <Col span={6}>
                                     <Form.Item label="Package">
-                                        {getFieldDecorator('package_name', {
+                                        {getFieldDecorator(`package_details[${stock.id}]package_name`, {
                                             initialValue: package_detail.package_name
                                         })(
                                             <Input className="input-field" disabled />
@@ -164,7 +180,7 @@ class PendingOrder extends Component {
                                 </Col>
                                 <Col span={6}>
                                     <Form.Item label="Sim Card Number">
-                                        {getFieldDecorator('sim_card_number', {
+                                        {getFieldDecorator(`package_details[${stock.id}]sim_card_number`, {
                                             initialValue: stock.sim_card_number
                                         })(
                                             <Input className="input-field" disabled />
@@ -173,13 +189,25 @@ class PendingOrder extends Component {
                                 </Col>
                                 <Col span={6}>
                                     <Form.Item label="Serial Number">
-                                        {getFieldDecorator('serial_number', {
+                                        {getFieldDecorator(`package_details[${stock.id}]serial_number`, {
                                             initialValue: stock.serial_number
                                         })(
                                             <Input className="input-field" disabled />
                                         )}
                                     </Form.Item>
                                 </Col>
+
+                                {getFieldDecorator(`package_details[${stock.id}]stock_id`, {
+                                    initialValue: stock.id
+                                })(
+                                    <Input type="hidden" className="input-field" disabled />
+                                )}
+
+                                {getFieldDecorator(`package_details[${stock.id}]order_detail_id`, {
+                                    initialValue: package_detail.order_detail_id
+                                })(
+                                    <Input type="hidden" className="input-field" disabled />
+                                )}
                             </Row>
                         )
                     )}
@@ -279,7 +307,7 @@ class PendingOrder extends Component {
                     current < steps.length - 1 && current !== 0 && <Button type="primary" onClick={() => this.next()}>Next</Button>
                 }
                 {
-                    current === 0 && (order.status === 'pending' ? <Button type="primary" onClick={() => this.next()}>Request Stock & Continue</Button> : <Button type="primary" onClick={() => this.next()}>Next</Button>)
+                    current === 0 && (order.status === 'pending' ? <Button loading={request_stock_loading} type="primary" onClick={() => this.handleRequestStock()}>Request Stock & Continue</Button> : <Button type="primary" onClick={() => this.next()}>Next</Button>)
                 }
                 </div>
             </div>
