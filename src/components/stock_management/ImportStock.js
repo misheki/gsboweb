@@ -75,7 +75,7 @@ class ImportStock extends Component {
          return (
             <div>
             <Header style={{ color: 'white', fontSize: '30px' }}>
-                <span>Import Stock</span>
+                <span>Import Stocks</span>
             </Header>
             <Dragger {...props}>
                 <p className="ant-upload-drag-icon">
