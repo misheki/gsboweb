@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Layout,  Table, Steps, Button, message, Form, Input, Select, Col, Row, Divider   } from 'antd';
-import { listPending } from '../../helpers/OrderController';
+import { listReadyShip } from '../../helpers/OrderController';
 
 const Option = Select.Option;
 const Step = Steps.Step;
@@ -13,21 +13,21 @@ class ReadyToShip extends Component {
         super(props);
         this.state = {
             current: 0,
-            pending_orders: [],
+            confirmed_orders: [],
             processOrder: false
         };
     }
 
     componentDidMount() {
-        this.showOrderlistPending();
+        this.showOrderlistReadyToShip();
     }
 
-    showOrderlistPending() {
+    showOrderlistReadyToShip() {
         var access_token = sessionStorage.getItem('access_token');
-        listPending(access_token)
+        listReadyShip(access_token)
             .then(result => {
                 if (result.result === 'GOOD') {
-                    this.setState({ pending_orders: result.data });
+                    this.setState({ confirmed_orders: result.data });
                 }
             })
     }
@@ -256,7 +256,7 @@ class ReadyToShip extends Component {
     }
 
     render() {
-        const { pending_orders } = this.state;
+        const { confirmed_orders } = this.state;
 
         if (this.state.processOrder === false) {
             return (             
@@ -266,8 +266,8 @@ class ReadyToShip extends Component {
                 </Header>
                 <div style={{ padding: '30px' }}>
                      <Table
-                        dataSource={pending_orders}
-                        rowKey={pending_orders => pending_orders.id}>
+                        dataSource={confirmed_orders}
+                        rowKey={confirmed_orders => confirmed_orders.id}>
                         <Column title="Order Number" dataIndex="order_ref_num" key="order_ref_num" />
                         <Column title="Order Date" dataIndex="created_at" key="created_at" />
                         <Column title="Customer Name" dataIndex="customer_name" key="customer_name" />

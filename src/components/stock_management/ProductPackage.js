@@ -34,8 +34,6 @@ class ProductPackage extends Component {
         var access_token = sessionStorage.getItem('access_token');
         listPackage(access_token)
             .then(result => {
-                console.warn(result);
-                
                 if (result.result === 'GOOD') {
                     this.setState({ packages: result.data });
                 }
@@ -165,7 +163,7 @@ class ProductPackage extends Component {
 
     handleDeleteSku() {
         var access_token = sessionStorage.getItem('access_token');
-
+        
         confirm({
             title: 'Confirm',
             content: 'Are you sure you want to delete this SKU?',
