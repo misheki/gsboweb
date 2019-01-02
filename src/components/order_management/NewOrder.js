@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { Layout, Form, Input, Button, Row, Col, Select, Icon, Modal } from 'antd';
 import { createOrder, saleChannelList } from '../../helpers/OrderController';
-import { listSku } from '../../helpers/SkuController';
-import { listPackage } from '../../helpers/PackageController';
+import { listSku, listSkuPackage } from '../../helpers/SkuController';
 
 const { Header } = Layout;
 const FormItem = Form.Item;
@@ -17,13 +16,13 @@ class NewOrder extends Component {
             skus: [],
             packages: [],
             sale_channels: [],
-            loading: false
+            loading: false,
+            package_key: 0
         };
     }
 
     componentDidMount() {
         this.showListSku();
-        this.showListPackage();
         this.showCourierList();
     }
 
@@ -37,9 +36,9 @@ class NewOrder extends Component {
             })
     }
 
-    showListPackage() {
+    showListPackage(k, sku_id) {
         var access_token = sessionStorage.getItem('access_token');
-        listPackage(access_token)
+        listSkuPackage(sku_id, access_token)
             .then(result => {
                 if (result.result === 'GOOD') {
                     this.setState({ packages: result.data });
@@ -119,7 +118,7 @@ class NewOrder extends Component {
                             })(
                                 <Select placeholder="Please select the product SKU">
                                     {skus.map((sku) =>
-                                        <Option key={sku.id} value={sku.id}>{sku.sku}</Option>
+                                        <Option key={sku.id} value={sku.id} onClick={() => this.showListPackage(k, sku.id)}>{sku.sku}</Option>
                                     )}
                                 </Select>
                             )}

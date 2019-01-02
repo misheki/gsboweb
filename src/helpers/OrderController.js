@@ -57,10 +57,34 @@ export const listPending = (access_token) => {
     ])
 };
 
-export const listReadyToShip= (access_token) => {
+export const listReadyShip = (access_token) => {
     return Promise.race([
         new Promise((resolve, reject) =>
-            fetch(global.URL + 'api/order/list/pending', {
+            fetch(global.URL + 'api/order/list/ready/ship', {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + access_token
+                }
+            })
+            .then((response) => response.json())
+            .then((responseJson) => {
+                if (responseJson.result === 'GOOD') {
+                    resolve(responseJson);   
+                }
+            })
+            .catch((error) => {
+                reject(error);
+            })
+        )
+    ])
+}
+
+export const listCompleted = (access_token) => {
+    return Promise.race([
+        new Promise((resolve, reject) =>
+            fetch(global.URL + 'api/order/list/completed', {
                 method: 'GET',
                 headers: {
                     'Accept': 'application/json',
