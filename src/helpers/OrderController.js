@@ -128,3 +128,30 @@ export const saleChannelList = (access_token) => {
         )
     ])
 };
+
+export const showOrders = (order_id, access_token) => {
+    return Promise.race([
+        new Promise((resolve, reject) =>
+            fetch(global.URL + 'api/order/show', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + access_token
+                },
+                body: JSON.stringify({
+                    order_id
+                })
+            })
+            .then((response) => response.json())
+            .then((responseJson) => {
+                if (responseJson.result === 'GOOD') {
+                    resolve(responseJson);   
+                }
+            })
+            .catch((error) => {
+                reject(error);
+            })
+        )
+    ])
+};
