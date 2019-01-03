@@ -82,6 +82,7 @@ class PendingOrder extends Component {
     }
 
     prev() {
+        this.processOrder(this.state.order.id);
         const current = this.state.current - 1;
         this.setState({ current });
     }
@@ -152,12 +153,6 @@ class PendingOrder extends Component {
         const { getFieldDecorator } = this.props.form;
         var order_status = order.status === 'pending' ? false : true;
         let stock_details = [{ sku:"", package_name:"", sim_card_number:"", serial_number:"", stock_id:"", order_detail_id:"" }];
-
-        // package_details.map((package_detail) =>
-        //     package_detail.stocks.map((stock) =>
-        //         console.log(`package_details[${stock.id}]sku`)
-        //     )
-        // )
 
         // if (order.status === 'pending' && current === 0) {
         //     this.setState({ current: 1 });
