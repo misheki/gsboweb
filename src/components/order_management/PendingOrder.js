@@ -63,16 +63,16 @@ class PendingOrder extends Component {
         var access_token = sessionStorage.getItem('access_token');
 
         form.validateFields((err, values) => {
-            if (err) {
-                return;
-            }
+            // if (err) {
+            //     return;
+            // }
 
             requestStock(order_id, values.package_details, access_token)
-                .then(result => {
-                    if (result.result === 'GOOD') {
+                // .then(result => {
+                //     if (result.result === 'GOOD') {
                         
-                    }
-                })
+                //     }
+                // })
         });
     }
 
