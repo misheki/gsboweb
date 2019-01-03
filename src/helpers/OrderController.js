@@ -208,3 +208,36 @@ export const courierList = (access_token) => {
         )
     ])
 };
+
+export const shippingUpdate = (customer_address, customer_contact_num, customer_state, customer_postcode, shipping_method_id, tracking_number, shipping_fee, access_token) => {
+    return Promise.race([
+        new Promise((resolve, reject) =>
+            fetch(global.URL + 'api/order/shipping/update', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + access_token
+                },
+                body: JSON.stringify({
+                    customer_address,
+                    customer_contact_num,
+                    customer_state,
+                    customer_postcode,
+                    shipping_method_id,
+                    tracking_number,
+                    shipping_fee
+                })
+            })
+            .then((response) => response.json())
+            .then((responseJson) => {
+                if (responseJson.result === 'GOOD') {
+                    resolve(responseJson);   
+                }
+            })
+            .catch((error) => {
+                reject(error);
+            })
+        )
+    ])
+};
