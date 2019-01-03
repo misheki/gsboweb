@@ -167,14 +167,14 @@ class PendingOrder extends Component {
         //     this.setState({ method: 'Courier' });
         // }
         
-        const packageDetailItems = package_details.map((package_detail) =>
-            package_detail.stocks.map((stock) =>
+        const packageDetailItems = package_details.map((package_detail, i) =>
+            package_detail.stocks.map((stock, j) =>
                 <React.Fragment key={stock.id}>
                     <Row gutter={16}>
                         <Col span={2}>
                             <Form.Item>
                                 {getFieldDecorator('id', {
-                                    initialValue: package_detail.id
+                                    initialValue: i + j + 1
                                 })(
                                     <Input disabled />
                                 )}
