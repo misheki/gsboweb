@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Layout,  Table, Steps, Button, message, Form, Input, Select, Col, Row, Divider, Modal } from 'antd';
 import { listPending, showOrders, requestStock, courierList, shippingUpdate, completeOrder } from '../../helpers/OrderController';
+import { checkAccess } from '../../helpers/PermissionController';
 
 const Option = Select.Option;
 const Step = Steps.Step;
@@ -9,6 +10,7 @@ const { Column } = Table;
 const confirm = Modal.confirm;
 
 class PendingOrder extends Component {
+    _isMounted = false;
 
     constructor(props) {
         super(props);
@@ -25,13 +27,32 @@ class PendingOrder extends Component {
             couriers: [],
             method: 'Self Pickup',
             tracking_number: '',
-            shipping_method_id: ''
+            shipping_method_id: '',
+            show_table: false,
+            show_button_process_order: false
         };
     }
 
     componentDidMount() {
+        this._isMounted = true;
         this.showOrderlistPending();
         this.showCourierList();
+        this.showTable();
+        this.showButtonProcessOrder();
+    }
+    
+    componentWillUnmount() {
+        this._isMounted = false;
+    }
+
+    showTable() {
+        var access_token = sessionStorage.getItem('access_token');
+        checkAccess(['viewOrderHistory'], access_token).then(result => result !== false ? (this._isMounted === true ? this.setState({ show_table: result }) : null) : null);
+    }
+
+    showButtonProcessOrder() {
+        var access_token = sessionStorage.getItem('access_token');
+        checkAccess(['processOrder'], access_token).then(result => result !== false ? (this._isMounted === true ? this.setState({ show_button_process_order: result }) : null) : null);
     }
 
     showOrderlistPending() {
@@ -76,8 +97,19 @@ class PendingOrder extends Component {
             })
         }
         else {
-            // set shipping detail to null
-            this.setState({ current });
+            form.validateFields(['customer_address', 'customer_contact_num', 'customer_state', 'customer_postcode', 'shipping_method_id', 'tracking_number', 'shipping_fee'], (err, values) => {
+                if (err) {
+                    return;
+                }
+    
+                this.setState({ next_loading: true });
+                shippingUpdate(order.id, values.customer_address, values.customer_contact_num, values.customer_state, values.customer_postcode, null, values.tracking_number, values.shipping_fee, access_token)
+                    .then(result => {
+                        if (result.result === 'GOOD') {
+                            this.setState({ next_loading: false, current, method: 'Courier', tracking_number: values.tracking_number, shipping_method_id: values.shipping_method_id });
+                        }
+                    })
+            })
         }
     }
 
@@ -437,7 +469,7 @@ class PendingOrder extends Component {
     }
 
     render() {
-        const { pending_orders, processOrder } = this.state;
+        const { pending_orders, processOrder, show_table, show_button_process_order } = this.state;
 
         if (processOrder === false) {
             return (             
@@ -446,7 +478,7 @@ class PendingOrder extends Component {
                         <span>Pending Order</span>
                     </Header>
                     <div style={{ padding: '30px' }}>
-                        <Table
+                        {show_table === true ? <Table
                             dataSource={pending_orders}
                             rowKey={pending_orders => pending_orders.id}>
                             <Column title="Order Number" dataIndex="order_ref_num" key="order_ref_num" />
@@ -459,10 +491,15 @@ class PendingOrder extends Component {
                                 key="action"
                                 render={(record) => (
                                     <div>
-                                        <Button style={{ margin:'10px' }} type="primary" onClick={() => this.processOrder(record.id)}>Process Order</Button>
+                                        {show_button_process_order === true ? <Button
+                                            style={{ margin:'10px' }}
+                                            type="primary"
+                                            onClick={() => this.processOrder(record.id)}>
+                                            Process Order
+                                        </Button> : null}
                                     </div>
                                 )} />
-                        </Table>
+                        </Table> : null}
                     </div>
                 </div>
             );
