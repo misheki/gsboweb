@@ -220,7 +220,7 @@ class Completed extends Component {
                         <span>Completed Orders</span>
                     </Header>
                     <div className="global-search-wrapper" >
-                        <AutoComplete
+                        {/* <AutoComplete
                             className="global-search"
                             size="large"
                             // onSearch={(search) => this.setState({ search })}
@@ -230,7 +230,7 @@ class Completed extends Component {
                                     <Icon type="search" />
                                 </Button>
                             )} />
-                        </AutoComplete>
+                        </AutoComplete> */}
                     </div>
                     <div style={{ padding: '30px', paddingTop:'0px' }}>
                         <Table
