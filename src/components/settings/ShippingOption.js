@@ -49,7 +49,7 @@ class ShippingOption extends Component {
         
         confirm({
             title: 'Confirm',
-            content: 'Are you sure you want to delete this Sale Channel?',
+            content: 'Are you sure you want to delete this shipping provider?',
             onOk: () => {
                 
             }
@@ -87,7 +87,7 @@ class ShippingOption extends Component {
                         dataSource={data}
                         bordered
                     >
-                    <Column width={'50%'} title="Shipping" dataIndex="name" key="name" />
+                    <Column width={'50%'} title="Shipping Provider" dataIndex="name" key="name" />
                     <Column
                         title='Action'
                         key="action"
@@ -104,13 +104,13 @@ class ShippingOption extends Component {
                 <Modal
                     visible={this.state.visible}
                     onCancel={this.handleCancel}
-                    title={clickView ? 'Add Shipping Option' : 'Edit Shipping Option' }
+                    title={clickView ? 'Add Shipping Provider' : 'Edit Shipping Provider' }
                     footer={<Button type="primary">Save</Button>}>
                     { shipping && <Form layout="vertical">
                         <FormItem label="Name">
                             {getFieldDecorator('name', {
                                   initialValue: shipping.name,
-                                rules: [{ required: true, message: 'Please input Shipping Option' }]
+                                rules: [{ required: true, message: 'Please input the shipping provider' }]
                             })(
                                 <Input  name = 'Name'/>
                             )}
