@@ -149,6 +149,12 @@ class PendingOrder extends Component {
         const { getFieldDecorator } = this.props.form;
         var order_status = order.status === 'pending' ? false : true;
 
+        // package_details.map((package_detail) =>
+        //     package_detail.stocks.map((stock) =>
+        //         console.log(`package_details[${stock.id}]sku`)
+        //     )
+        // )
+
         // if (order.status === 'pending' && current === 0) {
         //     this.setState({ current: 1 });
         // }
@@ -159,56 +165,58 @@ class PendingOrder extends Component {
         
         const packageDetailItems = package_details.map((package_detail) =>
             package_detail.stocks.map((stock) =>
-                <Row key={stock.id} gutter={8}>
-                    <Col span={4}>
-                        <Form.Item>
-                            {getFieldDecorator(`package_details[${stock.id}]sku`, {
-                                initialValue: package_detail.sku
-                            })(
-                                <Input disabled />
-                            )}
-                        </Form.Item>
-                    </Col>
-                    <Col span={6}>
-                        <Form.Item>
-                            {getFieldDecorator(`package_name`, {
-                                initialValue: package_detail.package_name
-                            })(
-                                <Input disabled />
-                            )}
-                        </Form.Item>
-                    </Col>
-                    <Col span={6}>
-                        <Form.Item>
-                            {getFieldDecorator(`sim_card_number`, {
-                                initialValue: stock.sim_card_number
-                            })(
-                                <Input disabled />
-                            )}
-                        </Form.Item>
-                    </Col>
-                    <Col span={6}>
-                        <Form.Item>
-                            {getFieldDecorator(`serial_number`, {
-                                initialValue: stock.serial_number
-                            })(
-                                <Input disabled />
-                            )}
-                        </Form.Item>
-                    </Col>
+                <React.Fragment key={stock.id}>
+                    <Row gutter={8}>
+                        <Col span={4}>
+                            <Form.Item>
+                                {getFieldDecorator(`package_details[${stock.id}]sku`, {
+                                    initialValue: package_detail.sku
+                                })(
+                                    <Input disabled />
+                                )}
+                            </Form.Item>
+                        </Col>
+                        <Col span={6}>
+                            <Form.Item>
+                                {getFieldDecorator(`package_details[${stock.id}]package_name`, {
+                                    initialValue: package_detail.package_name
+                                })(
+                                    <Input disabled />
+                                )}
+                            </Form.Item>
+                        </Col>
+                        <Col span={6}>
+                            <Form.Item>
+                                {getFieldDecorator(`package_details[${stock.id}]sim_card_number`, {
+                                    initialValue: stock.sim_card_number
+                                })(
+                                    <Input disabled />
+                                )}
+                            </Form.Item>
+                        </Col>
+                        <Col span={6}>
+                            <Form.Item>
+                                {getFieldDecorator(`package_details[${stock.id}]serial_number`, {
+                                    initialValue: stock.serial_number
+                                })(
+                                    <Input disabled />
+                                )}
+                            </Form.Item>
+                        </Col>
 
-                    {getFieldDecorator(`stock_id`, {
-                        initialValue: stock.id
-                    })(
-                        <Input type="hidden" disabled />
-                    )}
+                        {getFieldDecorator(`package_details[${stock.id}]stock_id`, {
+                            initialValue: stock.id
+                        })(
+                            <Input type="hidden" disabled />
+                        )}
 
-                    {getFieldDecorator(`order_detail_id`, {
-                        initialValue: package_detail.order_detail_id
-                    })(
-                        <Input type="hidden" disabled />
-                    )}
-                </Row>
+                        {getFieldDecorator(`package_details[${stock.id}]order_detail_id`, {
+                            initialValue: package_detail.order_detail_id
+                        })(
+                            <Input type="hidden" disabled />
+                        )}
+                    </Row>
+                </React.Fragment>
             )
         )
 
