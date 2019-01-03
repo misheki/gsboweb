@@ -307,64 +307,12 @@ class NewOrder extends Component {
                                             )}
                                         </FormItem>
                                     </Col>
-                                </Row>
-                                <FormItem  label="Customer Name">
-                                    {getFieldDecorator('customer_name', {
-                                        rules: [{ required: true, message: '' }]
-                                    })(
-                                        <Input />
-                                    )}
-                                </FormItem>
-                                <Row gutter={8}>
-                                    <Col span={12}>
-                                        <FormItem label="Email">
-                                            {getFieldDecorator('customer_email', {
-                                                rules: [{
-                                                    type: 'email', message: 'The input is not valid E-mail!'
-                                                }, {    
-                                                    required: true, message: ''
-                                                }]
-                                            })(
-                                                <Input />
-                                            )}
-                                        </FormItem> 
-                                    </Col>
-                                    <Col span={12}>
-                                        <FormItem label="Contact Number">
-                                            {getFieldDecorator('customer_contact_num', {
-                                                rules: [{ required: true, message: '' }]
-                                            })(
-                                                <Input />
-                                            )}
-                                        </FormItem>  
-                                    </Col>
-                                </Row>
-                                <FormItem  label="Shipping Adddress">
-                                    {getFieldDecorator('customer_address', {
-                                        rules: [{ required: true, message: '' }]
-                                    })(
-                                        <Input />
-                                    )}
-                                </FormItem>
-                                <Row gutter={8}>
-                                    <Col span={14}>
-                                        <FormItem label='State'>
-                                            {getFieldDecorator('customer_state', {
-                                            
-                                            })(
-                                                <Select>
-                                                    <Option value="Selangor">Selangor</Option>
-                                                </Select>
-                                            )}
-                                        </FormItem>
-                                    </Col>
+
                                     <Col span={10}>
                                         <FormItem label='Postcode'>
                                             {getFieldDecorator('customer_postcode', {
-                                                
                                             })(
-                                                <Input />
-                                                
+                                                <Input />      
                                             )}
                                         </FormItem>
                                     </Col>

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Layout,  Table, Steps, Button, message, Form, Input, Select, Col, Row, Divider, Modal } from 'antd';
-import { listPending, showOrders, requestStock, courierList, shippingUpdate, completeOrder } from '../../helpers/OrderController';
+import { listPending, showOrders, requestStock, courierList, completeOrder, shippingUpdateWithCourier, shippingUpdateWithoutCourier } from '../../helpers/OrderController';
 import { checkAccess } from '../../helpers/PermissionController';
 
 const Option = Select.Option;
@@ -88,14 +88,17 @@ class PendingOrder extends Component {
         const { method, order } = this.state;
         var access_token = sessionStorage.getItem('access_token');
 
-        if (method === 'Courier') {
+        if (this.state.current == 0) {
+            this.setState({ current });
+        }
+        else if (method === 'Courier') {
             form.validateFields(['customer_address', 'customer_contact_num', 'customer_state', 'customer_postcode', 'shipping_method_id', 'tracking_number', 'shipping_fee'], (err, values) => {
                 if (err) {
                     return;
                 }
     
                 this.setState({ next_loading: true });
-                shippingUpdate(order.id, values.customer_address, values.customer_contact_num, values.customer_state, values.customer_postcode, values.shipping_method_id, values.tracking_number, values.shipping_fee, access_token)
+                shippingUpdateWithCourier(order.id, values.customer_address, values.customer_contact_num, values.customer_state, values.customer_postcode, values.shipping_method_id, values.tracking_number, values.shipping_fee, access_token)
                     .then(result => {
                         if (result.result === 'GOOD') {
                             this.setState({ next_loading: false, current, method: 'Courier', tracking_number: values.tracking_number, shipping_method_id: values.shipping_method_id });
@@ -104,19 +107,13 @@ class PendingOrder extends Component {
             })
         }
         else {
-            form.validateFields(['customer_address', 'customer_contact_num', 'customer_state', 'customer_postcode', 'shipping_method_id', 'tracking_number', 'shipping_fee'], (err, values) => {
-                if (err) {
-                    return;
-                }
-    
-                this.setState({ next_loading: true });
-                shippingUpdate(order.id, values.customer_address, values.customer_contact_num, values.customer_state, values.customer_postcode, null, values.tracking_number, values.shipping_fee, access_token)
-                    .then(result => {
-                        if (result.result === 'GOOD') {
-                            this.setState({ next_loading: false, current, method: 'Courier', tracking_number: values.tracking_number, shipping_method_id: values.shipping_method_id });
-                        }
-                    })
-            })
+            this.setState({ next_loading: true });
+            shippingUpdateWithoutCourier(order.id, null, access_token)
+                .then(result => {
+                    if (result.result === 'GOOD') {
+                        this.setState({ next_loading: false, current, method: 'Courier', shipping_method_id: '' });
+                    }
+                })
         }
     }
 
@@ -197,9 +194,9 @@ class PendingOrder extends Component {
         //     this.setState({ current: 1 });
         // }
 
-        // if (order.shipping_method_id) {
-        //     this.setState({ method: 'Courier' });
-        // }
+        if (order.shipping_method_id) {
+            this.setState({ method: 'Courier' });
+        }
         
         const packageDetailItems = package_details.map((package_detail, i) =>
             package_detail.stocks.map((stock, j) =>
