@@ -57,7 +57,7 @@ class PendingOrder extends Component {
     next() {
         const current = this.state.current + 1;
         var form = this.props.form;
-        const { method } = this.state;
+        const { method, order } = this.state;
         var access_token = sessionStorage.getItem('access_token');
 
         if (method === 'Courier') {
@@ -67,7 +67,7 @@ class PendingOrder extends Component {
                 }
     
                 this.setState({ next_loading: true });
-                shippingUpdate(values.customer_address, values.customer_contact_num, values.customer_state, values.customer_postcode, values.shipping_method_id, values.tracking_number, values.shipping_fee, access_token)
+                shippingUpdate(order.id, values.customer_address, values.customer_contact_num, values.customer_state, values.customer_postcode, values.shipping_method_id, values.tracking_number, values.shipping_fee, access_token)
                     .then(result => {
                         if (result.result === 'GOOD') {
                             this.setState({ next_loading: false, current, method: 'Courier', tracking_number: values.tracking_number, shipping_method_id: values.shipping_method_id });
