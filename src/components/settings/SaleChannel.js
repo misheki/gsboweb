@@ -1,25 +1,11 @@
 import React, { Component } from 'react';
 import { Layout, Table, Button, Modal, Input, Form } from 'antd';
-
+import { listSalesChannels } from '../../helpers/SalesChannels';
 
 const { Header } = Layout;
 const { Column } = Table;
 const FormItem = Form.Item;
 const confirm = Modal.confirm;
-
-const data = [{
-    key: '1',
-    name: 'Lazada',
-   
-  }, {
-    key: '2',
-    name: '11Streets',
-  
-  }, {
-    key: '3',
-    name: 'Shoppee',
-  
-  }];
 
 class SaleChannel extends Component {
 
@@ -30,7 +16,26 @@ class SaleChannel extends Component {
             clickView:false
         };
     }
+
+    componentDidMount() {
+        this._isMounted = true;
+        this.showSalesChannelsList();
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
+    }
     
+    showSalesChannelsList() {
+        var access_token = sessionStorage.getItem('access_token');
+        listSalesChannels(access_token)
+            .then(result => {
+                if (result.result === 'GOOD') {    
+                    this.setState({ sales_channels: result.data });
+                }
+            })
+    }
+
     showModal = () => {
         this.setState({ visible: true , clickView: true});
     }
@@ -50,7 +55,7 @@ class SaleChannel extends Component {
         
         confirm({
             title: 'Confirm',
-            content: 'Are you sure you want to delete this Sale Channel?',
+            content: 'Are you sure you want to delete this Sales Channel?',
             onOk: () => {
               
             }
@@ -69,11 +74,12 @@ class SaleChannel extends Component {
     render() {
         const { channel, clickView } = this.state;
         const { getFieldDecorator } = this.props.form;
+        const data = this.state.sales_channels;
 
          return (
             <div>
             <Header style={{ color: 'white', fontSize: '30px' }}>
-                <span>Sale Channel</span>
+                <span>Sales Channels</span>
             </Header>
                 <div style={{ padding: '30px', width:'80%'}}>
                     <Button
@@ -82,7 +88,7 @@ class SaleChannel extends Component {
                         type="primary"
                         icon="plus-circle"
                         size={'large'}>
-                        New Channel
+                        New Sales Channel
                     </Button>
                     <Table
                         dataSource={data}
@@ -112,7 +118,7 @@ class SaleChannel extends Component {
                         <FormItem label="Name">
                             {getFieldDecorator('name', {
                                   initialValue: channel.name,
-                                rules: [{ required: true, message: 'Please input sale channel' }]
+                                rules: [{ required: true, message: 'Please enter a sales channel.' }]
                             })(
                                 <Input  name = 'Name'/>
                             )}

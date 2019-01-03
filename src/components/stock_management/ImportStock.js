@@ -70,7 +70,7 @@ class ImportStock extends Component {
                 <div style={{ margin: '3%', padding: '1%', backgroundColor: '#dfefd8', width: '60%' }}>
                     <p style={{color: '#008000'}}>You have successfully imported the stocks to the database.  <br/>
                     <strong>{this.state.uploaded}</strong> records were uploaded.<br/> 
-                    <strong>{this.state.skipped}</strong> records were skipped due to incomplete data.<br/> 
+                    <strong>{this.state.skipped}</strong> records were skipped due to incomplete/duplicate data.<br/> 
                     Please refer to the report: <a href={report}>{this.state.csv}</a></p>
                 </div>
             );
