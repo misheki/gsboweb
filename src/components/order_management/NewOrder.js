@@ -88,7 +88,7 @@ class NewOrder extends Component {
             }
 
             this.setState({ loading: true });
-            createOrder(values.sale_channel_id, values.order_ref_num, values.customer_name, values.customer_email, values.customer_contact_num, values.customer_address, values.customer_postcode, values.customer_state, values.package_details, access_token)
+            createOrder(values.sale_channel_id, values.order_ref_num, values.customer_name, values.customer_email, values.customer_contact_num, values.customer_address, values.customer_postcode, values.customer_state, values.package_details, values.shipping_fee, access_token)
                 .then(result => {
                     if (result.result === 'GOOD') {
                         this.setState({ loading: false });
@@ -208,7 +208,7 @@ class NewOrder extends Component {
                                         })(
                                             <Select placeholder="Please select the courier">
                                                 {sale_channels.map((sale_channel) =>
-                                                    <Option key={sale_channel.id} value={sale_channel.id}>{sale_channel.name}</Option>
+                                                    <Option key={sale_channel.id} value={sale_channel.id}>{sale_channel.name.toUpperCase()}</Option>
                                                 )}
                                         </Select>
                                         )}
@@ -246,13 +246,26 @@ class NewOrder extends Component {
                                     </FormItem>  
                                 </Col>
                             </Row>
-                            <FormItem  label="Shipping Adddress">
-                                {getFieldDecorator('customer_address', {
-                                    rules: [{ required: true, message: '' }]
-                                })(
-                                    <Input />
-                                )}
-                            </FormItem>
+                            <Row gutter={8}>
+                                <Col span={20}>
+                                    <FormItem  label="Shipping Adddress">
+                                        {getFieldDecorator('customer_address', {
+                                            rules: [{ required: true, message: '' }]
+                                        })(
+                                            <Input />
+                                        )}
+                                    </FormItem>
+                                </Col>
+                                <Col span={4}>
+                                    <FormItem label="Shipping Amount">
+                                        {getFieldDecorator('shipping_fee', {
+                                            type: 'number', 
+                                        })(
+                                            <Input />
+                                        )}
+                                    </FormItem> 
+                                </Col>
+                            </Row>
                             <Row gutter={8}>
                                 <Col span={14}>
                                     <FormItem label='State'>
@@ -260,7 +273,22 @@ class NewOrder extends Component {
                                         
                                         })(
                                             <Select>
-                                                <Option value="Selangor">Selangor</Option>
+                                                <Option value="JHR">Johor</Option>
+                                                <Option value="KDH">Kedah</Option>
+                                                <Option value="KTN">Kelantan</Option>
+                                                <Option value="KUL">Wilayah Persekutuan Kuala Lumpur</Option>
+                                                <Option value="LBN">Wilayah Persekutuan Labuan</Option>
+                                                <Option value="MLK">Melaka</Option>
+                                                <Option value="NSN">Negeri Sembilan</Option>
+                                                <Option value="PHG">Pahang</Option>
+                                                <Option value="PJY">Wilayah Persekutuan Putra Jaya</Option>
+                                                <Option value="PLS">Perlis</Option>
+                                                <Option value="PNG">Pulau Pinang</Option>
+                                                <Option value="PRK">Perak</Option>
+                                                <Option value="SBH">Sabah</Option>
+                                                <Option value="SGR">Selangor</Option>
+                                                <Option value="SRW">Sarawak</Option>
+                                                <Option value="TRG">Terengganu</Option>
                                             </Select>
                                         )}
                                     </FormItem>
