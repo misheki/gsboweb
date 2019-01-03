@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Layout, Table, Button, Modal, Input, Form } from 'antd';
-import { listSalesChannels } from '../../helpers/SalesChannels';
+import { listSalesChannels, createSalesChannel } from '../../helpers/SalesChannels';
 
 const { Header } = Layout;
 const { Column } = Table;
@@ -62,6 +62,25 @@ class SaleChannel extends Component {
         })
     }
 
+    submitSaleChannel = () => {
+        var access_token = sessionStorage.getItem('access_token');
+        const form = this.props.form;
+
+        form.validateFieldsAndScroll((err, values) => {
+            if (err) {
+                return;
+            }
+            this.setState({ loading: true });
+            createSalesChannel(values.name, access_token)
+                .then(result => {
+                    if (result.result === 'GOOD') {
+                        this.setState({ loading: false });
+                        this.handleCancel();
+                        this.showSalesChannelsList();
+                    }
+                })
+        });
+    }
 
     onClickModal = () => {
         this.setState({
@@ -72,7 +91,7 @@ class SaleChannel extends Component {
     }
 
     render() {
-        const { channel, clickView } = this.state;
+        const { channel, loading, clickView } = this.state;
         const { getFieldDecorator } = this.props.form;
         const data = this.state.sales_channels;
 
@@ -96,7 +115,7 @@ class SaleChannel extends Component {
                         bordered
                     >
                     <Column width={'50%'} title="Channel Name" dataIndex="name" key="name" />
-                    <Column
+                    {/* <Column
                         title='Action'
                         key="action"
                         render={(record) => (
@@ -106,14 +125,14 @@ class SaleChannel extends Component {
                                 <Button style={{ margin:'10px' }} type="primary"
                                  onClick={()=> this.handleDelete()}>Delete</Button>
                             </div>
-                        )} />
+                        )} /> */}
                     </Table>
                 </div>
                 <Modal
                     visible={this.state.visible}
                     onCancel={this.handleCancel}
                     title={clickView ? 'Add Channel' : 'Edit' }
-                    footer={<Button type="primary">Save</Button>}>
+                    footer={<Button type="primary" loading={loading} onClick={this.submitSaleChannel}>Save</Button>}>
                     { channel && <Form layout="vertical">
                         <FormItem label="Name">
                             {getFieldDecorator('name', {
