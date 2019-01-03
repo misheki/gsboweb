@@ -262,7 +262,7 @@ class ReadyToShip extends Component {
             return (             
                 <div>
                 <Header style={{ color: 'white', fontSize: '30px' }}>
-                    <span>Ready to Ship</span>
+                    <span>Ready to Ship Orders</span>
                 </Header>
                 <div style={{ padding: '30px' }}>
                      <Table
