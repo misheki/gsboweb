@@ -192,19 +192,13 @@ class PendingOrder extends Component {
         var order_status = order.status === 'pending' ? false : true;
         let stock_details = [{ sku:"", package_name:"", sim_card_number:"", serial_number:"", stock_id:"", order_detail_id:"" }];
 
-        // package_details.map((package_detail) =>
-        //     package_detail.stocks.map((stock) =>
-        //         console.log(`package_details[${stock.id}]sku`)
-        //     )
-        // )
-
         // if (order.status === 'pending' && current === 0) {
         //     this.setState({ current: 1 });
         // }
 
-        // if (order.shipping_method_id) {
-        //     this.setState({ method: 'Courier' });
-        // }
+        if (order.shipping_method_id) {
+            this.setState({ method: 'Courier' });
+        }
         
         const packageDetailItems = package_details.map((package_detail, i) =>
             package_detail.stocks.map((stock, j) =>
