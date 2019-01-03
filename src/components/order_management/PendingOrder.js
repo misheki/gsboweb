@@ -159,8 +159,17 @@ class PendingOrder extends Component {
         
         const packageDetailItems = package_details.map((package_detail) =>
             package_detail.stocks.map((stock) =>
-                <Row key={stock.id} gutter={8}>
-                    <Col span={4}>
+                <Row key={stock.id} gutter={16}>
+                    <Col span={2}>
+                        <Form.Item>
+                            {getFieldDecorator('id', {
+                                initialValue: package_detail.id
+                            })(
+                                <Input disabled />
+                            )}
+                        </Form.Item>
+                    </Col>
+                    <Col span={3}>
                         <Form.Item>
                             {getFieldDecorator(`package_details[${stock.id}]sku`, {
                                 initialValue: package_detail.sku
@@ -169,7 +178,7 @@ class PendingOrder extends Component {
                             )}
                         </Form.Item>
                     </Col>
-                    <Col span={6}>
+                    <Col span={8}>
                         <Form.Item>
                             {getFieldDecorator(`package_name`, {
                                 initialValue: package_detail.package_name
@@ -178,7 +187,7 @@ class PendingOrder extends Component {
                             )}
                         </Form.Item>
                     </Col>
-                    <Col span={6}>
+                    <Col span={5}>
                         <Form.Item>
                             {getFieldDecorator(`sim_card_number`, {
                                 initialValue: stock.sim_card_number
@@ -187,7 +196,7 @@ class PendingOrder extends Component {
                             )}
                         </Form.Item>
                     </Col>
-                    <Col span={6}>
+                    <Col span={5}>
                         <Form.Item>
                             {getFieldDecorator(`serial_number`, {
                                 initialValue: stock.serial_number
@@ -285,21 +294,24 @@ class PendingOrder extends Component {
 
                     <Divider orientation="left">Package Details</Divider>
 
-                    <Row gutter={8} style={{ backgroundColor: '#e8e8e8' }}>
-                        <Col span={4}>
+                    <Row gutter={8} style={{ backgroundColor: '#e8e8e8', padding: '10px', paddingBottom: '0px', marginBottom: '10px', paddingLeft:'0px' }}>
+                         <Col span={2}>
+                            <p>Item</p>
+                        </Col>
+                        <Col span={2}>
                             <p>SKU</p>
                         </Col>
-                        <Col span={6}>
+                        <Col span={9}>
                             <p>Package</p>
                         </Col>
-                        <Col span={6}>
+                        <Col span={5}>
                             <p>Sim Card Number</p>
                         </Col>
-                        <Col span={6}>
+                        <Col span={5}>
                             <p>Serial Number</p>
                         </Col>
-                        {packageDetailItems}
                     </Row>
+                    {packageDetailItems}
                 </Form>
         }, {
             title: 'Shipping Details',
