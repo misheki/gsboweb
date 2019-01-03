@@ -18,6 +18,8 @@ import ViewStock from './components/stock_management/ViewStock';
 
 import Login from './components/Login';
 import ManagePermission from './components/user_management/ManagePermission';
+import SaleChannel from './components/settings/SaleChannel';
+import ShippingOption from './components/settings/ShippingOption';
 
 const { Content, Footer, Sider } = Layout;
 const SubMenu = Menu.SubMenu;
@@ -159,6 +161,10 @@ class App extends Component {
                         render={(props) => <ReadyToShip {...props} reloadMenu={this.fetchSideBarMenu.bind(this)} />}/>
                     <Route path="/completed-orders"
                         render={(props) => <Completed {...props} reloadMenu={this.fetchSideBarMenu.bind(this)} />}/>
+                    <Route path="/sale-channel"
+                        render={(props) => <SaleChannel {...props} reloadMenu={this.fetchSideBarMenu.bind(this)} />}/>
+                    <Route path="/shipping-option"
+                        render={(props) => <ShippingOption {...props} reloadMenu={this.fetchSideBarMenu.bind(this)} />}/>
                 </Content>
                 <Footer style={{ textAlign: 'center' }}>
                     Global Sim ©2018
