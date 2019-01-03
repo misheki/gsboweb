@@ -146,7 +146,7 @@ class PendingOrder extends Component {
 
     renderProcessOrder() {
         const { current, order, package_details, request_stock_loading, couriers, method, next_loading, complete_order_loading } = this.state;
-        const { getFieldDecorator, getFieldValue } = this.props.form;
+        const { getFieldDecorator } = this.props.form;
         var order_status = order.status === 'pending' ? false : true;
 
         // if (order.status === 'pending' && current === 0) {
@@ -156,63 +156,59 @@ class PendingOrder extends Component {
         // if (order.shipping_method_id) {
         //     this.setState({ method: 'Courier' });
         // }
-
-        const keys = getFieldValue('keys');
+        
         const packageDetailItems = package_details.map((package_detail) =>
             package_detail.stocks.map((stock) =>
-                keys.map((k) =>
-                
-                    <Row key={stock.id} gutter={8}>
-                        <Col span={4}>
-                            <Form.Item>
-                                {getFieldDecorator(`package_details[${stock.id}]sku`, {
-                                    initialValue: package_detail.sku
-                                })(
-                                    <Input disabled />
-                                )}
-                            </Form.Item>
-                        </Col>
-                        <Col span={6}>
-                            <Form.Item>
-                                {getFieldDecorator(`package_name`, {
-                                    initialValue: package_detail.package_name
-                                })(
-                                    <Input disabled />
-                                )}
-                            </Form.Item>
-                        </Col>
-                        <Col span={6}>
-                            <Form.Item>
-                                {getFieldDecorator(`sim_card_number`, {
-                                    initialValue: stock.sim_card_number
-                                })(
-                                    <Input disabled />
-                                )}
-                            </Form.Item>
-                        </Col>
-                        <Col span={6}>
-                            <Form.Item>
-                                {getFieldDecorator(`serial_number`, {
-                                    initialValue: stock.serial_number
-                                })(
-                                    <Input disabled />
-                                )}
-                            </Form.Item>
-                        </Col>
+                <Row key={stock.id} gutter={8}>
+                    <Col span={4}>
+                        <Form.Item>
+                            {getFieldDecorator(`package_details[${stock.id}]sku`, {
+                                initialValue: package_detail.sku
+                            })(
+                                <Input disabled />
+                            )}
+                        </Form.Item>
+                    </Col>
+                    <Col span={6}>
+                        <Form.Item>
+                            {getFieldDecorator(`package_name`, {
+                                initialValue: package_detail.package_name
+                            })(
+                                <Input disabled />
+                            )}
+                        </Form.Item>
+                    </Col>
+                    <Col span={6}>
+                        <Form.Item>
+                            {getFieldDecorator(`sim_card_number`, {
+                                initialValue: stock.sim_card_number
+                            })(
+                                <Input disabled />
+                            )}
+                        </Form.Item>
+                    </Col>
+                    <Col span={6}>
+                        <Form.Item>
+                            {getFieldDecorator(`serial_number`, {
+                                initialValue: stock.serial_number
+                            })(
+                                <Input disabled />
+                            )}
+                        </Form.Item>
+                    </Col>
 
-                        {getFieldDecorator(`stock_id`, {
-                            initialValue: stock.id
-                        })(
-                            <Input type="hidden" disabled />
-                        )}
+                    {getFieldDecorator(`stock_id`, {
+                        initialValue: stock.id
+                    })(
+                        <Input type="hidden" disabled />
+                    )}
 
-                        {getFieldDecorator(`order_detail_id`, {
-                            initialValue: package_detail.order_detail_id
-                        })(
-                            <Input type="hidden" disabled />
-                        )}
-                    </Row>
-                )
+                    {getFieldDecorator(`order_detail_id`, {
+                        initialValue: package_detail.order_detail_id
+                    })(
+                        <Input type="hidden" disabled />
+                    )}
+                </Row>
             )
         )
 
