@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import { Layout } from 'antd';
 import { importStocks } from '../../helpers/Upload';
+import { checkAccess } from '../../helpers/PermissionController';
 
 const { Header } = Layout;
 
 class ImportStock extends Component {
+    _isMounted = false;
 
     constructor(props) {
         super(props);
@@ -12,11 +14,25 @@ class ImportStock extends Component {
             stocksfile : '',
             displaygoodresult: false,
             displaybadresult: false,
+            show_screen: false
         };
 
         this.onFormSubmit = this.onFormSubmit.bind(this);
         this.onChange = this.onChange.bind(this);
+    }
 
+    componentDidMount() {
+        this._isMounted = true;
+        this.showScreen();
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
+    }
+
+    showScreen() {
+        var access_token = sessionStorage.getItem('access_token');
+        checkAccess(['importStock'], access_token).then(result => result !== false ? (this._isMounted === true ? this.setState({ show_screen: result }) : null) : null);
     }
 
     onFormSubmit(e){
@@ -68,28 +84,35 @@ class ImportStock extends Component {
 
     
     render() {
-
+        const { show_screen } = this.state;
         var template = global.URL + 'storage/csv/gs_stocks_template_csv.csv';
-         return (
-            <div>
-                <Header style={{ color: 'white', fontSize: '30px' }}>
-                    <span>Import Stocks</span>
-                </Header>
-                <div style={{ padding: '1%', margin: '3%' }}>
-                    <h2>Upload a CSV file using this template: <a href={template} download>STOCKS UPLOAD TEMPLATE</a></h2>
-                    <p>Note:  Please use the format dd/mm/yyyy for the EXPIRY DATE column. </p>
-                </div> 
-                <div style={{ padding: '2%', border: '1px solid #d2d2d2', margin: '3%' }}>
-                    <form onSubmit={this.onFormSubmit}>
-                        <input type="file"  onChange={this.onChange} />
-                        <button type="submit">Upload</button>
-                    </form>
-                </div> 
-                {this.renderResult()}  
-            </div>
+
+        if (show_screen) {
+            return (
+                <div>
+                    <Header style={{ color: 'white', fontSize: '30px' }}>
+                        <span>Import Stocks</span>
+                    </Header>
+                    <div style={{ padding: '1%', margin: '3%' }}>
+                        <h2>Upload a CSV file using this template: <a href={template} download>STOCKS UPLOAD TEMPLATE</a></h2>
+                        <p>Note:  Please use the format dd/mm/yyyy for the EXPIRY DATE column. </p>
+                    </div> 
+                    <div style={{ padding: '2%', border: '1px solid #d2d2d2', margin: '3%' }}>
+                        <form onSubmit={this.onFormSubmit}>
+                            <input type="file"  onChange={this.onChange} />
+                            <button type="submit">Upload</button>
+                        </form>
+                    </div> 
+                    {this.renderResult()}  
+                </div>
             );   
         }
-       
+        else {
+            return (
+                <div></div>
+            );
+        }
+    }
 }
 
 export default ImportStock;
