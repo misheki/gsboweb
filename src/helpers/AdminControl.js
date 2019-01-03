@@ -319,7 +319,7 @@ export const updatePermission = (permission_id, name, access_token) => {
     ])
 };
 
-export const createMenu = (name, order, role_id, access_token) => {
+export const createMenu = (name, slug, order, role_id, access_token) => {
     return Promise.race([
         new Promise((resolve, reject) => {
             fetch(global.URL + 'api/admin/menu/create', {
@@ -331,6 +331,7 @@ export const createMenu = (name, order, role_id, access_token) => {
                 },
                 body: JSON.stringify({
                     name,
+                    slug,
                     order,
                     role_id
                 })
@@ -396,7 +397,7 @@ export const deleteMenu = (menu_id, access_token) => {
     ])
 };
 
-export const updateMenu = (menu_id, name, order, role_id, access_token) => {
+export const updateMenu = (menu_id, name, slug, order, role_id, access_token) => {
     return Promise.race([
         new Promise((resolve, reject) => {
             fetch(global.URL + 'api/admin/menu/update', {
@@ -409,6 +410,7 @@ export const updateMenu = (menu_id, name, order, role_id, access_token) => {
                 body: JSON.stringify({
                     menu_id,
                     name,
+                    slug,
                     order,
                     role_id
                 })
@@ -426,7 +428,7 @@ export const updateMenu = (menu_id, name, order, role_id, access_token) => {
     ])
 };
 
-export const createSubMenu = (menu_id, name, order, role_id, access_token) => {
+export const createSubMenu = (menu_id, name, slug, order, role_id, access_token) => {
     return Promise.race([
         new Promise((resolve, reject) => {
             fetch(global.URL + 'api/admin/submenu/create', {
@@ -439,6 +441,7 @@ export const createSubMenu = (menu_id, name, order, role_id, access_token) => {
                 body: JSON.stringify({
                     menu_id,
                     name,
+                    slug,
                     order,
                     role_id
                 })
@@ -504,7 +507,7 @@ export const deleteSubMenu = (submenu_id, access_token) => {
     ])
 };
 
-export const updateSubMenu = (submenu_id, menu_id, name, order, role_id, access_token) => {
+export const updateSubMenu = (submenu_id, menu_id, name, slug, order, role_id, access_token) => {
     return Promise.race([
         new Promise((resolve, reject) => {
             fetch(global.URL + 'api/admin/submenu/update', {
@@ -518,6 +521,7 @@ export const updateSubMenu = (submenu_id, menu_id, name, order, role_id, access_
                     submenu_id,
                     menu_id,
                     name,
+                    slug,
                     order,
                     role_id
                 })

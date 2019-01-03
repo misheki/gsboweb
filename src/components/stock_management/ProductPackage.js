@@ -175,14 +175,14 @@ class ProductPackage extends Component {
                                 title:'Success',
                                 content:'You have successfully deleted this SKU.',
                                 onOk: () => {
-                                    this.showPackageList();
+                                    this.showSkuList();
                             }});
                         } else  if (result.result === 'STOCKEXIST') {
                             Modal.error({
                                 title:'Error',
                                 content:'You cannot delete this SKU because it has stocks under it.',
                                 onOk: () => {
-                                    this.showPackageList();
+                                    this.showSkuList();
                             }});
                         }
                        

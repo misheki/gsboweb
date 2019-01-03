@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import { Layout,  Table, Steps, Button, message, Form, Input, Select, Col, Row, Divider   } from 'antd';
-import { listPending, showOrders, requestStock } from '../../helpers/OrderController';
+import { Layout,  Table, Steps, Button, message, Form, Input, Select, Col, Row, Divider, Modal } from 'antd';
+import { listPending, showOrders, requestStock, courierList, shippingUpdate, completeOrder } from '../../helpers/OrderController';
 
 const Option = Select.Option;
 const Step = Steps.Step;
 const { Header } = Layout;
 const { Column } = Table;
+const confirm = Modal.confirm;
 
 class PendingOrder extends Component {
 
@@ -17,13 +18,20 @@ class PendingOrder extends Component {
             processOrder: false,
             order: '',
             package_details: [],
-            process_order_loading: false,
-            request_stock_loading: false
+            // process_order_loading: false,
+            request_stock_loading: false,
+            complete_order_loading: false,
+            next_loading: false,
+            couriers: [],
+            method: 'Self Pickup',
+            tracking_number: '',
+            shipping_method_id: ''
         };
     }
 
     componentDidMount() {
         this.showOrderlistPending();
+        this.showCourierList();
     }
 
     showOrderlistPending() {
@@ -36,9 +44,41 @@ class PendingOrder extends Component {
             })
     }
 
+    showCourierList() {
+        var access_token = sessionStorage.getItem('access_token');
+        courierList(access_token)
+            .then(result => {
+                if (result.result === 'GOOD') {
+                    this.setState({ couriers: result.data });
+                }
+            })
+    }
+
     next() {
         const current = this.state.current + 1;
-        this.setState({ current });
+        var form = this.props.form;
+        const { method } = this.state;
+        var access_token = sessionStorage.getItem('access_token');
+
+        if (method === 'Courier') {
+            form.validateFields(['customer_address', 'customer_contact_num', 'customer_state', 'customer_postcode', 'shipping_method_id', 'tracking_number', 'shipping_fee'], (err, values) => {
+                if (err) {
+                    return;
+                }
+    
+                this.setState({ next_loading: true });
+                // shippingUpdate(values.customer_address, values.customer_contact_num, values.customer_state, values.customer_postcode, values.shipping_method_id, values.tracking_number, values.shipping_fee, access_token)
+                //     .then(result => {
+                //         if (result.result === 'GOOD') {
+                            this.setState({ next_loading: false, current, method: 'Courier', tracking_number: values.tracking_number, shipping_method_id: values.shipping_method_id });
+                        // }
+                    // })
+            })   
+        }
+        else {
+            // set shipping detail to null
+            this.setState({ current });
+        }
     }
 
     prev() {
@@ -56,42 +96,132 @@ class PendingOrder extends Component {
             })
     }
 
+    handleMethod(value) {
+        this.setState({ method: value });
+    }
+
     handleRequestStock() {
         const { order } = this.state;
         var order_id = order.id;
         var form = this.props.form;
+        const current = this.state.current + 1;
         var access_token = sessionStorage.getItem('access_token');
 
-        form.validateFields((err, values) => {
+        form.validateFields(['customer_name', 'customer_email', 'customer_contact_num', 'package_details'], (err, values) => {
             if (err) {
                 return;
             }
 
-            requestStock(order_id, values.package_details, access_token)
-                .then(result => {
-                    if (result.result === 'GOOD') {
-                        
-                    }
-                })
+            confirm({
+                title: 'Confirm',
+                content: 'Are you sure you want to request the stocks? By doing this you will not be able to revert back.',
+                onOk: () => {
+                    console.log(values);
+                    // this.setState({ request_stock_loading: true });
+                    // requestStock(order_id, values.package_details, access_token)
+                    //     .then(result => {
+                    //         if (result.result === 'GOOD') {
+                    //             this.setState({ request_stock_loading: false });
+                    //             this.setState({ current });
+                    //         }
+                    //     })
+                }
+            })
         });
     }
 
+    handleCompleteOrder() {
+        const { order, tracking_number, shipping_method_id } = this.state;
+        var access_token = sessionStorage.getItem('access_token');
+
+        this.setState({ complete_order_loading: true });
+        completeOrder(order.id, shipping_method_id, tracking_number, access_token)
+            .then(result => {
+                if (result.result === 'GOOD') {
+                    this.setState({ complete_order_loading: false });
+                    message.success('Processing complete!');      
+                }
+            })
+    }
+
     renderProcessOrder() {
-        const { current, order, package_details, request_stock_loading } = this.state;
+        const { current, order, package_details, request_stock_loading, couriers, method, next_loading, complete_order_loading } = this.state;
         const { getFieldDecorator } = this.props.form;
         var order_status = order.status === 'pending' ? false : true;
+
+        // if (order.status === 'pending' && current === 0) {
+        //     this.setState({ current: 1 });
+        // }
+
+        // if (order.shipping_method_id) {
+        //     this.setState({ method: 'Courier' });
+        // }
+        
+        const packageDetailItems = package_details.map((package_detail) =>
+            package_detail.stocks.map((stock) =>
+                <Row key={stock.id} gutter={8}>
+                    <Col span={4}>
+                        <Form.Item>
+                            {getFieldDecorator(`package_details[${stock.id}]sku`, {
+                                initialValue: package_detail.sku
+                            })(
+                                <Input disabled />
+                            )}
+                        </Form.Item>
+                    </Col>
+                    <Col span={6}>
+                        <Form.Item>
+                            {getFieldDecorator(`package_name`, {
+                                initialValue: package_detail.package_name
+                            })(
+                                <Input disabled />
+                            )}
+                        </Form.Item>
+                    </Col>
+                    <Col span={6}>
+                        <Form.Item>
+                            {getFieldDecorator(`sim_card_number`, {
+                                initialValue: stock.sim_card_number
+                            })(
+                                <Input disabled />
+                            )}
+                        </Form.Item>
+                    </Col>
+                    <Col span={6}>
+                        <Form.Item>
+                            {getFieldDecorator(`serial_number`, {
+                                initialValue: stock.serial_number
+                            })(
+                                <Input disabled />
+                            )}
+                        </Form.Item>
+                    </Col>
+
+                    {getFieldDecorator(`stock_id`, {
+                        initialValue: stock.id
+                    })(
+                        <Input type="hidden" disabled />
+                    )}
+
+                    {getFieldDecorator(`order_detail_id`, {
+                        initialValue: package_detail.order_detail_id
+                    })(
+                        <Input type="hidden" disabled />
+                    )}
+                </Row>
+            )
+        )
 
         const steps = [{
             title: 'Order Details',
             content:  
-                <Form layout="vertical" style={{width:'90%', paddingLeft:'40px',}}>
+                <Form layout="vertical" style={{ width: '90%', paddingLeft: '40px' }}>
                     <Divider orientation="left">Customer Details</Divider>
-                    <Row style={{paddingTop:'20px'}} gutter={8}>
+                    <Row style={{ paddingTop: '20px' }} gutter={8}>
                         <Col span={8}>
                             <Form.Item label="Order Number">
                                 {getFieldDecorator('order_ref_num', {
-                                    initialValue: order.order_ref_num,
-                                    rules: [{ required: true, message: '' }]
+                                    initialValue: order.order_ref_num
                                 })(
                                     <Input disabled />
                                 )}
@@ -100,8 +230,7 @@ class PendingOrder extends Component {
                         <Col span={8}>
                             <Form.Item label="Order Date">
                                 {getFieldDecorator('created_at', {
-                                    initialValue: order.created_at,
-                                    rules: [{ required: true, message: '' }]
+                                    initialValue: order.created_at
                                 })(
                                     <Input disabled/>
                                 )}
@@ -110,8 +239,7 @@ class PendingOrder extends Component {
                         <Col span={8}>
                             <Form.Item label="Sale Channel">
                                 {getFieldDecorator('sale_channel_name', {
-                                    initialValue: order.sale_channel_name,
-                                    rules: [{ required: true, message: '' }]
+                                    initialValue: order.sale_channel_name
                                 })(
                                     <Input disabled/>
                                 )}
@@ -122,7 +250,7 @@ class PendingOrder extends Component {
                     <Form.Item  label="Customer Name">
                         {getFieldDecorator('customer_name', {
                             initialValue: order.customer_name,
-                            rules: [{ required: true, message: '' }]
+                            rules: [{ required: true, message: 'Please fill in the customer name field!' }]
                         })(
                             <Input disabled={order_status} />
                         )}
@@ -136,18 +264,18 @@ class PendingOrder extends Component {
                                     rules: [{
                                         type: 'email', message: 'The input is not valid E-mail!'
                                     }, {
-                                        required: true, message: 'Field E-mail is required!'
+                                        required: true, message: 'Please fill in the email field!'
                                     }]
                                 })(
                                     <Input disabled={order_status} />
                                 )}
-                            </Form.Item> 
+                            </Form.Item>
                         </Col>
                         <Col span={12}>
                             <Form.Item label="Contact Number">
                                 {getFieldDecorator('customer_contact_num', {
                                     initialValue: order.customer_contact_num,
-                                    rules: [{ required: true, message: '' }]
+                                    rules: [{ required: true, message: 'Please fill in the customer contact number field!' }]
                                 })(
                                     <Input disabled={order_status} />
                                 )}
@@ -157,139 +285,117 @@ class PendingOrder extends Component {
 
                     <Divider orientation="left">Package Details</Divider>
 
-                    {package_details.map((package_detail) =>
-                        package_detail.stocks.map((stock) =>
-                            <Row key={stock.id} style={{ paddingTop: '20px' }} gutter={16}>
-                                <Col span={4}>
-                                    <Form.Item label="SKU">
-                                        {getFieldDecorator(`package_details[${stock.id}]sku`, {
-                                            initialValue: package_detail.sku
-                                        })(
-                                            <Input className="input-field" disabled />
-                                        )}
-                                    </Form.Item>
-                                </Col>
-                                <Col span={6}>
-                                    <Form.Item label="Package">
-                                        {getFieldDecorator(`package_details[${stock.id}]package_name`, {
-                                            initialValue: package_detail.package_name
-                                        })(
-                                            <Input className="input-field" disabled />
-                                        )}
-                                    </Form.Item>
-                                </Col>
-                                <Col span={6}>
-                                    <Form.Item label="Sim Card Number">
-                                        {getFieldDecorator(`package_details[${stock.id}]sim_card_number`, {
-                                            initialValue: stock.sim_card_number
-                                        })(
-                                            <Input className="input-field" disabled />
-                                        )}
-                                    </Form.Item>
-                                </Col>
-                                <Col span={6}>
-                                    <Form.Item label="Serial Number">
-                                        {getFieldDecorator(`package_details[${stock.id}]serial_number`, {
-                                            initialValue: stock.serial_number
-                                        })(
-                                            <Input className="input-field" disabled />
-                                        )}
-                                    </Form.Item>
-                                </Col>
-
-                                {getFieldDecorator(`package_details[${stock.id}]stock_id`, {
-                                    initialValue: stock.id
-                                })(
-                                    <Input type="hidden" className="input-field" disabled />
-                                )}
-
-                                {getFieldDecorator(`package_details[${stock.id}]order_detail_id`, {
-                                    initialValue: package_detail.order_detail_id
-                                })(
-                                    <Input type="hidden" className="input-field" disabled />
-                                )}
-                            </Row>
-                        )
-                    )}
+                    <Row gutter={8} style={{ backgroundColor: '#e8e8e8' }}>
+                        <Col span={4}>
+                            <p>SKU</p>
+                        </Col>
+                        <Col span={6}>
+                            <p>Package</p>
+                        </Col>
+                        <Col span={6}>
+                            <p>Sim Card Number</p>
+                        </Col>
+                        <Col span={6}>
+                            <p>Serial Number</p>
+                        </Col>
+                        {packageDetailItems}
+                    </Row>
                 </Form>
         }, {
             title: 'Shipping Details',
-            content:  
-                <Form layout="vertical" style={{width:'90%', paddingLeft:'40px',}}> 
+            content:
+                <div>
                     <Row gutter={8}>
                         <Col span={8}>
-                            <Form.Item label="Courier">
-                            {getFieldDecorator('courier', {
-                                    rules: [{ required: true, message: '' }]
-                                })(
-                                <Select
-                                    showSearch
-                                    placeholder="Please select courier"
-                                    optionFilterProp="children"
-                                    filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}>
-                                    <Option value="jack">Gdex</Option>
-                                    <Option value="lucy">Pos Laju</Option>
-                                    <Option value="tom">AirPax</Option>
+                            <Form.Item label='Method'>
+                                <Select style={{ width: '90%', paddingLeft: '40px' }} value={method}>
+                                    <Option value="Self Pickup" onClick={() => this.handleMethod('Self Pickup')}>Self Pickup</Option>
+                                    <Option value="Courier" onClick={() => this.handleMethod('Courier')}>Courier</Option>
                                 </Select>
-                                )}
-                               
                             </Form.Item>
                         </Col>
-                        <Col span={8}>
-                            <Form.Item  label="Tracking Number">
+                    </Row>
+
+                    {method === 'Courier' ? <Form layout="vertical" style={{ width: '90%', paddingLeft: '40px' }}> 
+                        <Row gutter={8}>
+                            <Col span={8}>
+                                <Form.Item label="Courier">
+                                    {getFieldDecorator('shipping_method_id', {
+                                        initialValue: order.shipping_method_id,
+                                        rules: [{ required: true, message: 'Pelase select the courier!' }]
+                                    })(
+                                        <Select
+                                            showSearch
+                                            placeholder="Please select courier"
+                                            optionFilterProp="children"
+                                            filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}>
+                                            {couriers.map((courier) =>
+                                                <Option key={courier.id} value={courier.id}>{courier.courier_name}</Option>
+                                            )}
+                                        </Select>
+                                    )}
+                                </Form.Item>
+                            </Col>
+                            <Col span={8}>
+                                <Form.Item label="Tracking Number">
                                     {getFieldDecorator('tracking_number', {
-                                    rules: [{ required: true, message: '' }]
-                                })(
-                                    <Input name="tracking_number" />
-                                )}
-                            </Form.Item>
-                        </Col>
-                        <Col span={8}>
-                            <Form.Item label='Shipping Amount'>
-                                {getFieldDecorator('postcode', {
-                                rules: [{ required: true, message: '' }] 
-                                })(
-                                    <Input />
-                                    
-                                )}
-                            </Form.Item>
-                        </Col>
-                    </Row>
-                    <Form.Item  label="Shipping Adddress">
-                                {getFieldDecorator('order_number', {
-                                rules: [{ required: true, message: '' }]
-                            })(
-                                <Input name="order_number" />
-                            )}
-                    </Form.Item>
-                    <Row gutter={8}>
-                        <Col span={14}>
-                            <Form.Item label='State'>
-                                {getFieldDecorator('state', {
-                                 rules: [{ required: true, message: '' }]
-                                })(
-                                    <Select />
-                                )}
-                            </Form.Item>
-                        </Col>
-                        <Col span={10}>
-                            <Form.Item label='Postcode'>
-                                {getFieldDecorator('postcode', {
-                                rules: [{ required: true, message: '' }] 
+                                        initialValue: order.tracking_number,
+                                        rules: [{ required: true, message: 'Please fill in the tracking number field!' }]
+                                    })(
+                                        <Input />
+                                    )}
+                                </Form.Item>
+                            </Col>
+                            <Col span={8}>
+                                <Form.Item label='Shipping Amount'>
+                                    {getFieldDecorator('shipping_fee', {
+                                        initialValue: order.shipping_fee,
+                                        rules: [{ required: true, message: 'Please fill in the shipping amount field!' }] 
+                                    })(
+                                        <Input />
+                                    )}
+                                </Form.Item>
+                            </Col>
+                        </Row>
+                        <Form.Item label="Shipping Adddress">
+                                {getFieldDecorator('customer_address', {
+                                    initialValue: order.customer_address,
+                                    rules: [{ required: true, message: 'Please fill in the customer address field!' }]
                                 })(
                                     <Input />
                                 )}
-                            </Form.Item>
-                        </Col>
-                    </Row>
-                </Form>
+                        </Form.Item>
+                        <Row gutter={8}>
+                            <Col span={14}>
+                                <Form.Item label='State'>
+                                    {getFieldDecorator('customer_state', {
+                                        initialValue: order.customer_state,
+                                        rules: [{ required: true, message: 'Please fill in the customer state field!' }]
+                                    })(
+                                        <Select />
+                                    )}
+                                </Form.Item>
+                            </Col>
+                            <Col span={10}>
+                                <Form.Item label='Postcode'>
+                                    {getFieldDecorator('customer_postcode', {
+                                        initialValue: order.customer_postcode,
+                                        rules: [{ required: true, message: 'Please fill in the customer postcode field!' }] 
+                                    })(
+                                        <Input />
+                                    )}
+                                </Form.Item>
+                            </Col>
+                        </Row>
+                    </Form> : null}
+                </div>
         }, {
             title: 'Confirm Order',
             content: 'Confirm Package',
         }];
      
         return (
-            <div style={{padding:'30px'}}>
+            <div style={{padding: '30px' }}>
                 <Steps current={current}>
                     {steps.map(item =>
                         <Step key={item.title} title={item.title} />
@@ -297,25 +403,17 @@ class PendingOrder extends Component {
                 </Steps>
                 <div className="steps-content">{steps[current].content}</div>
                 <div className="steps-action">
-                {
-                    current > 0 && (<Button style={{ marginRight: 8 }} onClick={() => this.prev()}>Previous</Button>)
-                }
-                {
-                    current === steps.length - 1 && <Button type="primary" onClick={() => message.success('Processing complete!')}>Done</Button>
-                }
-                {
-                    current < steps.length - 1 && current !== 0 && <Button type="primary" onClick={() => this.next()}>Next</Button>
-                }
-                {
-                    current === 0 && (order.status === 'pending' ? <Button loading={request_stock_loading} type="primary" onClick={() => this.handleRequestStock()}>Request Stock & Continue</Button> : <Button type="primary" onClick={() => this.next()}>Next</Button>)
-                }
+                    {current > 0 && (<Button style={{ marginRight: 8 }} onClick={() => this.prev()}>Previous</Button>)}
+                    {current === steps.length - 1 && <Button loading={complete_order_loading} type="primary" onClick={() => this.handleCompleteOrder()}>Complete Order</Button>}
+                    {current < steps.length - 1 && current !== 0 && <Button loading={next_loading} type="primary" onClick={() => this.next()}>Next</Button>}
+                    {current === 0 && (order.status === 'pending' ? <Button loading={request_stock_loading} type="primary" onClick={() => this.handleRequestStock()}>Save, Request Stock & Continue</Button> : <Button type="primary" onClick={() => this.next()}>Next</Button>)}
                 </div>
             </div>
         );
     }
 
     render() {
-        const { pending_orders, processOrder, process_order_loading } = this.state;
+        const { pending_orders, processOrder } = this.state;
 
         if (processOrder === false) {
             return (             

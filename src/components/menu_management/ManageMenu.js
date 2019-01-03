@@ -88,7 +88,7 @@ class ManageMenu extends Component {
                 return;
             }
             
-            createMenu(values.name, values.order, values.role, access_token)
+            createMenu(values.name, values.slug, values.order, values.role, access_token)
                 .then(result => {
                     if (result.result === 'GOOD') {
                         form.resetFields();
@@ -109,7 +109,7 @@ class ManageMenu extends Component {
                 return;
             }
 
-            updateMenu(menu_id, values.name, values.order, values.role, access_token)
+            updateMenu(menu_id, values.name, values.slug, values.order, values.role, access_token)
                 .then(result => {
                     if (result.result === 'GOOD') {
                         form.resetFields();
@@ -172,7 +172,7 @@ class ManageMenu extends Component {
                 return;
             }
             
-            createSubMenu(values.select_menu, values.name, values.order, values.role, access_token)
+            createSubMenu(values.select_menu, values.name, values.slug, values.order, values.role, access_token)
                 .then(result => {
                     if (result.result === 'GOOD') {
                         form.resetFields();
@@ -193,7 +193,7 @@ class ManageMenu extends Component {
                 return;
             }
 
-            updateSubMenu(submenu_id, values.select_menu, values.name, values.order, values.role, access_token)
+            updateSubMenu(submenu_id, values.select_menu, values.name, values.slug, values.order, values.role, access_token)
                 .then(result => {
                     if (result.result === 'GOOD') {
                         form.resetFields();
@@ -304,6 +304,15 @@ class ManageMenu extends Component {
                                 )}
                             </FormItem>
 
+                            <FormItem label="Slug">
+                                {getFieldDecorator('slug', {
+                                    initialValue: menu.slug,
+                                    rules: [{ required: true, message: 'Please input the slug name!' }]
+                                })(
+                                    <Input name="slug" />
+                                )}
+                            </FormItem>
+
                             <FormItem label="Order">
                                 {getFieldDecorator('order', {
                                     initialValue: menu.order,
@@ -375,9 +384,18 @@ class ManageMenu extends Component {
                             <FormItem label="Name">
                                 {getFieldDecorator('name', {
                                     initialValue: submenu.name,
-                                    rules: [{ required: true, message: 'Please input the menu name!' }]
+                                    rules: [{ required: true, message: 'Please input the submenu name!' }]
                                 })(
                                     <Input name="name" />
+                                )}
+                            </FormItem>
+
+                            <FormItem label="Slug">
+                                {getFieldDecorator('slug', {
+                                    initialValue: submenu.slug,
+                                    rules: [{ required: true, message: 'Please input the slug name!' }]
+                                })(
+                                    <Input name="slug" />
                                 )}
                             </FormItem>
 
