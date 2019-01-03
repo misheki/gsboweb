@@ -29,7 +29,8 @@ class PendingOrder extends Component {
             tracking_number: '',
             shipping_method_id: '',
             show_table: false,
-            show_button_process_order: false
+            show_button_process_order: false,
+            show_button_ship_order: false
         };
     }
 
@@ -39,6 +40,7 @@ class PendingOrder extends Component {
         this.showCourierList();
         this.showTable();
         this.showButtonProcessOrder();
+        this.showButtonShipOrder();
     }
     
     componentWillUnmount() {
@@ -53,6 +55,11 @@ class PendingOrder extends Component {
     showButtonProcessOrder() {
         var access_token = sessionStorage.getItem('access_token');
         checkAccess(['processOrder'], access_token).then(result => result !== false ? (this._isMounted === true ? this.setState({ show_button_process_order: result }) : null) : null);
+    }
+
+    showButtonShipOrder() {
+        var access_token = sessionStorage.getItem('access_token');
+        checkAccess(['shipOrder'], access_token).then(result => result !== false ? (this._isMounted === true ? this.setState({ show_button_ship_order: result }) : null) : null);
     }
 
     showOrderlistPending() {
@@ -180,7 +187,7 @@ class PendingOrder extends Component {
     }
 
     renderProcessOrder() {
-        const { current, order, package_details, request_stock_loading, couriers, method, next_loading, complete_order_loading } = this.state;
+        const { current, order, package_details, request_stock_loading, couriers, method, next_loading, complete_order_loading, show_button_process_order, show_button_ship_order } = this.state;
         const { getFieldDecorator } = this.props.form;
         var order_status = order.status === 'pending' ? false : true;
         let stock_details = [{ sku:"", package_name:"", sim_card_number:"", serial_number:"", stock_id:"", order_detail_id:"" }];
@@ -461,8 +468,8 @@ class PendingOrder extends Component {
                 <div className="steps-action">
                     {current > 0 && (<Button style={{ marginRight: 8 }} onClick={() => this.prev()}>Previous</Button>)}
                     {current === steps.length - 1 && <Button loading={complete_order_loading} type="primary" onClick={() => this.handleCompleteOrder()}>Complete Order</Button>}
-                    {current < steps.length - 1 && current !== 0 && <Button loading={next_loading} type="primary" onClick={() => this.next()}>Next</Button>}
-                    {current === 0 && (order.status === 'pending' ? <Button loading={request_stock_loading} type="primary" onClick={() => this.handleRequestStock()}>Save, Request Stock & Continue</Button> : <Button type="primary" onClick={() => this.next()}>Next</Button>)}
+                    {show_button_ship_order === true ? (current < steps.length - 1 && current !== 0 && <Button loading={next_loading} type="primary" onClick={() => this.next()}>Next</Button>) : null}
+                    {show_button_process_order === true ? (current === 0 && (order.status === 'pending' ? <Button loading={request_stock_loading} type="primary" onClick={() => this.handleRequestStock()}>Save, Request Stock & Continue</Button> : <Button type="primary" onClick={() => this.next()}>Next</Button>)) : null}
                 </div>
             </div>
         );

@@ -40,7 +40,7 @@ class ReadyToShip extends Component {
 
     showButtonProcessOrder() {
         var access_token = sessionStorage.getItem('access_token');
-        checkAccess(['processOrder'], access_token).then(result => result !== false ? (this._isMounted === true ? this.setState({ show_button_process_order: result }) : null) : null);
+        checkAccess(['shipOrder'], access_token).then(result => result !== false ? (this._isMounted === true ? this.setState({ show_button_process_order: result }) : null) : null);
     }
 
     showOrderlistReadyToShip() {
