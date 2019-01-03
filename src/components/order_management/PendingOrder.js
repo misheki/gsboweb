@@ -107,7 +107,7 @@ class PendingOrder extends Component {
         const current = this.state.current + 1;
         var access_token = sessionStorage.getItem('access_token');
 
-        form.validateFields(['customer_name', 'customer_email', 'customer_contact_num', 'package_details'], (err, values) => {
+        form.validateFields(['customer_name', 'customer_email', 'customer_contact_num', 'stock_details'], (err, values) => {
             if (err) {
                 return;
             }
@@ -116,15 +116,18 @@ class PendingOrder extends Component {
                 title: 'Confirm',
                 content: 'Are you sure you want to request the stocks? By doing this you will not be able to revert back.',
                 onOk: () => {
-                    console.log(values);
-                    // this.setState({ request_stock_loading: true });
-                    // requestStock(order_id, values.package_details, access_token)
-                    //     .then(result => {
-                    //         if (result.result === 'GOOD') {
-                    //             this.setState({ request_stock_loading: false });
-                    //             this.setState({ current });
-                    //         }
-                    //     })
+                    var filtered_stocks = values.stock_details.filter(function (s) {
+                        return s != null;
+                    });
+
+                    this.setState({ request_stock_loading: true });
+                    requestStock(order_id, filtered_stocks, access_token)
+                        .then(result => {
+                            if (result.result === 'GOOD') {
+                                this.setState({ request_stock_loading: false });
+                                this.setState({ current });
+                            }
+                        })
                 }
             })
         });
@@ -148,6 +151,7 @@ class PendingOrder extends Component {
         const { current, order, package_details, request_stock_loading, couriers, method, next_loading, complete_order_loading } = this.state;
         const { getFieldDecorator } = this.props.form;
         var order_status = order.status === 'pending' ? false : true;
+        let stock_details = [{ sku:"", package_name:"", sim_card_number:"", serial_number:"", stock_id:"", order_detail_id:"" }];
 
         // package_details.map((package_detail) =>
         //     package_detail.stocks.map((stock) =>
@@ -169,7 +173,7 @@ class PendingOrder extends Component {
                     <Row gutter={8}>
                         <Col span={4}>
                             <Form.Item>
-                                {getFieldDecorator(`package_details[${stock.id}]sku`, {
+                                {getFieldDecorator(`stock_details[${stock.id}].sku`, {
                                     initialValue: package_detail.sku
                                 })(
                                     <Input disabled />
@@ -178,7 +182,7 @@ class PendingOrder extends Component {
                         </Col>
                         <Col span={6}>
                             <Form.Item>
-                                {getFieldDecorator(`package_details[${stock.id}]package_name`, {
+                                {getFieldDecorator(`stock_details[${stock.id}].package_name`, {
                                     initialValue: package_detail.package_name
                                 })(
                                     <Input disabled />
@@ -187,7 +191,7 @@ class PendingOrder extends Component {
                         </Col>
                         <Col span={6}>
                             <Form.Item>
-                                {getFieldDecorator(`package_details[${stock.id}]sim_card_number`, {
+                                {getFieldDecorator(`stock_details[${stock.id}].sim_card_number`, {
                                     initialValue: stock.sim_card_number
                                 })(
                                     <Input disabled />
@@ -196,7 +200,7 @@ class PendingOrder extends Component {
                         </Col>
                         <Col span={6}>
                             <Form.Item>
-                                {getFieldDecorator(`package_details[${stock.id}]serial_number`, {
+                                {getFieldDecorator(`stock_details[${stock.id}].serial_number`, {
                                     initialValue: stock.serial_number
                                 })(
                                     <Input disabled />
@@ -204,13 +208,13 @@ class PendingOrder extends Component {
                             </Form.Item>
                         </Col>
 
-                        {getFieldDecorator(`package_details[${stock.id}]stock_id`, {
+                        {getFieldDecorator(`stock_details[${stock.id}].stock_id`, {
                             initialValue: stock.id
                         })(
                             <Input type="hidden" disabled />
                         )}
 
-                        {getFieldDecorator(`package_details[${stock.id}]order_detail_id`, {
+                        {getFieldDecorator(`stock_details[${stock.id}].order_detail_id`, {
                             initialValue: package_detail.order_detail_id
                         })(
                             <Input type="hidden" disabled />
