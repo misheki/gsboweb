@@ -70,17 +70,22 @@ class Completed extends Component {
                     <div style={{backgroundColor:'white', padding:'20px', marginBottom:'10px'}}>
                         <h2 style={{paddingBottom:'10px'}}>Order Ref. No. {this.state.order.order_ref_num}</h2>
                         <Row gutter={16}>
-                            <Col span={8}>
-                                <FormItem label="Order Date">
+                            <Col span={6}>
+                                <FormItem label="Order Created">
                                     <Input value={this.state.order.order_date} disabled/>
                                 </FormItem>
                             </Col>
-                            <Col span={8}>
+                            <Col span={6}>
+                                <FormItem label="Order Completed">
+                                    <Input value={this.state.order.shipped_at} disabled/>
+                                </FormItem>
+                            </Col>
+                            <Col span={6}>
                                 <FormItem label="Total Amount">
                                     <Input value={'RM ' + this.state.order.total} disabled/>
                                 </FormItem>
                             </Col>
-                            <Col span={8}>
+                            <Col span={6}>
                                 <FormItem label="Sales Channel">
                                     <Input value={this.state.order.sales_channel} disabled/>
                                 </FormItem>
@@ -179,22 +184,17 @@ class Completed extends Component {
                             </Col>
                         </Row>
                         <Row gutter={16}>
-                            <Col span={6}>
+                            <Col span={8}>
                                 <FormItem label='Shipping Method'>
                                     <Input value={this.state.order.shipping_method} disabled/>
                                 </FormItem>
                             </Col>
-                            <Col span={6}>
-                                <FormItem label='Shipping Date'>
-                                    <Input value={this.state.order.shipped_at} disabled/>
-                                </FormItem>
-                            </Col>
-                            <Col span={6}>
+                            <Col span={8}>
                                 <FormItem label="Shipping Fee">
                                     <Input value={this.state.order.shipping_fee} disabled/>
                                 </FormItem>  
                             </Col>
-                            <Col span={6}>
+                            <Col span={8}>
                                 <FormItem label="Tracking Number">
                                     <Input value={this.state.order.tracking_number} disabled/>
                                 </FormItem>  

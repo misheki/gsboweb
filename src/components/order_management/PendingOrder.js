@@ -121,6 +121,7 @@ class PendingOrder extends Component {
     }
 
     prev() {
+        this.processOrder(this.state.order.id);
         const current = this.state.current - 1;
         this.setState({ current });
     }
@@ -291,7 +292,7 @@ class PendingOrder extends Component {
                             </Form.Item>
                         </Col>
                         <Col span={8}>
-                            <Form.Item label="Sale Channel">
+                            <Form.Item label="Sales Channel">
                                 {getFieldDecorator('sale_channel_name', {
                                     initialValue: order.sale_channel_name
                                 })(
@@ -379,7 +380,7 @@ class PendingOrder extends Component {
                                 <Form.Item label="Courier">
                                     {getFieldDecorator('shipping_method_id', {
                                         initialValue: order.shipping_method_id,
-                                        rules: [{ required: true, message: 'Pelase select the courier!' }]
+                                        rules: [{ required: true, message: 'Please select the courier!' }]
                                     })(
                                         <Select
                                             showSearch
@@ -414,7 +415,7 @@ class PendingOrder extends Component {
                                 </Form.Item>
                             </Col>
                         </Row>
-                        <Form.Item label="Shipping Adddress">
+                        <Form.Item label="Shipping Address">
                                 {getFieldDecorator('customer_address', {
                                     initialValue: order.customer_address,
                                     rules: [{ required: true, message: 'Please fill in the customer address field!' }]
@@ -429,7 +430,24 @@ class PendingOrder extends Component {
                                         initialValue: order.customer_state,
                                         rules: [{ required: true, message: 'Please fill in the customer state field!' }]
                                     })(
-                                        <Select />
+                                        <Select>
+                                            <Option value="JHR">Johor</Option>
+                                            <Option value="KDH">Kedah</Option>
+                                            <Option value="KTN">Kelantan</Option>
+                                            <Option value="KUL">Wilayah Persekutuan Kuala Lumpur</Option>
+                                            <Option value="LBN">Wilayah Persekutuan Labuan</Option>
+                                            <Option value="MLK">Melaka</Option>
+                                            <Option value="NSN">Negeri Sembilan</Option>
+                                            <Option value="PHG">Pahang</Option>
+                                            <Option value="PJY">Wilayah Persekutuan Putra Jaya</Option>
+                                            <Option value="PLS">Perlis</Option>
+                                            <Option value="PNG">Pulau Pinang</Option>
+                                            <Option value="PRK">Perak</Option>
+                                            <Option value="SBH">Sabah</Option>
+                                            <Option value="SGR">Selangor</Option>
+                                            <Option value="SRW">Sarawak</Option>
+                                            <Option value="TRG">Terengganu</Option>
+                                            </Select>
                                     )}
                                 </Form.Item>
                             </Col>

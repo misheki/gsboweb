@@ -1,4 +1,4 @@
-export const createOrder = (sale_channel_id, order_ref_num, customer_name, customer_email, customer_contact_num, customer_address, customer_postcode, customer_state, package_details, access_token) => {
+export const createOrder = (sale_channel_id, order_ref_num, customer_name, customer_email, customer_contact_num, customer_address, customer_postcode, customer_state, package_details, shipping_fee, access_token) => {
     return Promise.race([
         new Promise((resolve, reject) =>
             fetch(global.URL + 'api/order/create', {
@@ -17,7 +17,8 @@ export const createOrder = (sale_channel_id, order_ref_num, customer_name, custo
                     customer_address,
                     customer_postcode,
                     customer_state,
-                    package_details
+                    package_details,
+                    shipping_fee
                 })
             })
             .then((response) => response.json())

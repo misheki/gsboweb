@@ -43,6 +43,7 @@ class ImportStock extends Component {
                 if (result.result === 'GOOD') {
                     this.setState({
                         skipped : result.skipped,
+                        uploaded : result.uploaded,
                         csv : result.csv,
                     }, () => this.setState({ displaybadresult : false, displaygoodresult : true }));
                 }
@@ -67,7 +68,9 @@ class ImportStock extends Component {
             var report = global.URL + 'storage/csv/' + this.state.csv;
             return (
                 <div style={{ margin: '3%', padding: '1%', backgroundColor: '#dfefd8', width: '60%' }}>
-                    <p style={{color: '#008000'}}>You have successfully imported the stocks to the database.  <br/><strong>{this.state.skipped}</strong> records were skipped due to incomplete data.<br/> 
+                    <p style={{color: '#008000'}}>You have successfully imported the stocks to the database.  <br/>
+                    <strong>{this.state.uploaded}</strong> records were uploaded.<br/> 
+                    <strong>{this.state.skipped}</strong> records were skipped due to incomplete data.<br/> 
                     Please refer to the report: <a href={report}>{this.state.csv}</a></p>
                 </div>
             );
