@@ -114,7 +114,7 @@ class NewOrder extends Component {
                     <Col span={6}>
                         <FormItem>
                             {getFieldDecorator(`package_details[${k}]sku_id`, {
-                                rules: [{ required: true, message: '' }]
+                                rules: [{ required: true, message: 'Please select the product SKU!' }]
                             })(
                                 <Select placeholder="Please select the product SKU">
                                     {skus.map((sku) =>
@@ -127,7 +127,7 @@ class NewOrder extends Component {
                     <Col span={8}>
                         <FormItem>
                             {getFieldDecorator(`package_details[${k}]package_id`, {
-                                rules: [{ required: true, message: '' }]
+                                rules: [{ required: true, message: 'Please select the product package!' }]
                             })(
                                 <Select placeholder="Please select the product package">
                                     {packages.map((product_package) =>
@@ -285,7 +285,7 @@ class NewOrder extends Component {
                                     <Icon type="plus" /> Add Package
                                 </Button>
                             </Form.Item>
-                            <Row gutter={8} style={{backgroundColor:'#e8e8e8', padding:'10px', paddingBottom:'0px', marginBottom:'10px' }}>
+                            <Row gutter={8} style={{ backgroundColor: '#e8e8e8', padding: '10px', paddingBottom: '0px', marginBottom: '10px' }}>
                                 <Col span={6}>
                                     <p>SKU</p>
                                 </Col>
