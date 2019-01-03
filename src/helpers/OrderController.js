@@ -241,3 +241,33 @@ export const shippingUpdate = (customer_address, customer_contact_num, customer_
         )
     ])
 };
+
+export const completeOrder = (order_id, shipping_method_id, tracking_number, access_token) => {
+    return Promise.race([
+        new Promise((resolve, reject) =>
+            fetch(global.URL + 'api/order/complete', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + access_token
+                },
+                body: JSON.stringify({
+                    order_id,
+                    shipping_method_id,
+                    tracking_number
+                })
+            })
+            .then((response) => response.json())
+            .then((responseJson) => {
+                console.log(responseJson);
+                if (responseJson.result === 'GOOD') {
+                    resolve(responseJson);   
+                }
+            })
+            .catch((error) => {
+                reject(error);
+            })
+        )
+    ])
+};

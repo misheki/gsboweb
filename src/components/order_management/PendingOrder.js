@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Layout,  Table, Steps, Button, message, Form, Input, Select, Col, Row, Divider, Modal } from 'antd';
-import { listPending, showOrders, requestStock, courierList, shippingUpdate } from '../../helpers/OrderController';
+import { listPending, showOrders, requestStock, courierList, shippingUpdate, completeOrder } from '../../helpers/OrderController';
 
 const Option = Select.Option;
 const Step = Steps.Step;
@@ -18,11 +18,14 @@ class PendingOrder extends Component {
             processOrder: false,
             order: '',
             package_details: [],
-            process_order_loading: false,
+            // process_order_loading: false,
             request_stock_loading: false,
+            complete_order_loading: false,
             next_loading: false,
             couriers: [],
-            method: 'Self Pickup'
+            method: 'Self Pickup',
+            tracking_number: '',
+            shipping_method_id: ''
         };
     }
 
@@ -64,15 +67,16 @@ class PendingOrder extends Component {
                 }
     
                 this.setState({ next_loading: true });
-                shippingUpdate(values.customer_address, values.customer_contact_num, values.customer_state, values.customer_postcode, values.shipping_method_id, values.tracking_number, values.shipping_fee, access_token)
-                    .then(result => {
-                        if (result.result === 'GOOD') {
-                            this.setState({ next_loading: false, current, method: 'Courier' });
-                        }
-                    })
+                // shippingUpdate(values.customer_address, values.customer_contact_num, values.customer_state, values.customer_postcode, values.shipping_method_id, values.tracking_number, values.shipping_fee, access_token)
+                //     .then(result => {
+                //         if (result.result === 'GOOD') {
+                            this.setState({ next_loading: false, current, method: 'Courier', tracking_number: values.tracking_number, shipping_method_id: values.shipping_method_id });
+                        // }
+                    // })
             })   
         }
         else {
+            // set shipping detail to null
             this.setState({ current });
         }
     }
@@ -103,7 +107,7 @@ class PendingOrder extends Component {
         const current = this.state.current + 1;
         var access_token = sessionStorage.getItem('access_token');
 
-        form.validateFields(['customer_name', 'customer_email', 'customer_contact_num'], (err, values) => {
+        form.validateFields(['customer_name', 'customer_email', 'customer_contact_num', 'package_details'], (err, values) => {
             if (err) {
                 return;
             }
@@ -112,22 +116,37 @@ class PendingOrder extends Component {
                 title: 'Confirm',
                 content: 'Are you sure you want to request the stocks? By doing this you will not be able to revert back.',
                 onOk: () => {
-                    this.setState({ request_stock_loading: true });
-                    requestStock(order_id, values.package_details, access_token)
-                        .then(result => {
-                            if (result.result === 'GOOD') {
-                                this.setState({ request_stock_loading: false });
-                                this.setState({ current });
-                            }
-                        })
+                    console.log(values);
+                    // this.setState({ request_stock_loading: true });
+                    // requestStock(order_id, values.package_details, access_token)
+                    //     .then(result => {
+                    //         if (result.result === 'GOOD') {
+                    //             this.setState({ request_stock_loading: false });
+                    //             this.setState({ current });
+                    //         }
+                    //     })
                 }
             })
         });
     }
 
+    handleCompleteOrder() {
+        const { order, tracking_number, shipping_method_id } = this.state;
+        var access_token = sessionStorage.getItem('access_token');
+
+        this.setState({ complete_order_loading: true });
+        completeOrder(order.id, shipping_method_id, tracking_number, access_token)
+            .then(result => {
+                if (result.result === 'GOOD') {
+                    this.setState({ complete_order_loading: false });
+                    message.success('Processing complete!');      
+                }
+            })
+    }
+
     renderProcessOrder() {
-        const { current, order, package_details, request_stock_loading, couriers, method, next_loading } = this.state;
-        const { getFieldDecorator } = this.props.form;
+        const { current, order, package_details, request_stock_loading, couriers, method, next_loading, complete_order_loading } = this.state;
+        const { getFieldDecorator, getFieldValue } = this.props.form;
         var order_status = order.status === 'pending' ? false : true;
 
         // if (order.status === 'pending' && current === 0) {
@@ -138,58 +157,62 @@ class PendingOrder extends Component {
         //     this.setState({ method: 'Courier' });
         // }
 
+        const keys = getFieldValue('keys');
         const packageDetailItems = package_details.map((package_detail) =>
             package_detail.stocks.map((stock) =>
-                <Row key={stock.id} gutter={8}>
-                    <Col span={4}>
-                        <Form.Item>
-                            {getFieldDecorator(`package_details[${stock.id}]sku`, {
-                                initialValue: package_detail.sku
-                            })(
-                                <Input disabled />
-                            )}
-                        </Form.Item>
-                    </Col>
-                    <Col span={6}>
-                        <Form.Item>
-                            {getFieldDecorator(`package_details[${stock.id}]package_name`, {
-                                initialValue: package_detail.package_name
-                            })(
-                                <Input disabled />
-                            )}
-                        </Form.Item>
-                    </Col>
-                    <Col span={6}>
-                        <Form.Item>
-                            {getFieldDecorator(`package_details[${stock.id}]sim_card_number`, {
-                                initialValue: stock.sim_card_number
-                            })(
-                                <Input disabled />
-                            )}
-                        </Form.Item>
-                    </Col>
-                    <Col span={6}>
-                        <Form.Item>
-                            {getFieldDecorator(`package_details[${stock.id}]serial_number`, {
-                                initialValue: stock.serial_number
-                            })(
-                                <Input disabled />
-                            )}
-                        </Form.Item>
-                    </Col>
+                keys.map((k) =>
+                
+                    <Row key={stock.id} gutter={8}>
+                        <Col span={4}>
+                            <Form.Item>
+                                {getFieldDecorator(`package_details[${stock.id}]sku`, {
+                                    initialValue: package_detail.sku
+                                })(
+                                    <Input disabled />
+                                )}
+                            </Form.Item>
+                        </Col>
+                        <Col span={6}>
+                            <Form.Item>
+                                {getFieldDecorator(`package_name`, {
+                                    initialValue: package_detail.package_name
+                                })(
+                                    <Input disabled />
+                                )}
+                            </Form.Item>
+                        </Col>
+                        <Col span={6}>
+                            <Form.Item>
+                                {getFieldDecorator(`sim_card_number`, {
+                                    initialValue: stock.sim_card_number
+                                })(
+                                    <Input disabled />
+                                )}
+                            </Form.Item>
+                        </Col>
+                        <Col span={6}>
+                            <Form.Item>
+                                {getFieldDecorator(`serial_number`, {
+                                    initialValue: stock.serial_number
+                                })(
+                                    <Input disabled />
+                                )}
+                            </Form.Item>
+                        </Col>
 
-                    {getFieldDecorator(`package_details[${stock.id}]stock_id`, {
-                        initialValue: stock.id
-                    })(
-                        <Input type="hidden" disabled />
-                    )}
+                        {getFieldDecorator(`stock_id`, {
+                            initialValue: stock.id
+                        })(
+                            <Input type="hidden" disabled />
+                        )}
 
-                    {getFieldDecorator(`package_details[${stock.id}]order_detail_id`, {
-                        initialValue: package_detail.order_detail_id
-                    })(
-                        <Input type="hidden" disabled />
-                    )}
-                </Row>
+                        {getFieldDecorator(`order_detail_id`, {
+                            initialValue: package_detail.order_detail_id
+                        })(
+                            <Input type="hidden" disabled />
+                        )}
+                    </Row>
+                )
             )
         )
 
@@ -385,7 +408,7 @@ class PendingOrder extends Component {
                 <div className="steps-content">{steps[current].content}</div>
                 <div className="steps-action">
                     {current > 0 && (<Button style={{ marginRight: 8 }} onClick={() => this.prev()}>Previous</Button>)}
-                    {current === steps.length - 1 && <Button type="primary" onClick={() => message.success('Processing complete!')}>Done</Button>}
+                    {current === steps.length - 1 && <Button loading={complete_order_loading} type="primary" onClick={() => this.handleCompleteOrder()}>Complete Order</Button>}
                     {current < steps.length - 1 && current !== 0 && <Button loading={next_loading} type="primary" onClick={() => this.next()}>Next</Button>}
                     {current === 0 && (order.status === 'pending' ? <Button loading={request_stock_loading} type="primary" onClick={() => this.handleRequestStock()}>Save, Request Stock & Continue</Button> : <Button type="primary" onClick={() => this.next()}>Next</Button>)}
                 </div>
@@ -394,7 +417,7 @@ class PendingOrder extends Component {
     }
 
     render() {
-        const { pending_orders, processOrder, process_order_loading } = this.state;
+        const { pending_orders, processOrder } = this.state;
 
         if (processOrder === false) {
             return (             
