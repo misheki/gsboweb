@@ -73,7 +73,7 @@ class PendingOrder extends Component {
                             this.setState({ next_loading: false, current, method: 'Courier', tracking_number: values.tracking_number, shipping_method_id: values.shipping_method_id });
                         }
                     })
-            })   
+            })
         }
         else {
             // set shipping detail to null

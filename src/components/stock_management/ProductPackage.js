@@ -24,7 +24,14 @@ class ProductPackage extends Component {
             require_activation: true,
             loading: false,
             clickView: false,
-            show_table_package: false
+            show_table_sku: false,
+            show_button_new_sku: false,
+            show_button_edit_sku: false,
+            show_button_delete_sku: false,
+            show_table_package: false,
+            show_button_new_package: false,
+            show_button_edit_package: false,
+            show_button_delete_package: false,
         };
     }
 
@@ -32,7 +39,14 @@ class ProductPackage extends Component {
         this._isMounted = true;
         this.showPackageList();
         this.showSkuList();
+        this.showTableSku();
+        this.showButtonNewSku();
+        this.showButtonEditSku();
+        this.showButtonDeleteSku();
         this.showTablePackage();
+        this.showButtonNewPackage();
+        this.showButtonEditPackage();
+        this.showButtonDeletePackage();
     }
 
     componentWillUnmount() {
@@ -59,9 +73,44 @@ class ProductPackage extends Component {
             })
     }
 
+    showTableSku() {
+        var access_token = sessionStorage.getItem('access_token');
+        checkAccess(['viewSku'], access_token).then(result => result !== false ? (this._isMounted === true ? this.setState({ show_table_sku: result }) : null) : null);
+    }
+
+    showButtonNewSku() {
+        var access_token = sessionStorage.getItem('access_token');
+        checkAccess(['newSku'], access_token).then(result => result !== false ? (this._isMounted === true ? this.setState({ show_button_new_sku: result }) : null) : null);
+    }
+
+    showButtonEditSku() {
+        var access_token = sessionStorage.getItem('access_token');
+        checkAccess(['editSku'], access_token).then(result => result !== false ? (this._isMounted === true ? this.setState({ show_button_edit_sku: result }) : null) : null);
+    }
+
+    showButtonDeleteSku() {
+        var access_token = sessionStorage.getItem('access_token');
+        checkAccess(['deleteSku'], access_token).then(result => result !== false ? (this._isMounted === true ? this.setState({ show_button_delete_sku: result }) : null) : null);
+    }
+
     showTablePackage() {
         var access_token = sessionStorage.getItem('access_token');
         checkAccess(['viewPackage'], access_token).then(result => result !== false ? (this._isMounted === true ? this.setState({ show_table_package: result }) : null) : null);
+    }
+
+    showButtonNewPackage() {
+        var access_token = sessionStorage.getItem('access_token');
+        checkAccess(['newPackage'], access_token).then(result => result !== false ? (this._isMounted === true ? this.setState({ show_button_new_package: result }) : null) : null);
+    }
+
+    showButtonEditPackage() {
+        var access_token = sessionStorage.getItem('access_token');
+        checkAccess(['editPackage'], access_token).then(result => result !== false ? (this._isMounted === true ? this.setState({ show_button_edit_package: result }) : null) : null);
+    }
+
+    showButtonDeletePackage() {
+        var access_token = sessionStorage.getItem('access_token');
+        checkAccess(['deletePackage'], access_token).then(result => result !== false ? (this._isMounted === true ? this.setState({ show_button_delete_package: result }) : null) : null);
     }
 
     showAddPackagesModal = () => {
@@ -258,7 +307,7 @@ class ProductPackage extends Component {
     }
 
     render() {
-        const { packages, newpackage, skus, sku, loading, clickView, show_table_package } = this.state;
+        const { packages, newpackage, skus, sku, loading, clickView, show_table_sku, show_button_new_sku, show_button_edit_sku, show_button_delete_sku, show_table_package, show_button_new_package, show_button_edit_package, show_button_delete_package } = this.state;
         const { getFieldDecorator } = this.props.form;
 
          return (
@@ -266,20 +315,20 @@ class ProductPackage extends Component {
             <Header style={{ color: 'white', fontSize: '30px' }}>
                 <span>Product Package</span>
             </Header>
+
             <div style={{ padding: '30px' }}>
-                <Button
+                {show_button_new_sku === true ? <Button
                     onClick={this.onClickSkuModal}
                     style={{ marginBottom: '30px' }}
                     type="primary"
                     icon="plus-circle"
                     size={'large'}>
                     Add SKU
-                </Button>
+                </Button> : null}
 
-                <Table
+                {show_table_sku === true ? <Table
                     dataSource={skus}
                     rowKey={skus => skus.id}>
-                    {/* <Column title="No." dataIndex="id" key="id" /> */}
                     <Column title="SKU" dataIndex="sku" key="sku" />
                     <Column title="Required Activation" dataIndex="require_activation" key="require_activation" />
                     <Column
@@ -287,13 +336,22 @@ class ProductPackage extends Component {
                         key="action"
                         render={(record) => (
                             <div>
-                                <Button style={{ margin:'10px' }} type="primary"
-                                 onClick={() => this.setState({ sku: Object.assign({}, record), sku_id: record.id },()=> this.showEditSkuModal())}>Edit</Button>
-                                <Button style={{ margin:'10px' }} type="primary" 
-                                  onClick={() => this.setState({ sku: Object.assign({}, record), sku_id: record.id },()=> this.handleDeleteSku())}>Delete</Button>
+                                {show_button_edit_sku === true ? <Button
+                                    style={{ margin:'10px' }}
+                                    type="primary"
+                                    onClick={() => this.setState({ sku: Object.assign({}, record), sku_id: record.id }, () => this.showEditSkuModal())}>
+                                    Edit
+                                </Button> : null}
+
+                                {show_button_delete_sku === true ? <Button
+                                    style={{ margin:'10px' }}
+                                    type="primary" 
+                                    onClick={() => this.setState({ sku: Object.assign({}, record), sku_id: record.id }, () => this.handleDeleteSku())}>
+                                    Delete
+                                </Button> : null}
                             </div>
                         )} />
-                </Table>
+                </Table> : null}
 
                 <Modal
                     visible={this.state.visible_sku}
@@ -301,13 +359,6 @@ class ProductPackage extends Component {
                     title={clickView ? 'Edit SKU' : 'Add SKU'  }
                     footer={<Button type="primary" loading={loading} onClick={clickView ? this.submitEditSku : this.submitSku }>Save</Button>}>
                     {sku && <Form layout="vertical">
-                        {/* <FormItem label="No">
-                            {getFieldDecorator('no', {
-                                rules: [{ required: true, message: '' }]
-                            })(
-                                <Input />
-                            )}
-                        </FormItem> */}
                         <FormItem label="SKU">
                             {getFieldDecorator('sku', {
                                 initialValue: sku.sku,
@@ -327,19 +378,18 @@ class ProductPackage extends Component {
                     </Form>}
                 </Modal>
 
-                <Button
+                {show_button_new_package === true ? <Button
                     onClick={this.onClickPackageModal}
                     style={{ marginBottom: '30px' }}
                     type="primary"
                     icon="plus-circle"
                     size={'large'}>
                     New Package
-                </Button>
+                </Button> : null}
 
                 {show_table_package === true ? <Table
                     dataSource={packages}
                     rowKey={packages => packages.id }>
-                    {/* <Column title="ID" dataIndex="id" key="id" /> */}
                     <Column title="SKU" dataIndex="sku_name" key="sku_name" />
                     <Column title="Code" dataIndex="code" key="code" />
                     <Column title="Name" dataIndex="name" key="name" />
@@ -350,10 +400,19 @@ class ProductPackage extends Component {
                         key="action"
                         render={(record) => (
                             <div>
-                                <Button style={{ margin:'10px' }} type="primary"
-                                 onClick={() => this.setState({ newpackage: Object.assign({}, record), package_id: record.id },()=> this.showEditPackagesModal())}>Edit</Button>
-                                <Button style={{ margin:'10px' }} type="primary"  
-                                 onClick={() => this.setState({ newpackage: Object.assign({}, record), package_id: record.id },()=> this.handleDeletePackage())}>Delete</Button>
+                                {show_button_edit_package === true ? <Button
+                                    style={{ margin:'10px' }}
+                                    type="primary"
+                                    onClick={() => this.setState({ newpackage: Object.assign({}, record), package_id: record.id }, () => this.showEditPackagesModal())}>
+                                    Edit
+                                </Button> : null}
+
+                                {show_button_delete_package === true ? <Button
+                                    style={{ margin:'10px' }}
+                                    type="primary"  
+                                    onClick={() => this.setState({ newpackage: Object.assign({}, record), package_id: record.id }, () => this.handleDeletePackage())}>
+                                    Delete
+                                </Button> : null}
                             </div>
                         )} />
                 </Table> : null}
