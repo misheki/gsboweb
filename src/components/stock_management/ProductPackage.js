@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Layout,  Table, Modal, Button, Form, Input, Select, Switch } from 'antd';
 import { listPackage, createPackage, deletePackage, editPackage } from '../../helpers/PackageController';
 import { listSku, createSku, deleteSku, editSku } from '../../helpers/SkuController';
+import { checkAccess } from '../../helpers/PermissionController';
 
 const { Header } = Layout;
 const { Column } = Table;
@@ -10,6 +11,7 @@ const Option = Select.Option;
 const confirm = Modal.confirm;
 
 class ProductPackage extends Component {
+    _isMounted = false;
 
     constructor(props) {
         super(props);
@@ -21,13 +23,20 @@ class ProductPackage extends Component {
             count:0,
             require_activation: true,
             loading: false,
-            clickView:false
+            clickView: false,
+            show_table_package: false
         };
     }
 
     componentDidMount() {
+        this._isMounted = true;
         this.showPackageList();
         this.showSkuList();
+        this.showTablePackage();
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
     }
 
     showPackageList() {
@@ -48,6 +57,11 @@ class ProductPackage extends Component {
                     this.setState({ skus: result.data });
                 }
             })
+    }
+
+    showTablePackage() {
+        var access_token = sessionStorage.getItem('access_token');
+        checkAccess(['viewPackage'], access_token).then(result => result !== false ? (this._isMounted === true ? this.setState({ show_table_package: result }) : null) : null);
     }
 
     showAddPackagesModal = () => {
@@ -244,7 +258,7 @@ class ProductPackage extends Component {
     }
 
     render() {
-        const { packages, newpackage, skus, sku, loading, clickView } = this.state;
+        const { packages, newpackage, skus, sku, loading, clickView, show_table_package } = this.state;
         const { getFieldDecorator } = this.props.form;
 
          return (
@@ -322,7 +336,7 @@ class ProductPackage extends Component {
                     New Package
                 </Button>
 
-                <Table
+                {show_table_package === true ? <Table
                     dataSource={packages}
                     rowKey={packages => packages.id }>
                     {/* <Column title="ID" dataIndex="id" key="id" /> */}
@@ -342,7 +356,7 @@ class ProductPackage extends Component {
                                  onClick={() => this.setState({ newpackage: Object.assign({}, record), package_id: record.id },()=> this.handleDeletePackage())}>Delete</Button>
                             </div>
                         )} />
-                </Table>
+                </Table> : null}
 
                 <Modal
                     visible={this.state.visible}
