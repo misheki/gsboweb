@@ -1,4 +1,4 @@
-export const createOrder = (sale_channel_id, order_ref_num, customer_name, customer_email, customer_contact_num, customer_address, customer_postcode, customer_state, package_details, access_token) => {
+export const createOrder = (sale_channel_id, order_ref_num, customer_name, customer_email, customer_contact_num, customer_address, customer_postcode, customer_state, package_details, shipping_fee, access_token) => {
     return Promise.race([
         new Promise((resolve, reject) =>
             fetch(global.URL + 'api/order/create', {
@@ -17,7 +17,8 @@ export const createOrder = (sale_channel_id, order_ref_num, customer_name, custo
                     customer_address,
                     customer_postcode,
                     customer_state,
-                    package_details
+                    package_details,
+                    shipping_fee
                 })
             })
             .then((response) => response.json())
@@ -209,7 +210,7 @@ export const courierList = (access_token) => {
     ])
 };
 
-export const shippingUpdate = (customer_address, customer_contact_num, customer_state, customer_postcode, shipping_method_id, tracking_number, shipping_fee, access_token) => {
+export const shippingUpdate = (order_id, customer_address, customer_contact_num, customer_state, customer_postcode, shipping_method_id, tracking_number, shipping_fee, access_token) => {
     return Promise.race([
         new Promise((resolve, reject) =>
             fetch(global.URL + 'api/order/shipping/update', {
@@ -220,6 +221,7 @@ export const shippingUpdate = (customer_address, customer_contact_num, customer_
                     'Authorization': 'Bearer ' + access_token
                 },
                 body: JSON.stringify({
+                    order_id,
                     customer_address,
                     customer_contact_num,
                     customer_state,
