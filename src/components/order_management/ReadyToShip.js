@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Layout,  Table, Steps, Button, message, Form, Input, Select, Col, Row, Divider   } from 'antd';
 import { listReadyShip } from '../../helpers/OrderController';
+import { checkAccess } from '../../helpers/PermissionController';
 
 const Option = Select.Option;
 const Step = Steps.Step;
@@ -8,18 +9,38 @@ const { Header } = Layout;
 const { Column } = Table;
 
 class ReadyToShip extends Component {
+    _isMounted = false;
 
     constructor(props) {
         super(props);
         this.state = {
             current: 0,
             confirmed_orders: [],
-            processOrder: false
+            processOrder: false,
+            show_table: false,
+            show_button_process_order: false
         };
     }
 
     componentDidMount() {
+        this._isMounted = true;
         this.showOrderlistReadyToShip();
+        this.showTable();
+        this.showButtonProcessOrder();
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
+    }
+
+    showTable() {
+        var access_token = sessionStorage.getItem('access_token');
+        checkAccess(['viewOrderHistory'], access_token).then(result => result !== false ? (this._isMounted === true ? this.setState({ show_table: result }) : null) : null);
+    }
+
+    showButtonProcessOrder() {
+        var access_token = sessionStorage.getItem('access_token');
+        checkAccess(['shipOrder'], access_token).then(result => result !== false ? (this._isMounted === true ? this.setState({ show_button_process_order: result }) : null) : null);
     }
 
     showOrderlistReadyToShip() {
@@ -256,50 +277,52 @@ class ReadyToShip extends Component {
     }
 
     render() {
-        const { confirmed_orders } = this.state;
-
+        const { confirmed_orders, show_table, show_button_process_order } = this.state;
+        
         if (this.state.processOrder === false) {
             return (             
                 <div>
-                <Header style={{ color: 'white', fontSize: '30px' }}>
-                    <span>Ready to Ship Orders</span>
-                </Header>
-                <div style={{ padding: '30px' }}>
-                     <Table
-                        dataSource={confirmed_orders}
-                        rowKey={confirmed_orders => confirmed_orders.id}>
-                        <Column title="Order Number" dataIndex="order_ref_num" key="order_ref_num" />
-                        <Column title="Order Date" dataIndex="created_at" key="created_at" />
-                        <Column title="Customer Name" dataIndex="customer_name" key="customer_name" />
-                        <Column title="Total" dataIndex="total_amount" key="total_amount" />
-                        <Column title="Order Status" dataIndex="order_status" key="order_status" />
-                        <Column
+                    <Header style={{ color: 'white', fontSize: '30px' }}>
+                        <span>Ready to Ship Orders</span>
+                    </Header>
+                    <div style={{ padding: '30px' }}>
+                        {show_table === true ? <Table
+                            dataSource={confirmed_orders}
+                            rowKey={confirmed_orders => confirmed_orders.id}>
+                            <Column title="Order Number" dataIndex="order_ref_num" key="order_ref_num" />
+                            <Column title="Order Date" dataIndex="created_at" key="created_at" />
+                            <Column title="Customer Name" dataIndex="customer_name" key="customer_name" />
+                            <Column title="Total" dataIndex="total_amount" key="total_amount" />
+                            <Column title="Order Status" dataIndex="order_status" key="order_status" />
+                            <Column
                                 title='Action'
                                 key="action"
                                 render={(record) => (
                                     <div>
-                                        <Button style={{ margin:'10px' }} type="primary" onClick={() => this.processOrder()}>Process Order</Button>
+                                        {show_button_process_order === true ? <Button
+                                            style={{ margin:'10px' }}
+                                            type="primary"
+                                            onClick={() => this.processOrder()}>
+                                            Process Order
+                                        </Button> : null}
                                     </div>
                                 )} />
-                    </Table>
+                        </Table> : null}
+                    </div>
                 </div>
-                </div>
-                );   
-            }
-            else {
-                return (             
-                    <div>
+            );
+        }
+        else {
+            return (             
+                <div>
                     <Header style={{ color: 'white', fontSize: '30px' }}>
                         <span>Ready to Ship</span>
                     </Header>
-                     {this.renderProcessOrder()}
-                    </div>
-                    );   
-
-            }
+                    {this.renderProcessOrder()}
+                </div>
+            );
         }
-        
-       
+    }
 }
 
 export default Form.create()( ReadyToShip);

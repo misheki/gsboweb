@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import { Layout, Form, Row, Col, Table, AutoComplete, Input, Button, Icon  } from 'antd';
 import { listCompleted } from '../../helpers/OrderController';
+import { checkAccess } from '../../helpers/PermissionController';
 
 const { Header } = Layout;
 const { Column } = Table;
 const FormItem = Form.Item;
 
 class Completed extends Component {
+    _isMounted = false;
 
     constructor(props) {
         super(props);
@@ -14,13 +16,25 @@ class Completed extends Component {
             current: 0,
             completed_orders: [],
             order: null,
-            displayDetails: false
+            displayDetails: false,
+            show_table: false
         };
     }
 
 
     componentDidMount() {
+        this._isMounted = true;
         this.showOrderlistCompleted();
+        this.showTable();
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
+    }
+
+    showTable() {
+        var access_token = sessionStorage.getItem('access_token');
+        checkAccess(['viewOrderHistory'], access_token).then(result => result !== false ? (this._isMounted === true ? this.setState({ show_table: result }) : null) : null);
     }
 
     showOrderlistCompleted() {
@@ -194,12 +208,12 @@ class Completed extends Component {
 
     render() {
 
-        const { completed_orders } = this.state;
+        const { completed_orders, show_table } = this.state;
 
         if(this.state.displayDetails){
             return(this.renderDetails());
         }
-        else{
+        else if (show_table === true) {
             return (
                 <div>
                     <Header style={{ color: 'white', fontSize: '30px' }}>
@@ -238,7 +252,11 @@ class Completed extends Component {
                 </div>
             ); 
         }
-           
+        else {
+            return (
+                <div></div>
+            );
+        }
     }      
 }
 

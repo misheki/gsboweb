@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Layout, Form, Input, Button, Row, Col, Select, Icon, Modal } from 'antd';
 import { createOrder, saleChannelList } from '../../helpers/OrderController';
 import { listSku, listSkuPackage } from '../../helpers/SkuController';
+import { checkAccess } from '../../helpers/PermissionController';
 
 const { Header } = Layout;
 const FormItem = Form.Item;
@@ -9,6 +10,7 @@ const Option = Select.Option;
 let id = 0;
 
 class NewOrder extends Component {
+    _isMounted = false;
 
     constructor(props) {
         super(props);
@@ -17,13 +19,25 @@ class NewOrder extends Component {
             packages: [],
             sale_channels: [],
             loading: false,
-            package_key: 0
+            package_key: 0,
+            show_screen: false
         };
     }
 
     componentDidMount() {
+        this._isMounted = true;
         this.showListSku();
         this.showCourierList();
+        this.showScreen();
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
+    }
+
+    showScreen() {
+        var access_token = sessionStorage.getItem('access_token');
+        checkAccess(['newOrder'], access_token).then(result => result !== false ? (this._isMounted === true ? this.setState({ show_screen: result }) : null) : null);
     }
 
     showListSku() {
@@ -104,7 +118,7 @@ class NewOrder extends Component {
 
     render() {
         const { getFieldDecorator, getFieldValue } = this.props.form;
-        const { skus, packages, sale_channels, loading } = this.state;
+        const { skus, packages, sale_channels, loading, show_screen } = this.state;
 
         getFieldDecorator('keys', { initialValue: [0] });
         const keys = getFieldValue('keys');
@@ -181,7 +195,7 @@ class NewOrder extends Component {
                 </Row>
             </React.Fragment>
         ));
-       
+        if (show_screen === true) {
          return (
             <div>
                 <Header style={{ color: 'white', fontSize: '30px' }}>
@@ -290,61 +304,118 @@ class NewOrder extends Component {
                                                 <Option value="SRW">Sarawak</Option>
                                                 <Option value="TRG">Terengganu</Option>
                                             </Select>
-                                        )}
-                                    </FormItem>
-                                </Col>
-                                <Col span={10}>
-                                    <FormItem label='Postcode'>
-                                        {getFieldDecorator('customer_postcode', {
+                                            )}
+                                        </FormItem>
+                                    </Col>
+                                </Row>
+                                <FormItem  label="Customer Name">
+                                    {getFieldDecorator('customer_name', {
+                                        rules: [{ required: true, message: '' }]
+                                    })(
+                                        <Input />
+                                    )}
+                                </FormItem>
+                                <Row gutter={8}>
+                                    <Col span={12}>
+                                        <FormItem label="Email">
+                                            {getFieldDecorator('customer_email', {
+                                                rules: [{
+                                                    type: 'email', message: 'The input is not valid E-mail!'
+                                                }, {    
+                                                    required: true, message: ''
+                                                }]
+                                            })(
+                                                <Input />
+                                            )}
+                                        </FormItem> 
+                                    </Col>
+                                    <Col span={12}>
+                                        <FormItem label="Contact Number">
+                                            {getFieldDecorator('customer_contact_num', {
+                                                rules: [{ required: true, message: '' }]
+                                            })(
+                                                <Input />
+                                            )}
+                                        </FormItem>  
+                                    </Col>
+                                </Row>
+                                <FormItem  label="Shipping Adddress">
+                                    {getFieldDecorator('customer_address', {
+                                        rules: [{ required: true, message: '' }]
+                                    })(
+                                        <Input />
+                                    )}
+                                </FormItem>
+                                <Row gutter={8}>
+                                    <Col span={14}>
+                                        <FormItem label='State'>
+                                            {getFieldDecorator('customer_state', {
                                             
-                                        })(
-                                            <Input />
-                                            
-                                        )}
-                                    </FormItem>
-                                </Col>
-                            </Row>
-                        </div>
-
-                        <div style={{backgroundColor:'white', padding:'10px', marginBottom:'20px'}}>
-                            <h3 style={{paddingBottom:'10px'}}>Package Details</h3>
-                            <Form.Item >
-                                <Button type="dashed" onClick={this.add} style={{ width: '20%', }}>
-                                    <Icon type="plus" /> Add Package
+                                            })(
+                                                <Select>
+                                                    <Option value="Selangor">Selangor</Option>
+                                                </Select>
+                                            )}
+                                        </FormItem>
+                                    </Col>
+                                    <Col span={10}>
+                                        <FormItem label='Postcode'>
+                                            {getFieldDecorator('customer_postcode', {
+                                                
+                                            })(
+                                                <Input />
+                                                
+                                            )}
+                                        </FormItem>
+                                    </Col>
+                                </Row>
+                            </div>
+    
+                            <div style={{backgroundColor:'white', padding:'10px', marginBottom:'20px'}}>
+                                <h3 style={{paddingBottom:'10px'}}>Package Details</h3>
+                                <Form.Item >
+                                    <Button type="dashed" onClick={this.add} style={{ width: '20%', }}>
+                                        <Icon type="plus" /> Add Package
+                                    </Button>
+                                </Form.Item>
+                                <Row gutter={8} style={{ backgroundColor: '#e8e8e8', padding: '10px', paddingBottom: '0px', marginBottom: '10px' }}>
+                                    <Col span={6}>
+                                        <p>SKU</p>
+                                    </Col>
+                                    <Col span={8}>
+                                        <p>Code-Package</p>
+                                    </Col>
+                                    <Col span={4}>
+                                        <p>Quantity</p>
+                                    </Col>
+                                    <Col span={4}>
+                                        <p>Unit Price</p>
+                                    </Col>
+                                    {/* <Col span={3}>
+                                        <p>Total</p>
+                                    </Col> */}
+                                    <Col span={1}>
+                                        <p style={{color:'#e8e8e8'}}>  </p>
+                                    </Col>
+                                </Row>
+                                {formItems}
+                            </div>
+                            
+                            <FormItem>
+                                <Button loading={loading} className="button-right" type="primary" onClick={this.handleSubmit}>
+                                    Add order
                                 </Button>
-                            </Form.Item>
-                            <Row gutter={8} style={{ backgroundColor: '#e8e8e8', padding: '10px', paddingBottom: '0px', marginBottom: '10px' }}>
-                                <Col span={6}>
-                                    <p>SKU</p>
-                                </Col>
-                                <Col span={8}>
-                                    <p>Code-Package</p>
-                                </Col>
-                                <Col span={4}>
-                                    <p>Quantity</p>
-                                </Col>
-                                <Col span={4}>
-                                    <p>Unit Price</p>
-                                </Col>
-                                {/* <Col span={3}>
-                                    <p>Total</p>
-                                </Col> */}
-                                <Col span={1}>
-                                    <p style={{color:'#e8e8e8'}}>  </p>
-                                </Col>
-                            </Row>
-                            {formItems}
-                        </div>
-                        
-                        <FormItem>
-                            <Button loading={loading} className="button-right" type="primary" onClick={this.handleSubmit}>
-                                Add order
-                            </Button>
-                        </FormItem>   
-                    </Form>
-                </div>  
-            </div>
-        );
+                            </FormItem>   
+                        </Form>
+                    </div>  
+                </div>
+            );
+        }
+        else {
+            return (
+                <div></div>
+            );
+        }
     }   
 }
 
