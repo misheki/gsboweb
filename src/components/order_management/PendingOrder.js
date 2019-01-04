@@ -483,9 +483,7 @@ class PendingOrder extends Component {
             content: 
                 <Form layout="vertical" style={{backgroundColor:'white'}}> 
                     <div style={{padding:'20px', marginBottom:'10px'}}>
-                        <h2 style={{paddingBottom:'10px'}}>Order Ref. No. 
-                        {order.order_ref_num}
-                        </h2>    
+                        <h2 style={{paddingBottom:'10px'}}>Order Ref. No.{order.order_ref_num}</h2>    
                         <Row gutter={8}>
                             <Col span={12}>
                             <h3 style={{paddingBottom:'10px'}}>Order Details </h3>  
