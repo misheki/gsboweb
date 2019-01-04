@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Layout,  Table, Steps, Button, message, Form, Input, Select, Col, Row, Divider   } from 'antd';
 import { listReadyShip } from '../../helpers/OrderController';
 import { checkAccess } from '../../helpers/PermissionController';
+import  OrderSteps from '../order_management/order_management_components/OrderSteps';
 
 const Option = Select.Option;
 const Step = Steps.Step;
@@ -318,7 +319,7 @@ class ReadyToShip extends Component {
                     <Header style={{ color: 'white', fontSize: '30px' }}>
                         <span>Ready to Ship</span>
                     </Header>
-                    {this.renderProcessOrder()}
+                    {OrderSteps}
                 </div>
             );
         }
