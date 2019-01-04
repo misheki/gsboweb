@@ -109,7 +109,7 @@ class PendingOrder extends Component {
         else {
             this.setState({ next_loading: true });
             shippingUpdateWithoutCourier(order.id, null, access_token)
-                .then(result => {
+                .then(result => {     
                     if (result.result === 'GOOD') {
                         this.setState({ next_loading: false, current, method: 'Courier', shipping_method_id: '' });
                     }
@@ -189,7 +189,12 @@ class PendingOrder extends Component {
         const { getFieldDecorator } = this.props.form;
         var order_status = order.status === 'pending' ? false : true;
         let stock_details = [{ sku:"", package_name:"", sim_card_number:"", serial_number:"", stock_id:"", order_detail_id:"" }];
-
+        
+        const formItemLayout = {
+            labelCol: {span:8},
+            wrapperCol: { span: 10 },
+    
+          };
         // if (order.status === 'pending' && current === 0) {
         //     this.setState({ current: 1 });
         // }
@@ -197,11 +202,13 @@ class PendingOrder extends Component {
         if (order.shipping_method_id) {
             this.setState({ method: 'Courier' });
         }
+        console.warn(package_details);
+        console.warn(order);
         
         const packageDetailItems = package_details.map((package_detail, i) =>
             package_detail.stocks.map((stock, j) =>
                 <React.Fragment key={stock.id}>
-                    <Row gutter={16}>
+                    <Row gutter={8}>
                         <Col span={2}>
                             <Form.Item>
                                 {getFieldDecorator('id', {
@@ -220,7 +227,7 @@ class PendingOrder extends Component {
                                 )}
                             </Form.Item>
                         </Col>
-                        <Col span={8}>
+                        <Col span={7}>
                             <Form.Item>
                                 {getFieldDecorator(`stock_details[${stock.id}].package_name`, {
                                     initialValue: package_detail.package_name
@@ -229,7 +236,7 @@ class PendingOrder extends Component {
                                 )}
                             </Form.Item>
                         </Col>
-                        <Col span={5}>
+                        <Col span={6}>
                             <Form.Item>
                                 {getFieldDecorator(`stock_details[${stock.id}].sim_card_number`, {
                                     initialValue: stock.sim_card_number
@@ -238,10 +245,19 @@ class PendingOrder extends Component {
                                 )}
                             </Form.Item>
                         </Col>
-                        <Col span={5}>
+                        <Col span={4}>
                             <Form.Item>
                                 {getFieldDecorator(`stock_details[${stock.id}].serial_number`, {
                                     initialValue: stock.serial_number
+                                })(
+                                    <Input disabled />
+                                )}
+                            </Form.Item>
+                        </Col>
+                        <Col span={2}>
+                            <Form.Item>
+                                {getFieldDecorator(`stock_details[${stock.id}].unit_price`, {
+                                    initialValue: package_detail.unit_price
                                 })(
                                     <Input disabled />
                                 )}
@@ -338,20 +354,23 @@ class PendingOrder extends Component {
                     <Divider orientation="left">Package Details</Divider>
 
                     <Row gutter={8} style={{ backgroundColor: '#e8e8e8', padding: '10px', paddingBottom: '0px', marginBottom: '10px', paddingLeft:'0px' }}>
-                         <Col span={2}>
+                        <Col span={2}>
                             <p>Item</p>
                         </Col>
-                        <Col span={2}>
+                        <Col span={3}>
                             <p>SKU</p>
                         </Col>
-                        <Col span={9}>
+                        <Col span={7}>
                             <p>Package</p>
                         </Col>
-                        <Col span={5}>
+                        <Col span={6}>
                             <p>Sim Card Number</p>
                         </Col>
-                        <Col span={5}>
+                        <Col span={4}>
                             <p>Serial Number</p>
+                        </Col>
+                        <Col span={2}>
+                            <p>Unit Price</p>
                         </Col>
                     </Row>
                     {packageDetailItems}
@@ -463,7 +482,75 @@ class PendingOrder extends Component {
                 </div>
         }, {
             title: 'Confirm Order',
-            content: 'Confirm Package',
+            content: 
+                <Form layout="vertical" style={{backgroundColor:'white'}}> 
+                    <div style={{padding:'20px', marginBottom:'10px'}}>
+                        <h2 style={{paddingBottom:'10px'}}>Order Ref. No. 
+                        {order.order_ref_num}
+                        </h2>    
+                        <Row gutter={8}>
+                            <Col span={12}>
+                            <h3 style={{paddingBottom:'10px'}}>Order Details </h3>  
+                                <Form.Item {...formItemLayout} label="Order Date : "  className="form-item">
+                                <p>{order.created_at}</p> 
+                                </Form.Item>
+                                <Form.Item  {...formItemLayout} label="Sales Channel : " className="form-item">
+                                    <p>{order.sale_channel_name} </p>
+                                </Form.Item>
+                                <Form.Item  {...formItemLayout} label="Shipping Method : " className="form-item">
+                                    <p>{order.shipping_method_id} </p>
+                                </Form.Item>
+                                <Form.Item  {...formItemLayout} label="Tracking Number : " className="form-item">
+                                    <p>{order.tracking_number} </p>
+                                </Form.Item>
+
+                            </Col>
+                            <Col span={12}>
+                                <h3 style={{paddingBottom:'10px'}}>Customer Details </h3>  
+                                <p>{order.customer_name}</p> 
+                                <p>{order.customer_address}</p> 
+                                <p>{order.customer_postcode}, {order.customer_state}</p> 
+                                <p>{order.customer_contact_num}</p> 
+                                <p>{order.customer_email}</p> 
+                            </Col>
+                        </Row>   
+                        <h3 style={{paddingBottom:'10px'}}>Product Details</h3>
+                        <div style={{ backgroundColor: 'white', padding:'10px'}}>
+                            <Row gutter={16} style={{ backgroundColor: '#e8e8e8', padding: '10px', paddingBottom: '0px', marginBottom: '10px' }}>
+                                <Col span={2}>
+                                    <p>Item</p>
+                                </Col>
+                                <Col span={3}>
+                                    <p>SKU</p>
+                                </Col>
+                                <Col span={7}>
+                                    <p>Package</p>
+                                </Col>
+                                <Col span={6}>
+                                    <p>Sim Card Number</p>
+                                </Col>
+                                <Col span={3}>
+                                    <p>Serial Number</p>
+                                </Col>
+                                <Col span={2}>
+                                    <p>Unit Price</p>
+                                </Col>
+                            </Row>
+                            {packageDetailItems}
+                            <div style={{float:'right', width:'30%'}}>
+                                <Form.Item  labelCol={{ span: 12 }} wrapperCol={{ span: 12 }} label="Subtotal : "  className="form-item">
+                                        {/* <p>RM {this.state.order.order_total}</p>  */}
+                                </Form.Item>
+                                <Form.Item  labelCol={{ span: 12 }} wrapperCol={{ span: 12 }} label="Shipping Fee : "  className="form-item">
+                                        {/* <p>RM {this.state.order.shipping_fee} </p>  */}
+                                </Form.Item>
+                                <Form.Item  labelCol={{ span: 12 }} wrapperCol={{ span: 12 }} label="Total Amount : "  className="form-item">
+                                        {/* <p>RM {this.state.order.total}</p>  */}
+                                </Form.Item>
+                            </div>
+                        </div>
+                    </div>
+            </Form>
         }];
      
         return (
