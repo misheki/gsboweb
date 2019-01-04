@@ -88,7 +88,7 @@ class PendingOrder extends Component {
         const { method, order } = this.state;
         var access_token = sessionStorage.getItem('access_token');
 
-        if (this.state.current == 0) {
+        if (this.state.current === 0) {
             this.setState({ current });
         }
         else if (method === 'Courier') {

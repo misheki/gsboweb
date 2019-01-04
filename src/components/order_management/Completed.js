@@ -24,7 +24,6 @@ class Completed extends Component {
 
     componentDidMount() {
         this._isMounted = true;
-        this.showOrderlistCompleted();
         this.showTable();
     }
 
@@ -34,7 +33,7 @@ class Completed extends Component {
 
     showTable() {
         var access_token = sessionStorage.getItem('access_token');
-        checkAccess(['viewOrderHistory'], access_token).then(result => result !== false ? (this._isMounted === true ? this.setState({ show_table: result }) : null) : null);
+        checkAccess(['viewOrderHistory'], access_token).then(result => result !== false ? (this._isMounted === true ? this.setState({ show_table: result }, this.showOrderlistCompleted()) : null) : null);
     }
 
     showOrderlistCompleted() {
@@ -58,7 +57,6 @@ class Completed extends Component {
     }
 
     showOrder(order) {
-        console.log(order);
         this.setState({ order : order}, () => this.setState({ displayDetails : true }))
     }
 
