@@ -154,18 +154,19 @@ class PendingOrder extends Component {
                 title: 'Confirm',
                 content: 'Are you sure you want to request the stocks? By doing this you will not be able to revert back.',
                 onOk: () => {
-                    var filtered_stocks = values.stock_details.filter(function (s) {
-                        return s != null;
-                    });
+                    this.setState({ current });
+                    // var filtered_stocks = values.stock_details.filter(function (s) {
+                    //     return s != null;
+                    // });
 
-                    this.setState({ request_stock_loading: true });
-                    requestStock(order_id, filtered_stocks, access_token)
-                        .then(result => {
-                            if (result.result === 'GOOD') {
-                                this.setState({ request_stock_loading: false });
-                                this.setState({ current });
-                            }
-                        })
+                    // this.setState({ request_stock_loading: true });
+                    // requestStock(order_id, filtered_stocks, access_token)
+                    //     .then(result => {
+                    //         if (result.result === 'GOOD') {
+                    //             this.setState({ request_stock_loading: false });
+                    //             this.setState({ current });
+                    //         }
+                    //     })
                 }
             })
         });
@@ -643,7 +644,7 @@ class PendingOrder extends Component {
             title: 'Confirm Order',
             content: 
                 <Form> 
-                    <div style={{padding:'20px', marginBottom:'10px', backgroundColor:'white'}}>
+                    <div style={{padding:'20px', marginBottom:'10px', textAlign:'left'}}>
                         <h2 style={{paddingBottom:'10px'}}>Order Ref. No.{order.order_ref_num}</h2>    
                         <Row gutter={8}>
                             <Col span={12}>
@@ -672,7 +673,7 @@ class PendingOrder extends Component {
                             </Col>
                         </Row>   
                         </div>
-                        <div style={{ backgroundColor: 'white', padding:'10px', backgroundColor:'white'}}>
+                        <div style={{padding:'20px', textAlign:'left'}}>
                             <h3 style={{paddingBottom:'10px'}}>Product Details</h3>
                             <Row gutter={16} style={{ backgroundColor: '#e8e8e8', padding: '10px', paddingBottom: '0px', marginBottom: '10px' }}>
                                 <Col span={2}>
@@ -695,13 +696,13 @@ class PendingOrder extends Component {
                                 </Col>
                             </Row>
                             {this.packageDetailItems()}
-                                <Form.Item  labelCol={{ span: 20 }} wrapperCol={{ span: 3 }} label="Subtotal : "  className="form-item-right">
+                                <Form.Item  labelCol={{ span: 20 }} wrapperCol={{ span: 4 }} label="Subtotal : "  className="form-item-right">
                                         {/* <p>RM {this.state.order.order_total}</p>  */}
                                 </Form.Item>
-                                <Form.Item  labelCol={{ span: 20 }} wrapperCol={{ span: 3 }} label="Shipping Fee : "  className="form-item-right">
-                                        <p>RM {order.shipping_fee} </p> 
+                                <Form.Item  labelCol={{ span: 20 }} wrapperCol={{ span: 4 }} label="Shipping Fee : "  className="form-item-right">
+                                        <p>RM {order.shipping_fee}</p> 
                                 </Form.Item>
-                                <Form.Item  labelCol={{ span: 20 }} wrapperCol={{ span: 3 }} label="Total Amount : "  className="form-item-right">
+                                <Form.Item  labelCol={{ span: 20 }} wrapperCol={{ span: 4 }} label="Total Amount : "  className="form-item-right">
                                         {/* <p>RM {this.state.order.total}</p>  */}
                                 </Form.Item>
                         </div>
