@@ -1,17 +1,13 @@
 import React, { Component } from 'react';
-import { Layout, Table, Steps, Button, message, Form, Input, Select, Col, Row, Divider, Modal } from 'antd';
-import { listPending, showOrders, requestStock, courierList, completeOrder, shippingUpdateWithCourier, shippingUpdateWithoutCourier } from '../../helpers/OrderController';
-import { checkAccess } from '../../helpers/PermissionController';
+import { Steps, Button, message, Form, Input, Select, Col, Row, Divider, Modal } from 'antd';
+import { showOrders, requestStock, courierList, completeOrder, shippingUpdateWithCourier, shippingUpdateWithoutCourier } from '../../../helpers/OrderController';
+import { checkAccess } from '../../../helpers/PermissionController';
 
 const Option = Select.Option;
 const Step = Steps.Step;
-const { Header } = Layout;
-const { Column } = Table;
 const confirm = Modal.confirm;
 
-class PendingOrder extends Component {
-    _isMounted = false;
-
+class OrderSteps extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -36,7 +32,6 @@ class PendingOrder extends Component {
 
     componentDidMount() {
         this._isMounted = true;
-        this.showOrderlistPending();
         this.showCourierList();
         this.getPermissions();
     }
@@ -51,16 +46,6 @@ class PendingOrder extends Component {
             .then(result => (this._isMounted === true) ? this.setState({ allowed : result }) : null);
     }
 
-    showOrderlistPending() {
-        var access_token = sessionStorage.getItem('access_token');
-        listPending(access_token)
-            .then(result => {
-                if (result.result === 'GOOD') {
-                    this.setState({ pending_orders: result.data });
-                }
-            })
-    }
-
     showCourierList() {
         var access_token = sessionStorage.getItem('access_token');
         courierList(access_token)
@@ -69,18 +54,6 @@ class PendingOrder extends Component {
                     this.setState({ couriers: result.data });
                 }
             })
-    }
-
-    handleCancelOrder() {
-        var access_token = sessionStorage.getItem('access_token');
-        
-        confirm({
-            title: 'Confirm',
-            content: 'Are you sure you want to cancel this order?',
-            onOk: () => {
-             
-            }
-        })
     }
 
     next() {
@@ -722,64 +695,17 @@ class PendingOrder extends Component {
                     {current > 0 && (<Button style={{ marginRight: 8 }} onClick={() => this.prev()}>Previous</Button>)}
                     {current === steps.length - 1 && <Button loading={complete_order_loading} type="primary" onClick={() => this.handleCompleteOrder()}>Complete Order</Button>}
                     {allowed.includes('shipOrder') ? (current < steps.length - 1 && current !== 0 && <Button loading={next_loading} type="primary" onClick={() => this.next()}>Next</Button>) : null}
-                    {allowed.includes('processOrder') ? (current === 0 && (order.status === 'pending' ?
-                  <div>
-                    <Button type="danger"  style={{ marginRight: 8 }} onClick={() => this.handleCancelOrder()}>Cancel</Button>
-                    <Button disabled={incomplete} loading={request_stock_loading} type="primary" onClick={() => this.handleRequestStock()}>Save, Request Stock & Continue</Button>
-                  </div>  
-                   : <Button type="primary" onClick={() => this.next()}>Next</Button> )) : null}
+                    {allowed.includes('processOrder') ? (current === 0 && (order.status === 'pending' ? <Button disabled={incomplete} loading={request_stock_loading} type="primary" onClick={() => this.handleRequestStock()}>Save, Request Stock & Continue</Button> : <Button type="primary" onClick={() => this.next()}>Next</Button>)) : null}
                 </div>
             </div>
         );
     }
 
     render() {
-        const { pending_orders, processOrder, allowed } = this.state;
-
-        if (processOrder === false) {
-            return (             
-                <div>
-                    <Header style={{ color: 'white', fontSize: '30px' }}>
-                        <span>Pending Order</span>
-                    </Header>
-                    <div style={{ padding: '30px' }}>
-                        {allowed.includes('viewOrderHistory') ? <Table
-                            dataSource={pending_orders}
-                            rowKey={pending_orders => pending_orders.id}>
-                            <Column title="Order Number" dataIndex="order_ref_num" key="order_ref_num" />
-                            <Column title="Order Date" dataIndex="created_at" key="created_at" />
-                            <Column title="Customer Name" dataIndex="customer_name" key="customer_name" />
-                            <Column title="Total" dataIndex="total_amount" key="total_amount" />
-                            <Column title="Order Status" dataIndex="order_status" key="order_status" />
-                            <Column
-                                title='Action'
-                                key="action"
-                                render={(record) => (
-                                    <div>
-                                        {allowed.includes('processOrder') ? <Button
-                                            style={{ margin:'10px' }}
-                                            type="primary"
-                                            onClick={() => this.processOrder(record.id)}>
-                                            Process Order
-                                        </Button> : null}
-                                    </div>
-                                )} />
-                        </Table> : null}
-                    </div>
-                </div>
-            );
-        }
-        else {
-            return (
-                <div>
-                    <Header style={{ color: 'white', fontSize: '30px' }}>
-                        <span>Pending Order</span>
-                    </Header>
-                    {this.renderProcessOrder()}
-                </div>
-            );
-        }
+        return (
+            this.renderProcessOrder()
+        );
     }
 }
 
-export default Form.create()( PendingOrder);
+export default Form.create()(OrderSteps);
