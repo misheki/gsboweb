@@ -70,6 +70,18 @@ class PendingOrder extends Component {
             })
     }
 
+    handleCancelOrder() {
+        var access_token = sessionStorage.getItem('access_token');
+        
+        confirm({
+            title: 'Confirm',
+            content: 'Are you sure you want to cancel this order?',
+            onOk: () => {
+             
+            }
+        })
+    }
+
     next() {
         const current = this.state.current + 1;
         var form = this.props.form;
@@ -549,7 +561,12 @@ class PendingOrder extends Component {
                     {current > 0 && (<Button style={{ marginRight: 8 }} onClick={() => this.prev()}>Previous</Button>)}
                     {current === steps.length - 1 && <Button loading={complete_order_loading} type="primary" onClick={() => this.handleCompleteOrder()}>Complete Order</Button>}
                     {allowed.includes('shipOrder') ? (current < steps.length - 1 && current !== 0 && <Button loading={next_loading} type="primary" onClick={() => this.next()}>Next</Button>) : null}
-                    {allowed.includes('processOrder') ? (current === 0 && (order.status === 'pending' ? <Button loading={request_stock_loading} type="primary" onClick={() => this.handleRequestStock()}>Save, Request Stock & Continue</Button> : <Button type="primary" onClick={() => this.next()}>Next</Button>)) : null}
+                    {allowed.includes('processOrder') ? (current === 0 && (order.status === 'pending' ?
+                  <div>
+                    <Button type="danger"  style={{ marginRight: 8 }} onClick={() => this.handleCancelOrder()}>Cancel</Button>
+                    <Button loading={request_stock_loading} type="primary" onClick={() => this.handleRequestStock()}>Save, Request Stock & Continue</Button>
+                  </div>  
+                   : <Button type="primary" onClick={() => this.next()}>Next</Button> )) : null}
                 </div>
             </div>
         );
