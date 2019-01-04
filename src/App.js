@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 import { Layout, Menu, Icon, Button } from 'antd';
-import logo from './logo.svg';
+import logo from './logo.png';
 import './App.css';
 import { showSideBarMenu } from './helpers/AdminControl';
 
@@ -122,7 +122,7 @@ class App extends Component {
                 collapsed={this.state.collapsed}
                 onCollapse={(this.onCollapse)}>
                 <div className="logo">
-                    <img src={logo} alt="logo" />
+                    <img src={logo} alt="logo" style={{width:'80%', padding:'10px'}} />
                 </div>
                 <Menu theme="dark" mode="inline">
                     {sidebar_menus}
