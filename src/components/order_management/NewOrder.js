@@ -275,7 +275,6 @@ class NewOrder extends Component {
                                 <Col span={20}>
                                     <FormItem  label="Shipping Adddress">
                                         {getFieldDecorator('customer_address', {
-                                            rules: [{ required: true, message: '' }]
                                         })(
                                             <Input />
                                         )}
