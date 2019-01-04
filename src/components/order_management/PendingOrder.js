@@ -28,9 +28,8 @@ class PendingOrder extends Component {
             method: 'Self Pickup',
             tracking_number: '',
             shipping_method_id: '',
-            show_table: false,
-            show_button_process_order: false,
-            show_button_ship_order: false
+            required: ['viewOrderHistory', 'processOrder', 'shipOrder'],
+            allowed: []
         };
     }
 
@@ -38,28 +37,17 @@ class PendingOrder extends Component {
         this._isMounted = true;
         this.showOrderlistPending();
         this.showCourierList();
-        this.showTable();
-        this.showButtonProcessOrder();
-        this.showButtonShipOrder();
+        this.getPermissions();
     }
     
     componentWillUnmount() {
         this._isMounted = false;
     }
 
-    showTable() {
+    getPermissions() {
         var access_token = sessionStorage.getItem('access_token');
-        checkAccess(['viewOrderHistory'], access_token).then(result => result !== false ? (this._isMounted === true ? this.setState({ show_table: result }) : null) : null);
-    }
-
-    showButtonProcessOrder() {
-        var access_token = sessionStorage.getItem('access_token');
-        checkAccess(['processOrder'], access_token).then(result => result !== false ? (this._isMounted === true ? this.setState({ show_button_process_order: result }) : null) : null);
-    }
-
-    showButtonShipOrder() {
-        var access_token = sessionStorage.getItem('access_token');
-        checkAccess(['shipOrder'], access_token).then(result => result !== false ? (this._isMounted === true ? this.setState({ show_button_ship_order: result }) : null) : null);
+        checkAccess(this.state.required, access_token)
+            .then(result => (this._isMounted === true) ? this.setState({ allowed : result }) : null);
     }
 
     showOrderlistPending() {
@@ -185,7 +173,7 @@ class PendingOrder extends Component {
     }
 
     renderProcessOrder() {
-        const { current, order, package_details, request_stock_loading, couriers, method, next_loading, complete_order_loading, show_button_process_order, show_button_ship_order } = this.state;
+        const { current, order, package_details, request_stock_loading, couriers, method, next_loading, complete_order_loading, allowed } = this.state;
         const { getFieldDecorator } = this.props.form;
         var order_status = order.status === 'pending' ? false : true;
         let stock_details = [{ sku:"", package_name:"", sim_card_number:"", serial_number:"", stock_id:"", order_detail_id:"" }];
@@ -560,15 +548,15 @@ class PendingOrder extends Component {
                 <div className="steps-action">
                     {current > 0 && (<Button style={{ marginRight: 8 }} onClick={() => this.prev()}>Previous</Button>)}
                     {current === steps.length - 1 && <Button loading={complete_order_loading} type="primary" onClick={() => this.handleCompleteOrder()}>Complete Order</Button>}
-                    {show_button_ship_order === true ? (current < steps.length - 1 && current !== 0 && <Button loading={next_loading} type="primary" onClick={() => this.next()}>Next</Button>) : null}
-                    {show_button_process_order === true ? (current === 0 && (order.status === 'pending' ? <Button loading={request_stock_loading} type="primary" onClick={() => this.handleRequestStock()}>Save, Request Stock & Continue</Button> : <Button type="primary" onClick={() => this.next()}>Next</Button>)) : null}
+                    {allowed.includes('shipOrder') ? (current < steps.length - 1 && current !== 0 && <Button loading={next_loading} type="primary" onClick={() => this.next()}>Next</Button>) : null}
+                    {allowed.includes('processOrder') ? (current === 0 && (order.status === 'pending' ? <Button loading={request_stock_loading} type="primary" onClick={() => this.handleRequestStock()}>Save, Request Stock & Continue</Button> : <Button type="primary" onClick={() => this.next()}>Next</Button>)) : null}
                 </div>
             </div>
         );
     }
 
     render() {
-        const { pending_orders, processOrder, show_table, show_button_process_order } = this.state;
+        const { pending_orders, processOrder, allowed } = this.state;
 
         if (processOrder === false) {
             return (             
@@ -577,7 +565,7 @@ class PendingOrder extends Component {
                         <span>Pending Order</span>
                     </Header>
                     <div style={{ padding: '30px' }}>
-                        {show_table === true ? <Table
+                        {allowed.includes('viewOrderHistory') ? <Table
                             dataSource={pending_orders}
                             rowKey={pending_orders => pending_orders.id}>
                             <Column title="Order Number" dataIndex="order_ref_num" key="order_ref_num" />
@@ -590,7 +578,7 @@ class PendingOrder extends Component {
                                 key="action"
                                 render={(record) => (
                                     <div>
-                                        {show_button_process_order === true ? <Button
+                                        {allowed.includes('processOrder') ? <Button
                                             style={{ margin:'10px' }}
                                             type="primary"
                                             onClick={() => this.processOrder(record.id)}>

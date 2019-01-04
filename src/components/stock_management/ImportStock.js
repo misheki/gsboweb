@@ -14,7 +14,8 @@ class ImportStock extends Component {
             stocksfile : '',
             displaygoodresult: false,
             displaybadresult: false,
-            show_screen: false
+            required: ['importStock'],
+            allowed: []
         };
 
         this.onFormSubmit = this.onFormSubmit.bind(this);
@@ -23,16 +24,17 @@ class ImportStock extends Component {
 
     componentDidMount() {
         this._isMounted = true;
-        this.showScreen();
+        this.getPermissions();
     }
 
     componentWillUnmount() {
         this._isMounted = false;
     }
 
-    showScreen() {
+    getPermissions() {
         var access_token = sessionStorage.getItem('access_token');
-        checkAccess(['importStock'], access_token).then(result => result !== false ? (this._isMounted === true ? this.setState({ show_screen: result }) : null) : null);
+        checkAccess(this.state.required, access_token)
+            .then(result => (this._isMounted === true) ? this.setState({ allowed : result }) : null);
     }
 
     onFormSubmit(e){
@@ -87,10 +89,10 @@ class ImportStock extends Component {
 
     
     render() {
-        const { show_screen } = this.state;
+        const { allowed } = this.state;
         var template = global.URL + 'storage/csv/gs_stocks_template_csv.csv';
 
-        if (show_screen) {
+        if (allowed.includes('importStock')) {
             return (
                 <div>
                     <Header style={{ color: 'white', fontSize: '30px' }}>

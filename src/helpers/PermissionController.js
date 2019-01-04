@@ -14,7 +14,7 @@ export const checkAccess = (permissions, access_token) => {
             })
             .then((response) => response.json())
             .then((responseJson) => {
-                resolve(responseJson);
+                resolve(responseJson.allowed);
             })
             .catch((error) => {
                 reject(error);

@@ -17,7 +17,8 @@ class Completed extends Component {
             completed_orders: [],
             order: null,
             displayDetails: false,
-            show_table: false
+            required: ['viewOrderHistory'],
+            allowed: []
         };
     }
 
@@ -25,16 +26,17 @@ class Completed extends Component {
     componentDidMount() {
         this._isMounted = true;
         this.showOrderlistCompleted();
-        this.showTable();
+        this.getPermissions();
     }
 
     componentWillUnmount() {
         this._isMounted = false;
     }
 
-    showTable() {
+    getPermissions() {
         var access_token = sessionStorage.getItem('access_token');
-        checkAccess(['viewOrderHistory'], access_token).then(result => result !== false ? (this._isMounted === true ? this.setState({ show_table: result }) : null) : null);
+        checkAccess(this.state.required, access_token)
+            .then(result => (this._isMounted === true) ? this.setState({ allowed : result }) : null);
     }
 
     showOrderlistCompleted() {
@@ -58,7 +60,6 @@ class Completed extends Component {
     }
 
     showOrder(order) {
-        console.log(order);
         this.setState({ order : order}, () => this.setState({ displayDetails : true }))
     }
 
@@ -183,12 +184,12 @@ class Completed extends Component {
 
     render() {
 
-        const { completed_orders, show_table } = this.state;
+        const { completed_orders, allowed } = this.state;
 
         if(this.state.displayDetails){
             return(this.renderDetails());
         }
-        else if (show_table === true) {
+        else if (allowed.includes('viewOrderHistory')) {
             return (
                 <div>
                     <Header style={{ color: 'white', fontSize: '30px' }}>
