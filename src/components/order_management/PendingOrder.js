@@ -177,15 +177,17 @@ class PendingOrder extends Component {
         var array = [];
         const { package_details } = this.state;
         const { getFieldDecorator } = this.props.form;
+        let counter = 0;
 
-        package_details.forEach((package_detail, i) => {
+        package_details.forEach(package_detail => {
             if (package_detail.stocks.length === 0) {
-                array.push(<React.Fragment>
+                counter++;
+                array.push(<React.Fragment key={counter}>
                     <Row gutter={16}>
                         <Col span={2}>
                             <Form.Item>
                                 {getFieldDecorator('id', {
-                                    initialValue: 1
+                                    initialValue: counter
                                 })(
                                     <Input disabled />
                                 )}
@@ -252,13 +254,89 @@ class PendingOrder extends Component {
                 </React.Fragment>)
             }
             else {
-                if (package_detail.missing > 0) {
-                    array.push(<React.Fragment>
+                package_detail.stocks.forEach(stock => {
+                    counter++;
+                    array.push(<React.Fragment key={counter}>
                         <Row gutter={16}>
                             <Col span={2}>
                                 <Form.Item>
                                     {getFieldDecorator('id', {
-                                        initialValue: 2
+                                        initialValue: counter
+                                    })(
+                                        <Input disabled />
+                                    )}
+                                </Form.Item>
+                            </Col>
+                            <Col span={3}>
+                                <Form.Item>
+                                    {getFieldDecorator(`stock_details[${stock.id}].sku`, {
+                                        initialValue: package_detail.sku
+                                    })(
+                                        <Input disabled />
+                                    )}
+                                </Form.Item>
+                            </Col>
+                            <Col span={7}>
+                                <Form.Item>
+                                    {getFieldDecorator(`stock_details[${stock.id}].package_name`, {
+                                        initialValue: package_detail.package_name
+                                    })(
+                                        <Input disabled />
+                                    )}
+                                </Form.Item>
+                            </Col>
+                            <Col span={6}>
+                                <Form.Item>
+                                    {getFieldDecorator(`stock_details[${stock.id}].sim_card_number`, {
+                                        initialValue: stock.sim_card_number
+                                    })(
+                                        <Input disabled />
+                                    )}
+                                </Form.Item>
+                            </Col>
+                            <Col span={4}>
+                                <Form.Item>
+                                    {getFieldDecorator(`stock_details[${stock.id}].serial_number`, {
+                                        initialValue: stock.serial_number
+                                    })(
+                                        <Input disabled />
+                                    )}
+                                </Form.Item>
+                            </Col>
+
+                            <Col span={2}>
+                                <Form.Item>
+                                    {getFieldDecorator(`stock_details[${stock.id}].unit_price`, {
+                                        initialValue: package_detail.unit_price
+                                    })(
+                                        <Input disabled />
+                                    )}
+                                </Form.Item>
+                            </Col>
+
+                            {getFieldDecorator(`stock_details[${stock.id}].stock_id`, {
+                                initialValue: stock.id
+                            })(
+                                <Input type="hidden" disabled />
+                            )}
+
+                            {getFieldDecorator(`stock_details[${stock.id}].order_detail_id`, {
+                                initialValue: package_detail.order_detail_id
+                            })(
+                                <Input type="hidden" disabled />
+                            )}
+                        </Row>
+                    </React.Fragment>)
+                })
+
+                if (package_detail.missing > 0) {
+                    counter++;
+                    array.push(<React.Fragment key={counter}>
+                        <Row gutter={16}>
+                            <Col span={2}>
+                                <Form.Item>
+                                    {getFieldDecorator('id', {
+                                        initialValue: counter
                                     })(
                                         <Input disabled />
                                     )}
@@ -273,7 +351,7 @@ class PendingOrder extends Component {
                                     )}
                                 </Form.Item>
                             </Col>
-                            <Col span={8}>
+                            <Col span={7}>
                                 <Form.Item>
                                     {getFieldDecorator(`stock_details.package_name`, {
                                         initialValue: package_detail.package_name
@@ -282,19 +360,28 @@ class PendingOrder extends Component {
                                     )}
                                 </Form.Item>
                             </Col>
-                            <Col span={5}>
+                            <Col span={6}>
                                 <Form.Item>
                                     {getFieldDecorator(`stock_details.sim_card_number`, {
-                                        initialValue: 'No Stocks'
+                                        initialValue: 'No Stock'
                                     })(
                                         <Input disabled />
                                     )}
                                 </Form.Item>
                             </Col>
-                            <Col span={5}>
+                            <Col span={4}>
                                 <Form.Item>
                                     {getFieldDecorator(`stock_details.serial_number`, {
                                         initialValue: 'No Stock'
+                                    })(
+                                        <Input disabled />
+                                    )}
+                                </Form.Item>
+                            </Col>
+                            <Col span={2}>
+                                <Form.Item>
+                                    {getFieldDecorator(`stock_details.unit_price`, {
+                                        initialValue: ''
                                     })(
                                         <Input disabled />
                                     )}
@@ -315,71 +402,6 @@ class PendingOrder extends Component {
                         </Row>
                     </React.Fragment>)
                 }
-                else {
-                    package_detail.stocks.forEach((stock, j) => {
-                        array.push(<React.Fragment key={stock.id}>
-                            <Row gutter={16}>
-                                <Col span={2}>
-                                    <Form.Item>
-                                        {getFieldDecorator('id', {
-                                            initialValue: i + j + 1
-                                        })(
-                                            <Input disabled />
-                                        )}
-                                    </Form.Item>
-                                </Col>
-                                <Col span={3}>
-                                    <Form.Item>
-                                        {getFieldDecorator(`stock_details[${stock.id}].sku`, {
-                                            initialValue: package_detail.sku
-                                        })(
-                                            <Input disabled />
-                                        )}
-                                    </Form.Item>
-                                </Col>
-                                <Col span={8}>
-                                    <Form.Item>
-                                        {getFieldDecorator(`stock_details[${stock.id}].package_name`, {
-                                            initialValue: package_detail.package_name
-                                        })(
-                                            <Input disabled />
-                                        )}
-                                    </Form.Item>
-                                </Col>
-                                <Col span={5}>
-                                    <Form.Item>
-                                        {getFieldDecorator(`stock_details[${stock.id}].sim_card_number`, {
-                                            initialValue: stock.sim_card_number
-                                        })(
-                                            <Input disabled />
-                                        )}
-                                    </Form.Item>
-                                </Col>
-                                <Col span={5}>
-                                    <Form.Item>
-                                        {getFieldDecorator(`stock_details[${stock.id}].serial_number`, {
-                                            initialValue: stock.serial_number
-                                        })(
-                                            <Input disabled />
-                                        )}
-                                    </Form.Item>
-                                </Col>
-    
-                                {getFieldDecorator(`stock_details[${stock.id}].stock_id`, {
-                                    initialValue: stock.id
-                                })(
-                                    <Input type="hidden" disabled />
-                                )}
-    
-                                {getFieldDecorator(`stock_details[${stock.id}].order_detail_id`, {
-                                    initialValue: package_detail.order_detail_id
-                                })(
-                                    <Input type="hidden" disabled />
-                                )}
-                            </Row>
-                        </React.Fragment>)
-                    })
-                }
             }
         });
 
@@ -387,7 +409,7 @@ class PendingOrder extends Component {
     }
 
     renderProcessOrder() {
-        const { current, order, package_details, request_stock_loading, couriers, method, next_loading, complete_order_loading, show_button_process_order, show_button_ship_order, incomplete, allowed } = this.state;
+        const { current, order, request_stock_loading, couriers, method, next_loading, complete_order_loading, allowed } = this.state;
         const { getFieldDecorator } = this.props.form;
         var order_status = order.status === 'pending' ? false : true;
         let stock_details = [{ sku:"", package_name:"", sim_card_number:"", serial_number:"", stock_id:"", order_detail_id:"" }];
