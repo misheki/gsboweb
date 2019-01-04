@@ -529,7 +529,7 @@ class PendingOrder extends Component {
                                 <Col span={6}>
                                     <p>Sim Card Number</p>
                                 </Col>
-                                <Col span={3}>
+                                <Col span={4}>
                                     <p>Serial Number</p>
                                 </Col>
                                 <Col span={2}>
@@ -542,7 +542,7 @@ class PendingOrder extends Component {
                                         {/* <p>RM {this.state.order.order_total}</p>  */}
                                 </Form.Item>
                                 <Form.Item  labelCol={{ span: 12 }} wrapperCol={{ span: 12 }} label="Shipping Fee : "  className="form-item">
-                                        {/* <p>RM {this.state.order.shipping_fee} </p>  */}
+                                        <p>RM {order.shipping_fee} </p> 
                                 </Form.Item>
                                 <Form.Item  labelCol={{ span: 12 }} wrapperCol={{ span: 12 }} label="Total Amount : "  className="form-item">
                                         {/* <p>RM {this.state.order.total}</p>  */}
