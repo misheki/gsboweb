@@ -24,14 +24,8 @@ class ProductPackage extends Component {
             require_activation: true,
             loading: false,
             clickView: false,
-            show_table_sku: false,
-            show_button_new_sku: false,
-            show_button_edit_sku: false,
-            show_button_delete_sku: false,
-            show_table_package: false,
-            show_button_new_package: false,
-            show_button_edit_package: false,
-            show_button_delete_package: false,
+            required: ['viewSku', 'newSku', 'editSku', 'deleteSku', 'viewPackage', 'newPackage', 'editPackage', 'deletePackage'],
+            allowed: null
         };
     }
 
@@ -39,14 +33,7 @@ class ProductPackage extends Component {
         this._isMounted = true;
         this.showPackageList();
         this.showSkuList();
-        this.showTableSku();
-        this.showButtonNewSku();
-        this.showButtonEditSku();
-        this.showButtonDeleteSku();
-        this.showTablePackage();
-        this.showButtonNewPackage();
-        this.showButtonEditPackage();
-        this.showButtonDeletePackage();
+        this.getPermissions();
     }
 
     componentWillUnmount() {
@@ -73,44 +60,10 @@ class ProductPackage extends Component {
             })
     }
 
-    showTableSku() {
+    getPermissions() {
         var access_token = sessionStorage.getItem('access_token');
-        checkAccess(['viewSku'], access_token).then(result => result !== false ? (this._isMounted === true ? this.setState({ show_table_sku: result }) : null) : null);
-    }
-
-    showButtonNewSku() {
-        var access_token = sessionStorage.getItem('access_token');
-        checkAccess(['newSku'], access_token).then(result => result !== false ? (this._isMounted === true ? this.setState({ show_button_new_sku: result }) : null) : null);
-    }
-
-    showButtonEditSku() {
-        var access_token = sessionStorage.getItem('access_token');
-        checkAccess(['editSku'], access_token).then(result => result !== false ? (this._isMounted === true ? this.setState({ show_button_edit_sku: result }) : null) : null);
-    }
-
-    showButtonDeleteSku() {
-        var access_token = sessionStorage.getItem('access_token');
-        checkAccess(['deleteSku'], access_token).then(result => result !== false ? (this._isMounted === true ? this.setState({ show_button_delete_sku: result }) : null) : null);
-    }
-
-    showTablePackage() {
-        var access_token = sessionStorage.getItem('access_token');
-        checkAccess(['viewPackage'], access_token).then(result => result !== false ? (this._isMounted === true ? this.setState({ show_table_package: result }) : null) : null);
-    }
-
-    showButtonNewPackage() {
-        var access_token = sessionStorage.getItem('access_token');
-        checkAccess(['newPackage'], access_token).then(result => result !== false ? (this._isMounted === true ? this.setState({ show_button_new_package: result }) : null) : null);
-    }
-
-    showButtonEditPackage() {
-        var access_token = sessionStorage.getItem('access_token');
-        checkAccess(['editPackage'], access_token).then(result => result !== false ? (this._isMounted === true ? this.setState({ show_button_edit_package: result }) : null) : null);
-    }
-
-    showButtonDeletePackage() {
-        var access_token = sessionStorage.getItem('access_token');
-        checkAccess(['deletePackage'], access_token).then(result => result !== false ? (this._isMounted === true ? this.setState({ show_button_delete_package: result }) : null) : null);
+        checkAccess(this.state.required, access_token)
+            .then(result => (this._isMounted === true) ? this.setState( allowed : result ));
     }
 
     showAddPackagesModal = () => {
@@ -180,7 +133,6 @@ class ProductPackage extends Component {
                 })
         });
     }
-
 
     submitSku = () => {
         var access_token = sessionStorage.getItem('access_token');
@@ -292,7 +244,6 @@ class ProductPackage extends Component {
             }
         }, () => this.showAddSkuModal());
     }
-
     
     onClickPackageModal = () => {
         this.setState({
