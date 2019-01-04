@@ -202,8 +202,6 @@ class PendingOrder extends Component {
         if (order.shipping_method_id) {
             this.setState({ method: 'Courier' });
         }
-        console.warn(package_details);
-        console.warn(order);
         
         const packageDetailItems = package_details.map((package_detail, i) =>
             package_detail.stocks.map((stock, j) =>
