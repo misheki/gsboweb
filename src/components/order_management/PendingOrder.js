@@ -154,19 +154,18 @@ class PendingOrder extends Component {
                 title: 'Confirm',
                 content: 'Are you sure you want to request the stocks? By doing this you will not be able to revert back.',
                 onOk: () => {
-                    this.setState({ current });
-                    // var filtered_stocks = values.stock_details.filter(function (s) {
-                    //     return s != null;
-                    // });
+                    var filtered_stocks = values.stock_details.filter(function (s) {
+                        return s != null;
+                    });
 
-                    // this.setState({ request_stock_loading: true });
-                    // requestStock(order_id, filtered_stocks, access_token)
-                    //     .then(result => {
-                    //         if (result.result === 'GOOD') {
-                    //             this.setState({ request_stock_loading: false });
-                    //             this.setState({ current });
-                    //         }
-                    //     })
+                    this.setState({ request_stock_loading: true });
+                    requestStock(order_id, filtered_stocks, access_token)
+                        .then(result => {
+                            if (result.result === 'GOOD') {
+                                this.setState({ request_stock_loading: false });
+                                this.setState({ current });
+                            }
+                        })
                 }
             })
         });
