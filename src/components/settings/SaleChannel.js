@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Layout, Table, Button, Modal, Input, Form } from 'antd';
 import { listSalesChannels, createSalesChannel, editSalesChannel, deleteSalesChannel } from '../../helpers/SalesChannels';
+import { checkAccess } from '../../helpers/PermissionController';
 
 const { Header } = Layout;
 const { Column } = Table;
@@ -13,17 +14,26 @@ class SaleChannel extends Component {
         super(props);
         this.state = {
             visible:false,
-            clickView:false
+            clickView:false,
+            required: ['viewSalesChannel', 'newSalesChannel', 'editSalesChannel', 'deleteSalesChannel'],
+            allowed: []
         };
     }
 
     componentDidMount() {
         this._isMounted = true;
+        this.getPermissions();
         this.showSalesChannelsList();
     }
 
     componentWillUnmount() {
         this._isMounted = false;
+    }
+
+    getPermissions() {
+        var access_token = sessionStorage.getItem('access_token');
+        checkAccess(this.state.required, access_token)
+            .then(result => (this._isMounted === true) ? this.setState({ allowed : result }) : null);
     }
     
     showSalesChannelsList() {
@@ -122,24 +132,26 @@ class SaleChannel extends Component {
     }
 
     render() {
-        const { channel, loading, clickView } = this.state;
+        const { channel, loading, clickView, allowed } = this.state;
         const { getFieldDecorator } = this.props.form;
         const data = this.state.sales_channels;
-
+        if (allowed.includes('viewSalesChannel')) {
          return (
             <div>
             <Header style={{ color: 'white', fontSize: '30px' }}>
                 <span>Sales Channels</span>
             </Header>
                 <div style={{ padding: '30px', width:'80%'}}>
-                    <Button
-                        onClick={this.onClickModal}
-                        style={{ marginBottom: '30px' }}
-                        type="primary"
-                        icon="plus-circle"
-                        size={'large'}>
-                        New Sales Channel
-                    </Button>
+                    {allowed.includes('newSalesChannel') ?
+                        <Button
+                            onClick={this.onClickModal}
+                            style={{ marginBottom: '30px' }}
+                            type="primary"
+                            icon="plus-circle"
+                            size={'large'}>
+                            New Sales Channel
+                        </Button>
+                    : null }
                     <Table
                         dataSource={data}
                         rowKey={data => data.id }
@@ -151,10 +163,14 @@ class SaleChannel extends Component {
                         key="action"
                         render={(record) => (
                             <div>
-                                <Button style={{ margin:'10px' }} type="primary"
-                                onClick={() => this.setState({ channel: Object.assign({}, record), id: record.id }, ()=> this.showEditModal())}>Edit</Button>
-                                <Button style={{ margin:'10px' }} type="primary"
-                                onClick={() => this.setState({ channel: Object.assign({}, record), id: record.id }, ()=> this.handleDelete())}>Delete</Button>
+                                {allowed.includes('editSalesChannel') ?
+                                    <Button style={{ margin:'10px' }} type="primary"
+                                        onClick={() => this.setState({ channel: Object.assign({}, record), id: record.id }, ()=> this.showEditModal())}>Edit</Button>
+                                : null }
+                                {allowed.includes('deleteSalesChannel') ?
+                                    <Button style={{ margin:'10px' }} type="primary"
+                                        onClick={() => this.setState({ channel: Object.assign({}, record), id: record.id }, ()=> this.handleDelete())}>Delete</Button>
+                                : null }
                             </div>
                         )} />
                     </Table>
@@ -178,7 +194,13 @@ class SaleChannel extends Component {
             </div>
             
             );   
-        }      
+        }  
+        else {
+            return (
+                <div></div>
+            );
+        }  
+    }  
 }
 
 export default Form.create()(SaleChannel);

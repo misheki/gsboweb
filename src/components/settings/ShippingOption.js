@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Layout, Table, Button,  Modal, Input, Form  } from 'antd';
 import { listShippingMethods, createShippingMethod, editShippingMethod, deleteShippingMethod } from '../../helpers/ShippingMethods';
+import { checkAccess } from '../../helpers/PermissionController';
 
 const { Header } = Layout;
 const { Column } = Table;
@@ -13,17 +14,26 @@ class ShippingOption extends Component {
         super(props);
         this.state = {
             visible:false,
-            clickView:false
+            clickView:false,
+            required: ['viewShippingMethod', 'newShippingMethod', 'editShippingMethod', 'deleteShippingMethod'],
+            allowed: []
         };
     }
 
     componentDidMount() {
         this._isMounted = true;
+        this.getPermissions();
         this.showShippingMethodsList();
     }
 
     componentWillUnmount() {
         this._isMounted = false;
+    }
+
+    getPermissions() {
+        var access_token = sessionStorage.getItem('access_token');
+        checkAccess(this.state.required, access_token)
+            .then(result => (this._isMounted === true) ? this.setState({ allowed : result }) : null);
     }
     
     showShippingMethodsList() {
@@ -121,24 +131,27 @@ class ShippingOption extends Component {
     }
 
     render() {
-        const { shipping, loading, clickView } = this.state;
+        const { shipping, loading, clickView, allowed } = this.state;
         const { getFieldDecorator } = this.props.form;
         const data = this.state.shipping_methods;
 
+        if (allowed.includes('viewShippingMethod')) {
          return (
             <div>
             <Header style={{ color: 'white', fontSize: '30px' }}>
                 <span>Shipping Options</span>
             </Header>
                 <div style={{ padding: '30px', width:'80%'}}>
-                    <Button
-                        onClick={this.onClickModal}
-                        style={{ marginBottom: '30px' }}
-                        type="primary"
-                        icon="plus-circle"
-                        size={'large'}>
-                        New Shipping Option
-                    </Button>
+                    {allowed.includes('newShippingMethod') ?
+                        <Button
+                            onClick={this.onClickModal}
+                            style={{ marginBottom: '30px' }}
+                            type="primary"
+                            icon="plus-circle"
+                            size={'large'}>
+                            New Shipping Option
+                        </Button>
+                    : null }
                     <Table
                         dataSource={data}
                         rowKey={data => data.id }
@@ -150,10 +163,14 @@ class ShippingOption extends Component {
                         key="action"
                         render={(record) => (
                             <div>
-                                <Button style={{ margin:'10px' }} type="primary"
-                                onClick={() => this.setState({ shipping: Object.assign({}, record), id: record.id }, () => this.showEditModal())}>Edit</Button>
-                                <Button style={{ margin:'10px' }} type="primary"
-                                onClick={() => this.setState({ shipping: Object.assign({}, record), id: record.id }, () => this.handleDelete())}>Delete</Button>
+                                {allowed.includes('editShippingMethod') ?
+                                    <Button style={{ margin:'10px' }} type="primary"
+                                    onClick={() => this.setState({ shipping: Object.assign({}, record), id: record.id }, () => this.showEditModal())}>Edit</Button>
+                                : null }
+                                {allowed.includes('deleteShippingMethod') ?
+                                    <Button style={{ margin:'10px' }} type="primary"
+                                    onClick={() => this.setState({ shipping: Object.assign({}, record), id: record.id }, () => this.handleDelete())}>Delete</Button>
+                                : null }
                             </div>
                         )} />
                     </Table>
@@ -175,8 +192,15 @@ class ShippingOption extends Component {
                     </Form>}
                 </Modal>
             </div>
-            );   
-        }      
+            );    
+        }  
+        else {
+            return (
+                <div></div>
+            )
+        }
+    }
+           
 }
 
 export default  Form.create()(ShippingOption);

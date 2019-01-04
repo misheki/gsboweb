@@ -118,6 +118,10 @@ class NewOrder extends Component {
         });
     }
 
+    hello = (e) => {
+        console.log(e);
+    }
+
     render() {
         const { getFieldDecorator, getFieldValue } = this.props.form;
         const { skus, packages, sale_channels, loading, allowed } = this.state;
@@ -154,7 +158,7 @@ class NewOrder extends Component {
                             {getFieldDecorator(`package_details[${k}]package_id`, {
                                 rules: [{ required: true, message: 'Please select the product package!' }]
                             })(
-                                <Select placeholder="Please select the product package">
+                                <Select placeholder="Please select the product package" onFocus={this.hello(getFieldValue('package_details[{k}]sku_id'))}>
                                     {packages.map((product_package) =>
                                         <Option key={product_package.id} value={product_package.id}>{product_package.code + ' - ' + product_package.name}</Option>
                                     )}
