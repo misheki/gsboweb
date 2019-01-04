@@ -642,8 +642,8 @@ class PendingOrder extends Component {
         }, {
             title: 'Confirm Order',
             content: 
-                <Form layout="vertical" style={{backgroundColor:'white'}}> 
-                    <div style={{padding:'20px', marginBottom:'10px'}}>
+                <Form> 
+                    <div style={{padding:'20px', marginBottom:'10px', backgroundColor:'white'}}>
                         <h2 style={{paddingBottom:'10px'}}>Order Ref. No.{order.order_ref_num}</h2>    
                         <Row gutter={8}>
                             <Col span={12}>
@@ -671,8 +671,9 @@ class PendingOrder extends Component {
                                 <p>{order.customer_email}</p> 
                             </Col>
                         </Row>   
-                        <h3 style={{paddingBottom:'10px'}}>Product Details</h3>
-                        <div style={{ backgroundColor: 'white', padding:'10px'}}>
+                        </div>
+                        <div style={{ backgroundColor: 'white', padding:'10px', backgroundColor:'white'}}>
+                            <h3 style={{paddingBottom:'10px'}}>Product Details</h3>
                             <Row gutter={16} style={{ backgroundColor: '#e8e8e8', padding: '10px', paddingBottom: '0px', marginBottom: '10px' }}>
                                 <Col span={2}>
                                     <p>Item</p>
@@ -694,19 +695,17 @@ class PendingOrder extends Component {
                                 </Col>
                             </Row>
                             {this.packageDetailItems()}
-                            <div style={{float:'right', width:'30%'}}>
-                                <Form.Item  labelCol={{ span: 12 }} wrapperCol={{ span: 12 }} label="Subtotal : "  className="form-item">
+                                <Form.Item  labelCol={{ span: 12 }} wrapperCol={{ span: 12 }} label="Subtotal : "  className="form-item-right">
                                         {/* <p>RM {this.state.order.order_total}</p>  */}
                                 </Form.Item>
-                                <Form.Item  labelCol={{ span: 12 }} wrapperCol={{ span: 12 }} label="Shipping Fee : "  className="form-item">
+                                <Form.Item  labelCol={{ span: 12 }} wrapperCol={{ span: 12 }} label="Shipping Fee : "  className="form-item-right">
                                         <p>RM {order.shipping_fee} </p> 
                                 </Form.Item>
-                                <Form.Item  labelCol={{ span: 12 }} wrapperCol={{ span: 12 }} label="Total Amount : "  className="form-item">
+                                <Form.Item  labelCol={{ span: 12 }} wrapperCol={{ span: 12 }} label="Total Amount : "  className="form-item-right">
                                         {/* <p>RM {this.state.order.total}</p>  */}
                                 </Form.Item>
-                            </div>
                         </div>
-                    </div>
+                  
             </Form>
         }];
      
