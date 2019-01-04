@@ -307,12 +307,11 @@ class NewOrder extends Component {
                                             )}
                                         </FormItem>
                                     </Col>
-
                                     <Col span={10}>
                                         <FormItem label='Postcode'>
-                                            {getFieldDecorator('customer_postcode', {
+                                            {getFieldDecorator('customer_postcode', {     
                                             })(
-                                                <Input />      
+                                                <Input />
                                             )}
                                         </FormItem>
                                     </Col>
