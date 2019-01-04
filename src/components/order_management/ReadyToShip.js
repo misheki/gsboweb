@@ -15,7 +15,6 @@ class ReadyToShip extends Component {
             confirmed_orders: [],
             processOrder: false,
             order_id: '',
-            order_overview: ''
         };
     }
 
@@ -38,12 +37,12 @@ class ReadyToShip extends Component {
             })
     }
 
-    processOrder(order_id, record) {
-        this.setState({ order_id: order_id, order_overview: record }, this.setState({ processOrder: true }));       
+    processOrder(order_id) {
+        this.setState({ order_id: order_id }, this.setState({ processOrder: true }));       
     }
 
     render() {
-        const { confirmed_orders, processOrder, order_id, order_overview } = this.state;
+        const { confirmed_orders, processOrder, order_id } = this.state;
 
         if (processOrder === false) {
             return (
@@ -68,7 +67,7 @@ class ReadyToShip extends Component {
                                         <Button
                                             style={{ margin: '10px' }}
                                             type="primary"
-                                            onClick={() => this.processOrder(record.id, record)}>
+                                            onClick={() => this.processOrder(record.id)}>
                                             Process Order
                                         </Button>
                                     </div>
@@ -84,7 +83,7 @@ class ReadyToShip extends Component {
                     <Header style={{ color: 'white', fontSize: '30px' }}>
                         <span>Ready to Ship</span>
                     </Header>
-                    <OrderSteps order_id={order_id} order_overview={order_overview} />
+                    <OrderSteps order_id={order_id} />
                 </div>
             );
         }

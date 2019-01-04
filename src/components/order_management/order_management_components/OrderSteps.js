@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Steps, Button, message, Form, Input, Select, Col, Row, Divider, Modal } from 'antd';
-import { showOrders, requestStock, courierList, completeOrder, shippingUpdateWithCourier, shippingUpdateWithoutCourier } from '../../../helpers/OrderController';
+import { showOrders, requestStock, courierList, completeOrder, shippingUpdateWithCourier, shippingUpdateWithoutCourier, listReadyShip } from '../../../helpers/OrderController';
 import { checkAccess } from '../../../helpers/PermissionController';
 
 const Option = Select.Option;
@@ -35,7 +35,7 @@ class OrderSteps extends Component {
         this._isMounted = true;
         this.showCourierList();
         this.getPermissions();
-        this.processOrder(this.props.order_id, this.props.order_overview);
+        this.processOrder(this.props.order_id);
     }
     
     componentWillUnmount() {
@@ -77,20 +77,35 @@ class OrderSteps extends Component {
                 shippingUpdateWithCourier(order.id, values.customer_address, values.customer_contact_num, values.customer_state, values.customer_postcode, values.shipping_method_id, values.tracking_number, values.shipping_fee, access_token)
                     .then(result => {
                         if (result.result === 'GOOD') {
-                            this.setState({ next_loading: false, current, method: 'Courier', tracking_number: values.tracking_number, shipping_method_id: values.shipping_method_id });
+                            this.setState({ next_loading: false, current, method: 'Courier', tracking_number: values.tracking_number, shipping_method_id: values.shipping_method_id }, this.fetchListReadyShip());
                         }
                     })
             })
         }
         else {
             this.setState({ next_loading: true });
-            shippingUpdateWithoutCourier(order.id, null, access_token)
+            shippingUpdateWithoutCourier(order.id, null, null, access_token)
                 .then(result => {     
                     if (result.result === 'GOOD') {
-                        this.setState({ next_loading: false, current, method: 'Courier', shipping_method_id: '' });
+                        this.setState({ next_loading: false, current, method: 'Self Pickup', shipping_method_id: null }, this.fetchListReadyShip());
                     }
                 })
         }
+    }
+
+    fetchListReadyShip() {
+        var access_token = sessionStorage.getItem('access_token');
+
+        listReadyShip(access_token)
+            .then(result => {
+                if (result.result === 'GOOD') {
+                    result.data.forEach(order => {
+                        if (order.id === this.props.order_id) {
+                            this.setState({ order_overview: order });
+                        }
+                    });
+                }
+            })
     }
 
     prev() {
@@ -99,13 +114,13 @@ class OrderSteps extends Component {
         this.setState({ current });
     }
 
-    processOrder(order_id, order_overview) {
+    processOrder(order_id) {
         var access_token = sessionStorage.getItem('access_token');
         this.setState({ process_order_loading: true });
 
         showOrders(order_id, access_token)
             .then(result => {
-                this.setState({ order: result.order, package_details: result.package_details, incomplete: result.incomplete, order_overview: order_overview }, this.setState({ processOrder: true, process_order_loading: false }));
+                this.setState({ order: result.order, package_details: result.package_details, incomplete: result.incomplete }, this.setState({ processOrder: true, process_order_loading: false }));
             })
     }
 
@@ -401,9 +416,8 @@ class OrderSteps extends Component {
         var order_status = order.status === 'pending' ? false : true;
 
         const formItemLayout = {
-            labelCol: {span:8},
+            labelCol: { span: 8 },
             wrapperCol: { span: 10 },
-    
         };
 
         // if (order.status === 'pending' && current === 0) {
@@ -630,7 +644,7 @@ class OrderSteps extends Component {
                                     <p>{order.sale_channel_name} </p>
                                 </Form.Item>
                                 <Form.Item  {...formItemLayout} label="Shipping Method : " className="form-item">
-                                    <p>{order.shipping_method_id} </p>
+                                    <p>{order_overview.shipping_method ? order_overview.shipping_method : 'Self Pickup'} </p>
                                 </Form.Item>
                                 <Form.Item  {...formItemLayout} label="Tracking Number : " className="form-item">
                                     <p>{order.tracking_number} </p>
@@ -671,13 +685,13 @@ class OrderSteps extends Component {
                             {this.packageDetailItems()}
                             <div style={{float:'right', width:'30%'}}>
                                 <Form.Item  labelCol={{ span: 12 }} wrapperCol={{ span: 12 }} label="Subtotal : "  className="form-item">
-                                        {/* <p>RM {this.state.order.order_total}</p>  */}
+                                    <p>RM {order_overview.total_amount}</p> 
                                 </Form.Item>
                                 <Form.Item  labelCol={{ span: 12 }} wrapperCol={{ span: 12 }} label="Shipping Fee : "  className="form-item">
-                                        <p>RM {order.shipping_fee} </p> 
+                                    <p>RM {order_overview.shipping_fee}</p>
                                 </Form.Item>
                                 <Form.Item  labelCol={{ span: 12 }} wrapperCol={{ span: 12 }} label="Total Amount : "  className="form-item">
-                                        {/* <p>RM {this.state.order.total}</p>  */}
+                                    <p>RM {order_overview.total}</p> 
                                 </Form.Item>
                             </div>
                         </div>

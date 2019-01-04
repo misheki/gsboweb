@@ -247,7 +247,7 @@ export const shippingUpdateWithCourier = (order_id, customer_address, customer_c
     ])
 };
 
-export const shippingUpdateWithoutCourier = (order_id, shipping_method_id, access_token) => {
+export const shippingUpdateWithoutCourier = (order_id, shipping_method_id, shipping_fee, access_token) => {
     return Promise.race([
         new Promise((resolve, reject) =>
             fetch(global.URL + 'api/order/shipping/update', {
@@ -259,7 +259,8 @@ export const shippingUpdateWithoutCourier = (order_id, shipping_method_id, acces
                 },
                 body: JSON.stringify({
                     order_id,
-                    shipping_method_id
+                    shipping_method_id,
+                    shipping_fee
                 })
             })
             .then((response) => response.json())
