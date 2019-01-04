@@ -148,7 +148,6 @@ export const showOrders = (order_id, access_token) => {
             })
             .then((response) => response.json())
             .then((responseJson) => {
-                console.log(responseJson);
                 if (responseJson.result === 'GOOD') {
                     resolve(responseJson);   
                 }

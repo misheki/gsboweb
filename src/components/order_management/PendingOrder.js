@@ -381,7 +381,7 @@ class PendingOrder extends Component {
                             <Col span={2}>
                                 <Form.Item>
                                     {getFieldDecorator(`stock_details.unit_price`, {
-                                        initialValue: ''
+                                        initialValue: package_detail.unit_price
                                     })(
                                         <Input disabled />
                                     )}
@@ -409,10 +409,9 @@ class PendingOrder extends Component {
     }
 
     renderProcessOrder() {
-        const { current, order, request_stock_loading, couriers, method, next_loading, complete_order_loading, allowed } = this.state;
+        const { current, order, request_stock_loading, couriers, method, next_loading, complete_order_loading, allowed, incomplete } = this.state;
         const { getFieldDecorator } = this.props.form;
         var order_status = order.status === 'pending' ? false : true;
-        let stock_details = [{ sku:"", package_name:"", sim_card_number:"", serial_number:"", stock_id:"", order_detail_id:"" }];
 
         const formItemLayout = {
             labelCol: {span:8},
@@ -711,7 +710,7 @@ class PendingOrder extends Component {
                     {current > 0 && (<Button style={{ marginRight: 8 }} onClick={() => this.prev()}>Previous</Button>)}
                     {current === steps.length - 1 && <Button loading={complete_order_loading} type="primary" onClick={() => this.handleCompleteOrder()}>Complete Order</Button>}
                     {allowed.includes('shipOrder') ? (current < steps.length - 1 && current !== 0 && <Button loading={next_loading} type="primary" onClick={() => this.next()}>Next</Button>) : null}
-                    {allowed.includes('processOrder') ? (current === 0 && (order.status === 'pending' ? <Button loading={request_stock_loading} type="primary" onClick={() => this.handleRequestStock()}>Save, Request Stock & Continue</Button> : <Button type="primary" onClick={() => this.next()}>Next</Button>)) : null}
+                    {allowed.includes('processOrder') ? (current === 0 && (order.status === 'pending' ? <Button disabled={incomplete} loading={request_stock_loading} type="primary" onClick={() => this.handleRequestStock()}>Save, Request Stock & Continue</Button> : <Button type="primary" onClick={() => this.next()}>Next</Button>)) : null}
                 </div>
             </div>
         );
