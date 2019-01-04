@@ -753,7 +753,7 @@ class PendingOrder extends Component {
             );
         }
         else {
-            return (             
+            return (
                 <div>
                     <Header style={{ color: 'white', fontSize: '30px' }}>
                         <span>Pending Order</span>
@@ -766,4 +766,3 @@ class PendingOrder extends Component {
 }
 
 export default Form.create()( PendingOrder);
-

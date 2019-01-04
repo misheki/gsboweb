@@ -24,31 +24,26 @@ class OrderSteps extends Component {
             method: 'Self Pickup',
             tracking_number: '',
             shipping_method_id: '',
-            show_table: false,
-            show_button_process_order: false,
-            show_button_ship_order: false
+            required: ['viewOrderHistory', 'processOrder', 'shipOrder'],
+            allowed: [],
+            incomplete: false
         };
     }
 
     componentDidMount() {
         this._isMounted = true;
         this.showCourierList();
-        this.showButtonProcessOrder();
-        this.showButtonShipOrder();
+        this.getPermissions();
     }
     
     componentWillUnmount() {
         this._isMounted = false;
     }
 
-    showButtonProcessOrder() {
+    getPermissions() {
         var access_token = sessionStorage.getItem('access_token');
-        checkAccess(['processOrder'], access_token).then(result => result !== false ? (this._isMounted === true ? this.setState({ show_button_process_order: result }) : null) : null);
-    }
-
-    showButtonShipOrder() {
-        var access_token = sessionStorage.getItem('access_token');
-        checkAccess(['shipOrder'], access_token).then(result => result !== false ? (this._isMounted === true ? this.setState({ show_button_ship_order: result }) : null) : null);
+        checkAccess(this.state.required, access_token)
+            .then(result => (this._isMounted === true) ? this.setState({ allowed : result }) : null);
     }
 
     showCourierList() {
@@ -88,7 +83,7 @@ class OrderSteps extends Component {
         else {
             this.setState({ next_loading: true });
             shippingUpdateWithoutCourier(order.id, null, access_token)
-                .then(result => {
+                .then(result => {     
                     if (result.result === 'GOOD') {
                         this.setState({ next_loading: false, current, method: 'Courier', shipping_method_id: '' });
                     }
@@ -108,7 +103,7 @@ class OrderSteps extends Component {
 
         showOrders(order_id, access_token)
             .then(result => {
-                this.setState({ order: result.order, package_details: result.package_details }, this.setState({ processOrder: true, process_order_loading: false }));
+                this.setState({ order: result.order, package_details: result.package_details, incomplete: result.incomplete }, this.setState({ processOrder: true, process_order_loading: false }));
             })
     }
 
@@ -163,28 +158,21 @@ class OrderSteps extends Component {
             })
     }
 
-    renderProcessOrder() {
-        const { current, order, package_details, request_stock_loading, couriers, method, next_loading, complete_order_loading, show_button_process_order, show_button_ship_order } = this.state;
+    packageDetailItems() {
+        var array = [];
+        const { package_details } = this.state;
         const { getFieldDecorator } = this.props.form;
-        var order_status = order.status === 'pending' ? false : true;
-        let stock_details = [{ sku:"", package_name:"", sim_card_number:"", serial_number:"", stock_id:"", order_detail_id:"" }];
+        let counter = 0;
 
-        // if (order.status === 'pending' && current === 0) {
-        //     this.setState({ current: 1 });
-        // }
-
-        if (order.shipping_method_id) {
-            this.setState({ method: 'Courier' });
-        }
-        
-        const packageDetailItems = package_details.map((package_detail, i) =>
-            package_detail.stocks.map((stock, j) =>
-                <React.Fragment key={stock.id}>
+        package_details.forEach(package_detail => {
+            if (package_detail.stocks.length === 0) {
+                counter++;
+                array.push(<React.Fragment key={counter}>
                     <Row gutter={16}>
                         <Col span={2}>
                             <Form.Item>
                                 {getFieldDecorator('id', {
-                                    initialValue: i + j + 1
+                                    initialValue: counter
                                 })(
                                     <Input disabled />
                                 )}
@@ -192,56 +180,237 @@ class OrderSteps extends Component {
                         </Col>
                         <Col span={3}>
                             <Form.Item>
-                                {getFieldDecorator(`stock_details[${stock.id}].sku`, {
+                                {getFieldDecorator(`stock_details.sku`, {
                                     initialValue: package_detail.sku
                                 })(
                                     <Input disabled />
                                 )}
                             </Form.Item>
                         </Col>
-                        <Col span={8}>
+                        <Col span={7}>
                             <Form.Item>
-                                {getFieldDecorator(`stock_details[${stock.id}].package_name`, {
+                                {getFieldDecorator(`stock_details.package_name`, {
                                     initialValue: package_detail.package_name
                                 })(
                                     <Input disabled />
                                 )}
                             </Form.Item>
                         </Col>
-                        <Col span={5}>
+                        <Col span={6}>
                             <Form.Item>
-                                {getFieldDecorator(`stock_details[${stock.id}].sim_card_number`, {
-                                    initialValue: stock.sim_card_number
+                                {getFieldDecorator(`stock_details.sim_card_number`, {
+                                    initialValue: 'No Stock'
                                 })(
                                     <Input disabled />
                                 )}
                             </Form.Item>
                         </Col>
-                        <Col span={5}>
+                        <Col span={4}>
                             <Form.Item>
-                                {getFieldDecorator(`stock_details[${stock.id}].serial_number`, {
-                                    initialValue: stock.serial_number
+                                {getFieldDecorator(`stock_details.serial_number`, {
+                                    initialValue: 'No Stock'
+                                })(
+                                    <Input disabled />
+                                )}
+                            </Form.Item>
+                        </Col>
+                        <Col span={2}>
+                            <Form.Item>
+                                {getFieldDecorator(`stock_details.unit_price`, {
+                                    initialValue: package_detail.unit_price
                                 })(
                                     <Input disabled />
                                 )}
                             </Form.Item>
                         </Col>
 
-                        {getFieldDecorator(`stock_details[${stock.id}].stock_id`, {
-                            initialValue: stock.id
+                        {getFieldDecorator(`stock_details.stock_id`, {
+                            initialValue: 'No Stock'
                         })(
                             <Input type="hidden" disabled />
                         )}
 
-                        {getFieldDecorator(`stock_details[${stock.id}].order_detail_id`, {
+                        {getFieldDecorator(`stock_details.order_detail_id`, {
                             initialValue: package_detail.order_detail_id
                         })(
                             <Input type="hidden" disabled />
                         )}
                     </Row>
-                </React.Fragment>
-            )
-        )
+                </React.Fragment>)
+            }
+            else {
+                package_detail.stocks.forEach(stock => {
+                    counter++;
+                    array.push(<React.Fragment key={counter}>
+                        <Row gutter={16}>
+                            <Col span={2}>
+                                <Form.Item>
+                                    {getFieldDecorator('id', {
+                                        initialValue: counter
+                                    })(
+                                        <Input disabled />
+                                    )}
+                                </Form.Item>
+                            </Col>
+                            <Col span={3}>
+                                <Form.Item>
+                                    {getFieldDecorator(`stock_details[${stock.id}].sku`, {
+                                        initialValue: package_detail.sku
+                                    })(
+                                        <Input disabled />
+                                    )}
+                                </Form.Item>
+                            </Col>
+                            <Col span={7}>
+                                <Form.Item>
+                                    {getFieldDecorator(`stock_details[${stock.id}].package_name`, {
+                                        initialValue: package_detail.package_name
+                                    })(
+                                        <Input disabled />
+                                    )}
+                                </Form.Item>
+                            </Col>
+                            <Col span={6}>
+                                <Form.Item>
+                                    {getFieldDecorator(`stock_details[${stock.id}].sim_card_number`, {
+                                        initialValue: stock.sim_card_number
+                                    })(
+                                        <Input disabled />
+                                    )}
+                                </Form.Item>
+                            </Col>
+                            <Col span={4}>
+                                <Form.Item>
+                                    {getFieldDecorator(`stock_details[${stock.id}].serial_number`, {
+                                        initialValue: stock.serial_number
+                                    })(
+                                        <Input disabled />
+                                    )}
+                                </Form.Item>
+                            </Col>
+
+                            <Col span={2}>
+                                <Form.Item>
+                                    {getFieldDecorator(`stock_details[${stock.id}].unit_price`, {
+                                        initialValue: package_detail.unit_price
+                                    })(
+                                        <Input disabled />
+                                    )}
+                                </Form.Item>
+                            </Col>
+
+                            {getFieldDecorator(`stock_details[${stock.id}].stock_id`, {
+                                initialValue: stock.id
+                            })(
+                                <Input type="hidden" disabled />
+                            )}
+
+                            {getFieldDecorator(`stock_details[${stock.id}].order_detail_id`, {
+                                initialValue: package_detail.order_detail_id
+                            })(
+                                <Input type="hidden" disabled />
+                            )}
+                        </Row>
+                    </React.Fragment>)
+                })
+
+                if (package_detail.missing > 0) {
+                    counter++;
+                    array.push(<React.Fragment key={counter}>
+                        <Row gutter={16}>
+                            <Col span={2}>
+                                <Form.Item>
+                                    {getFieldDecorator('id', {
+                                        initialValue: counter
+                                    })(
+                                        <Input disabled />
+                                    )}
+                                </Form.Item>
+                            </Col>
+                            <Col span={3}>
+                                <Form.Item>
+                                    {getFieldDecorator(`stock_details.sku`, {
+                                        initialValue: package_detail.sku
+                                    })(
+                                        <Input disabled />
+                                    )}
+                                </Form.Item>
+                            </Col>
+                            <Col span={7}>
+                                <Form.Item>
+                                    {getFieldDecorator(`stock_details.package_name`, {
+                                        initialValue: package_detail.package_name
+                                    })(
+                                        <Input disabled />
+                                    )}
+                                </Form.Item>
+                            </Col>
+                            <Col span={6}>
+                                <Form.Item>
+                                    {getFieldDecorator(`stock_details.sim_card_number`, {
+                                        initialValue: 'No Stock'
+                                    })(
+                                        <Input disabled />
+                                    )}
+                                </Form.Item>
+                            </Col>
+                            <Col span={4}>
+                                <Form.Item>
+                                    {getFieldDecorator(`stock_details.serial_number`, {
+                                        initialValue: 'No Stock'
+                                    })(
+                                        <Input disabled />
+                                    )}
+                                </Form.Item>
+                            </Col>
+                            <Col span={2}>
+                                <Form.Item>
+                                    {getFieldDecorator(`stock_details.unit_price`, {
+                                        initialValue: package_detail.unit_price
+                                    })(
+                                        <Input disabled />
+                                    )}
+                                </Form.Item>
+                            </Col>
+
+                            {getFieldDecorator(`stock_details.stock_id`, {
+                                initialValue: 'No Stock'
+                            })(
+                                <Input type="hidden" disabled />
+                            )}
+
+                            {getFieldDecorator(`stock_details.order_detail_id`, {
+                                initialValue: package_detail.order_detail_id
+                            })(
+                                <Input type="hidden" disabled />
+                            )}
+                        </Row>
+                    </React.Fragment>)
+                }
+            }
+        });
+
+        return array;
+    }
+
+    renderProcessOrder() {
+        const { current, order, request_stock_loading, couriers, method, next_loading, complete_order_loading, allowed, incomplete } = this.state;
+        const { getFieldDecorator } = this.props.form;
+        var order_status = order.status === 'pending' ? false : true;
+
+        const formItemLayout = {
+            labelCol: {span:8},
+            wrapperCol: { span: 10 },
+    
+        };
+
+        // if (order.status === 'pending' && current === 0) {
+        //     this.setState({ current: 1 });
+        // }
+
+        // if (order.shipping_method_id) {
+        //     this.setState({ method: 'Courier' });
+        // }
 
         const steps = [{
             title: 'Order Details',
@@ -317,23 +486,26 @@ class OrderSteps extends Component {
                     <Divider orientation="left">Package Details</Divider>
 
                     <Row gutter={8} style={{ backgroundColor: '#e8e8e8', padding: '10px', paddingBottom: '0px', marginBottom: '10px', paddingLeft:'0px' }}>
-                         <Col span={2}>
+                        <Col span={2}>
                             <p>Item</p>
                         </Col>
-                        <Col span={2}>
+                        <Col span={3}>
                             <p>SKU</p>
                         </Col>
-                        <Col span={9}>
+                        <Col span={7}>
                             <p>Package</p>
                         </Col>
-                        <Col span={5}>
+                        <Col span={6}>
                             <p>Sim Card Number</p>
                         </Col>
-                        <Col span={5}>
+                        <Col span={4}>
                             <p>Serial Number</p>
                         </Col>
+                        <Col span={2}>
+                            <p>Unit Price</p>
+                        </Col>
                     </Row>
-                    {packageDetailItems}
+                    {this.packageDetailItems()}
                 </Form>
         }, {
             title: 'Shipping Details',
@@ -442,7 +614,73 @@ class OrderSteps extends Component {
                 </div>
         }, {
             title: 'Confirm Order',
-            content: 'Confirm Package',
+            content: 
+                <Form layout="vertical" style={{backgroundColor:'white'}}> 
+                    <div style={{padding:'20px', marginBottom:'10px'}}>
+                        <h2 style={{paddingBottom:'10px'}}>Order Ref. No.{order.order_ref_num}</h2>    
+                        <Row gutter={8}>
+                            <Col span={12}>
+                            <h3 style={{paddingBottom:'10px'}}>Order Details </h3>  
+                                <Form.Item {...formItemLayout} label="Order Date : "  className="form-item">
+                                <p>{order.created_at}</p> 
+                                </Form.Item>
+                                <Form.Item  {...formItemLayout} label="Sales Channel : " className="form-item">
+                                    <p>{order.sale_channel_name} </p>
+                                </Form.Item>
+                                <Form.Item  {...formItemLayout} label="Shipping Method : " className="form-item">
+                                    <p>{order.shipping_method_id} </p>
+                                </Form.Item>
+                                <Form.Item  {...formItemLayout} label="Tracking Number : " className="form-item">
+                                    <p>{order.tracking_number} </p>
+                                </Form.Item>
+
+                            </Col>
+                            <Col span={12}>
+                                <h3 style={{paddingBottom:'10px'}}>Customer Details </h3>  
+                                <p>{order.customer_name}</p> 
+                                <p>{order.customer_address}</p> 
+                                <p>{order.customer_postcode}, {order.customer_state}</p> 
+                                <p>{order.customer_contact_num}</p> 
+                                <p>{order.customer_email}</p> 
+                            </Col>
+                        </Row>   
+                        <h3 style={{paddingBottom:'10px'}}>Product Details</h3>
+                        <div style={{ backgroundColor: 'white', padding:'10px'}}>
+                            <Row gutter={16} style={{ backgroundColor: '#e8e8e8', padding: '10px', paddingBottom: '0px', marginBottom: '10px' }}>
+                                <Col span={2}>
+                                    <p>Item</p>
+                                </Col>
+                                <Col span={3}>
+                                    <p>SKU</p>
+                                </Col>
+                                <Col span={7}>
+                                    <p>Package</p>
+                                </Col>
+                                <Col span={6}>
+                                    <p>Sim Card Number</p>
+                                </Col>
+                                <Col span={4}>
+                                    <p>Serial Number</p>
+                                </Col>
+                                <Col span={2}>
+                                    <p>Unit Price</p>
+                                </Col>
+                            </Row>
+                            {this.packageDetailItems()}
+                            <div style={{float:'right', width:'30%'}}>
+                                <Form.Item  labelCol={{ span: 12 }} wrapperCol={{ span: 12 }} label="Subtotal : "  className="form-item">
+                                        {/* <p>RM {this.state.order.order_total}</p>  */}
+                                </Form.Item>
+                                <Form.Item  labelCol={{ span: 12 }} wrapperCol={{ span: 12 }} label="Shipping Fee : "  className="form-item">
+                                        <p>RM {order.shipping_fee} </p> 
+                                </Form.Item>
+                                <Form.Item  labelCol={{ span: 12 }} wrapperCol={{ span: 12 }} label="Total Amount : "  className="form-item">
+                                        {/* <p>RM {this.state.order.total}</p>  */}
+                                </Form.Item>
+                            </div>
+                        </div>
+                    </div>
+            </Form>
         }];
      
         return (
@@ -456,10 +694,16 @@ class OrderSteps extends Component {
                 <div className="steps-action">
                     {current > 0 && (<Button style={{ marginRight: 8 }} onClick={() => this.prev()}>Previous</Button>)}
                     {current === steps.length - 1 && <Button loading={complete_order_loading} type="primary" onClick={() => this.handleCompleteOrder()}>Complete Order</Button>}
-                    {show_button_ship_order === true ? (current < steps.length - 1 && current !== 0 && <Button loading={next_loading} type="primary" onClick={() => this.next()}>Next</Button>) : null}
-                    {show_button_process_order === true ? (current === 0 && (order.status === 'pending' ? <Button loading={request_stock_loading} type="primary" onClick={() => this.handleRequestStock()}>Save, Request Stock & Continue</Button> : <Button type="primary" onClick={() => this.next()}>Next</Button>)) : null}
+                    {allowed.includes('shipOrder') ? (current < steps.length - 1 && current !== 0 && <Button loading={next_loading} type="primary" onClick={() => this.next()}>Next</Button>) : null}
+                    {allowed.includes('processOrder') ? (current === 0 && (order.status === 'pending' ? <Button disabled={incomplete} loading={request_stock_loading} type="primary" onClick={() => this.handleRequestStock()}>Save, Request Stock & Continue</Button> : <Button type="primary" onClick={() => this.next()}>Next</Button>)) : null}
                 </div>
             </div>
+        );
+    }
+
+    render() {
+        return (
+            this.renderProcessOrder()
         );
     }
 }
