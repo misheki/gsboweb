@@ -26,7 +26,8 @@ class OrderSteps extends Component {
             shipping_method_id: '',
             required: ['viewOrderHistory', 'processOrder', 'shipOrder'],
             allowed: [],
-            incomplete: false
+            incomplete: false,
+            order_overview: ''
         };
     }
 
@@ -34,6 +35,7 @@ class OrderSteps extends Component {
         this._isMounted = true;
         this.showCourierList();
         this.getPermissions();
+        this.processOrder(this.props.order_id, this.props.order_overview);
     }
     
     componentWillUnmount() {
@@ -97,13 +99,13 @@ class OrderSteps extends Component {
         this.setState({ current });
     }
 
-    processOrder(order_id) {
+    processOrder(order_id, order_overview) {
         var access_token = sessionStorage.getItem('access_token');
         this.setState({ process_order_loading: true });
 
         showOrders(order_id, access_token)
             .then(result => {
-                this.setState({ order: result.order, package_details: result.package_details, incomplete: result.incomplete }, this.setState({ processOrder: true, process_order_loading: false }));
+                this.setState({ order: result.order, package_details: result.package_details, incomplete: result.incomplete, order_overview: order_overview }, this.setState({ processOrder: true, process_order_loading: false }));
             })
     }
 
@@ -394,7 +396,7 @@ class OrderSteps extends Component {
     }
 
     renderProcessOrder() {
-        const { current, order, request_stock_loading, couriers, method, next_loading, complete_order_loading, allowed, incomplete } = this.state;
+        const { current, order, request_stock_loading, couriers, method, next_loading, complete_order_loading, allowed, incomplete, order_overview } = this.state;
         const { getFieldDecorator } = this.props.form;
         var order_status = order.status === 'pending' ? false : true;
 
@@ -703,7 +705,9 @@ class OrderSteps extends Component {
 
     render() {
         return (
-            this.renderProcessOrder()
+            <div>
+                {this.renderProcessOrder()}
+            </div>
         );
     }
 }
