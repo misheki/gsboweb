@@ -20,24 +20,26 @@ class NewOrder extends Component {
             sale_channels: [],
             loading: false,
             package_key: 0,
-            show_screen: false
+            required: ['newOrder'],
+            allowed: []
         };
     }
 
     componentDidMount() {
         this._isMounted = true;
+        this.getPermissions();
         this.showListSku();
         this.showCourierList();
-        this.showScreen();
     }
 
     componentWillUnmount() {
         this._isMounted = false;
     }
 
-    showScreen() {
+    getPermissions() {
         var access_token = sessionStorage.getItem('access_token');
-        checkAccess(['newOrder'], access_token).then(result => result !== false ? (this._isMounted === true ? this.setState({ show_screen: result }) : null) : null);
+        checkAccess(this.state.required, access_token)
+            .then(result => (this._isMounted === true) ? this.setState({ allowed : result }) : null);
     }
 
     showListSku() {
@@ -118,7 +120,7 @@ class NewOrder extends Component {
 
     render() {
         const { getFieldDecorator, getFieldValue } = this.props.form;
-        const { skus, packages, sale_channels, loading, show_screen } = this.state;
+        const { skus, packages, sale_channels, loading, allowed } = this.state;
 
         getFieldDecorator('keys', { initialValue: [0] });
         const keys = getFieldValue('keys');
@@ -204,7 +206,7 @@ class NewOrder extends Component {
                 </Row>
             </React.Fragment>
         ));
-        if (show_screen === true) {
+        if (allowed.includes('newOrder')) {
          return (
             <div>
                 <Header style={{ color: 'white', fontSize: '30px' }}>

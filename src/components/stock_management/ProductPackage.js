@@ -24,8 +24,8 @@ class ProductPackage extends Component {
             require_activation: true,
             loading: false,
             clickView: false,
-            required: ['viewSku', 'newSku', 'editSku', 'deleteSku', 'viewPackage', 'newPackage', 'editPackage', 'deletePackage'],
-            allowed: null
+            required: ['viewSku', 'newSKU', 'editSku', 'deleteSku', 'viewPackage', 'newPackage', 'editPackage', 'deletePackage'],
+            allowed: []
         };
     }
 
@@ -63,7 +63,7 @@ class ProductPackage extends Component {
     getPermissions() {
         var access_token = sessionStorage.getItem('access_token');
         checkAccess(this.state.required, access_token)
-            .then(result => (this._isMounted === true) ? this.setState( allowed : result ));
+            .then(result => (this._isMounted === true) ? this.setState({ allowed : result }) : null);
     }
 
     showAddPackagesModal = () => {
@@ -258,9 +258,10 @@ class ProductPackage extends Component {
     }
 
     render() {
-        const { packages, newpackage, skus, sku, loading, clickView, show_table_sku, show_button_new_sku, show_button_edit_sku, show_button_delete_sku, show_table_package, show_button_new_package, show_button_edit_package, show_button_delete_package } = this.state;
-        const { getFieldDecorator } = this.props.form;
 
+        const { packages, newpackage, skus, sku, loading, clickView, allowed } = this.state;
+        const { getFieldDecorator } = this.props.form;
+        
          return (
             <div>
             <Header style={{ color: 'white', fontSize: '30px' }}>
@@ -268,7 +269,7 @@ class ProductPackage extends Component {
             </Header>
 
             <div style={{ padding: '30px' }}>
-                {show_button_new_sku === true ? <Button
+                {allowed.includes('newSKU') ? <Button
                     onClick={this.onClickSkuModal}
                     style={{ marginBottom: '30px' }}
                     type="primary"
@@ -277,7 +278,7 @@ class ProductPackage extends Component {
                     Add SKU
                 </Button> : null}
 
-                {show_table_sku === true ? <Table
+                {allowed.includes('viewSku') ? <Table
                     dataSource={skus}
                     rowKey={skus => skus.id}>
                     <Column title="SKU" dataIndex="sku" key="sku" />
@@ -287,14 +288,14 @@ class ProductPackage extends Component {
                         key="action"
                         render={(record) => (
                             <div>
-                                {show_button_edit_sku === true ? <Button
+                                {allowed.includes('editSku') ? <Button
                                     style={{ margin:'10px' }}
                                     type="primary"
                                     onClick={() => this.setState({ sku: Object.assign({}, record), sku_id: record.id }, () => this.showEditSkuModal())}>
                                     Edit
                                 </Button> : null}
 
-                                {show_button_delete_sku === true ? <Button
+                                {allowed.includes('deleteSku') === true ? <Button
                                     style={{ margin:'10px' }}
                                     type="primary" 
                                     onClick={() => this.setState({ sku: Object.assign({}, record), sku_id: record.id }, () => this.handleDeleteSku())}>
@@ -329,7 +330,7 @@ class ProductPackage extends Component {
                     </Form>}
                 </Modal>
 
-                {show_button_new_package === true ? <Button
+                {allowed.includes('newPackage') ? <Button
                     onClick={this.onClickPackageModal}
                     style={{ marginBottom: '30px' }}
                     type="primary"
@@ -338,7 +339,7 @@ class ProductPackage extends Component {
                     New Package
                 </Button> : null}
 
-                {show_table_package === true ? <Table
+                {allowed.includes('viewPackage') ? <Table
                     dataSource={packages}
                     rowKey={packages => packages.id }>
                     <Column title="SKU" dataIndex="sku_name" key="sku_name" />
@@ -351,14 +352,14 @@ class ProductPackage extends Component {
                         key="action"
                         render={(record) => (
                             <div>
-                                {show_button_edit_package === true ? <Button
+                                {allowed.includes('editPackage') ? <Button
                                     style={{ margin:'10px' }}
                                     type="primary"
                                     onClick={() => this.setState({ newpackage: Object.assign({}, record), package_id: record.id }, () => this.showEditPackagesModal())}>
                                     Edit
                                 </Button> : null}
 
-                                {show_button_delete_package === true ? <Button
+                                {allowed.includes('deletePackage') ? <Button
                                     style={{ margin:'10px' }}
                                     type="primary"  
                                     onClick={() => this.setState({ newpackage: Object.assign({}, record), package_id: record.id }, () => this.handleDeletePackage())}>

@@ -19,30 +19,25 @@ class ViewStock extends Component {
            visible: false,
            loading: false,
            stock_id: '',
-           show_table_stock: false,
-           show_button_write_off: false,
+           required: ['viewStock', 'writeoffStock'],
+           allowed: []
         };
     }
 
     componentDidMount() {
         this._isMounted = true;
-        this.showListStock();
-        this.showTableStock();
-        this.showButtonWriteOff();
+        this.getPermissions();
+        this.showListStock();   
     }
 
     componentWillUnmount() {
         this._isMounted = false;
     }
 
-    showTableStock() {
+    getPermissions() {
         var access_token = sessionStorage.getItem('access_token');
-        checkAccess(['viewStock'], access_token).then(result => result !== false ? (this._isMounted === true ? this.setState({ show_table_stock: result }) : null) : null);
-    }
-
-    showButtonWriteOff() {
-        var access_token = sessionStorage.getItem('access_token');
-        checkAccess(['writeoffStock'], access_token).then(result => result !== false ? (this._isMounted === true ? this.setState({ show_button_write_off: result }) : null) : null);
+        checkAccess(this.state.required, access_token)
+            .then(result => (this._isMounted === true) ? this.setState({ allowed : result }) : null);
     }
 
     showListStock() {
@@ -110,10 +105,10 @@ class ViewStock extends Component {
     }
 
     render() {
-        const { stocks, visible, loading, show_table_stock, show_button_write_off } = this.state;
+        const { stocks, visible, loading, allowed } = this.state;
         const { getFieldDecorator } = this.props.form;
-
-        if (show_table_stock === true) {
+        console.log(allowed);
+        if (allowed.includes('viewStock')) {
             return (
                 <div>
                     <Header style={{ color: 'white', fontSize: '30px' }}>
@@ -145,7 +140,7 @@ class ViewStock extends Component {
                                 key="action"
                                 render={(record) => (
                                     <div>
-                                        {show_button_write_off === true ? <Button
+                                        {allowed.includes('writeoffStock') === true ? <Button
                                             style={{ margin:'10px' }}
                                             type="primary" onClick={() => this.setState({ stock_id: record.id }, this.showWriteOffModal)}>
                                             Write Off
