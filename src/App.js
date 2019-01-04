@@ -20,6 +20,7 @@ import Login from './components/Login';
 import ManagePermission from './components/user_management/ManagePermission';
 import SaleChannel from './components/settings/SaleChannel';
 import ShippingOption from './components/settings/ShippingOption';
+import ChangePassword from './components/ChangePassword';
 
 const { Content, Footer, Sider } = Layout;
 const SubMenu = Menu.SubMenu;
@@ -165,6 +166,8 @@ class App extends Component {
                         render={(props) => <SaleChannel {...props} reloadMenu={this.fetchSideBarMenu.bind(this)} />}/>
                     <Route path="/shipping-option"
                         render={(props) => <ShippingOption {...props} reloadMenu={this.fetchSideBarMenu.bind(this)} />}/>
+                    <Route path="/change-password"
+                        render={(props) => <ChangePassword {...props} reloadMenu={this.fetchSideBarMenu.bind(this)} />}/>
                 </Content>
                 <Footer style={{ textAlign: 'center' }}>
                     Global Sim ©2018

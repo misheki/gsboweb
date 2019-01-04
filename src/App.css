@@ -116,3 +116,9 @@
 .form-item {
   margin-bottom: 0px
 }
+
+.form-item-right {
+  margin-bottom: 0px;
+  text-align-last: right;
+
+}

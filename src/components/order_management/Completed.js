@@ -17,23 +17,26 @@ class Completed extends Component {
             completed_orders: [],
             order: null,
             displayDetails: false,
-            show_table: false
+            required: ['viewOrderHistory'],
+            allowed: []
         };
     }
 
 
     componentDidMount() {
         this._isMounted = true;
-        this.showTable();
+        this.showOrderlistCompleted();
+        this.getPermissions();
     }
 
     componentWillUnmount() {
         this._isMounted = false;
     }
 
-    showTable() {
+    getPermissions() {
         var access_token = sessionStorage.getItem('access_token');
-        checkAccess(['viewOrderHistory'], access_token).then(result => result !== false ? (this._isMounted === true ? this.setState({ show_table: result }, this.showOrderlistCompleted()) : null) : null);
+        checkAccess(this.state.required, access_token)
+            .then(result => (this._isMounted === true) ? this.setState({ allowed : result }) : null);
     }
 
     showOrderlistCompleted() {
@@ -69,13 +72,13 @@ class Completed extends Component {
     
           };
 
-        const packageDetailItems =  this.state.order.order_details.map((item) =>
-        item.stocks.map((stock) =>
+        const packageDetailItems =  this.state.order.order_details.map((item, i) =>
+        item.stocks.map((stock, j) =>
             <React.Fragment key={item.id}>
                 <Row gutter={8}>
                     <Col span={2}>
                         <Form.Item>
-                            <Input value={stock.id} disabled />
+                            <Input value={ i + j + 1} disabled />
                         </Form.Item>
                     </Col>
                     <Col span={3}>
@@ -109,9 +112,9 @@ class Completed extends Component {
             )
         )
         return(
-            <div style={{padding:'30px'}}>
-                <Form layout="vertical" style={{backgroundColor:'white'}}> 
-                    <div style={{padding:'20px', marginBottom:'10px'}}>
+            <div style={{padding:'30px',}}>
+                <Form layout="vertical"> 
+                    <div style={{padding:'20px', marginBottom:'10px', backgroundColor:'white'}}>
                         <h2 style={{paddingBottom:'10px'}}>Order Ref. No. {this.state.order.order_ref_num}</h2>    
                         <Row gutter={8}>
                             <Col span={12}>
@@ -128,7 +131,6 @@ class Completed extends Component {
                                 <FormItem  {...formItemLayout} label="Tracking Number : " className="form-item">
                                     <p>{this.state.order.tracking_number} </p>
                                 </FormItem>
-
                             </Col>
                             <Col span={12}>
                                 <h3 style={{paddingBottom:'10px'}}>Customer Details </h3>  
@@ -138,9 +140,10 @@ class Completed extends Component {
                                 <p>{this.state.order.customer_contact_num}</p> 
                                 <p>{this.state.order.customer_email}</p> 
                             </Col>
-                        </Row>   
+                        </Row>
+                    </div>  
+                    <div style={{ padding:'20px', backgroundColor:'white'}}>
                         <h3 style={{paddingBottom:'10px'}}>Product Details</h3>
-                        <div style={{ backgroundColor: 'white', padding:'10px'}}>
                             <Row gutter={16} style={{ backgroundColor: '#e8e8e8', padding: '10px', paddingBottom: '0px', marginBottom: '10px' }}>
                                 <Col span={2}>
                                     <p>Item</p>
@@ -162,18 +165,17 @@ class Completed extends Component {
                                 </Col>
                             </Row>
                             {packageDetailItems}
-                             <div style={{float:'right', width:'30%'}}>
-                                <FormItem  labelCol={{ span: 12 }} wrapperCol={{ span: 12 }} label="Subtotal : "  className="form-item">
+                             {/* <div style={{float:'right', width:'23%'}}> */}
+                                <FormItem  labelCol={{ span: 20 }} wrapperCol={{ span: 3 }} label="Subtotal : "  className="form-item-right">
                                         <p>RM {this.state.order.order_total}</p> 
                                 </FormItem>
-                                <FormItem  labelCol={{ span: 12 }} wrapperCol={{ span: 12 }} label="Shipping Fee : "  className="form-item">
+                                <FormItem  labelCol={{ span: 20 }} wrapperCol={{ span: 3 }} label="Shipping Fee : "  className="form-item-right">
                                         <p>RM {this.state.order.shipping_fee} </p> 
                                 </FormItem>
-                                <FormItem  labelCol={{ span: 12 }} wrapperCol={{ span: 12 }} label="Total Amount : "  className="form-item">
+                                <FormItem  labelCol={{ span: 20 }} wrapperCol={{ span: 3 }} label="Total Amount : "  className="form-item-right">
                                         <p>RM {this.state.order.total}</p> 
                                 </FormItem>
-                            </div>
-                        </div>
+                            {/* </div> */}
                     </div>
                 </Form>
             </div>
@@ -182,12 +184,12 @@ class Completed extends Component {
 
     render() {
 
-        const { completed_orders, show_table } = this.state;
+        const { completed_orders, allowed } = this.state;
 
         if(this.state.displayDetails){
             return(this.renderDetails());
         }
-        else if (show_table === true) {
+        else if (allowed.includes('viewOrderHistory')) {
             return (
                 <div>
                     <Header style={{ color: 'white', fontSize: '30px' }}>

@@ -20,24 +20,26 @@ class NewOrder extends Component {
             sale_channels: [],
             loading: false,
             package_key: 0,
-            show_screen: false
+            required: ['newOrder'],
+            allowed: []
         };
     }
 
     componentDidMount() {
         this._isMounted = true;
+        this.getPermissions();
         this.showListSku();
         this.showCourierList();
-        this.showScreen();
     }
 
     componentWillUnmount() {
         this._isMounted = false;
     }
 
-    showScreen() {
+    getPermissions() {
         var access_token = sessionStorage.getItem('access_token');
-        checkAccess(['newOrder'], access_token).then(result => result !== false ? (this._isMounted === true ? this.setState({ show_screen: result }) : null) : null);
+        checkAccess(this.state.required, access_token)
+            .then(result => (this._isMounted === true) ? this.setState({ allowed : result }) : null);
     }
 
     showListSku() {
@@ -118,13 +120,22 @@ class NewOrder extends Component {
 
     render() {
         const { getFieldDecorator, getFieldValue } = this.props.form;
-        const { skus, packages, sale_channels, loading, show_screen } = this.state;
+        const { skus, packages, sale_channels, loading, allowed } = this.state;
 
         getFieldDecorator('keys', { initialValue: [0] });
         const keys = getFieldValue('keys');
         const formItems = keys.map((k, index) => (
             <React.Fragment key={k}>
                 <Row gutter={8}>
+                    <Col span={2}>
+                            <Form.Item>
+                                {getFieldDecorator('id', {
+                                    initialValue: index + 1
+                                })(
+                                    <Input disabled />
+                                )}
+                            </Form.Item>
+                    </Col>
                     <Col span={6}>
                         <FormItem>
                             {getFieldDecorator(`package_details[${k}]sku_id`, {
@@ -151,19 +162,19 @@ class NewOrder extends Component {
                             )}
                         </FormItem>
                     </Col>
-                    <Col span={4}>
+                    <Col span={3}>
                         <FormItem>
                             {getFieldDecorator(`package_details[${k}]quantity`, {
-                                rules: [{ required: true, message: '' }]
+                                rules: [{ required: true, message: 'Please input the quantity!' }]
                             })(
                                 <Input />
                             )}
                         </FormItem>
                     </Col>
-                    <Col span={4}>
+                    <Col span={3}>
                         <FormItem>
                             {getFieldDecorator(`package_details[${k}]unit_price`, {
-                                rules: [{ required: true, message: '' }]
+                                rules: [{ required: true, message: 'Please input unit price!' }]
                             })(
                                 <Input />
                             )}
@@ -195,7 +206,7 @@ class NewOrder extends Component {
                 </Row>
             </React.Fragment>
         ));
-        if (show_screen === true) {
+        if (allowed.includes('newOrder')) {
          return (
             <div>
                 <Header style={{ color: 'white', fontSize: '30px' }}>
@@ -209,7 +220,7 @@ class NewOrder extends Component {
                                 <Col span={12}>
                                     <FormItem label="Order Number">
                                         {getFieldDecorator('order_ref_num', {
-                                            rules: [{ required: true, message: '' }]
+                                            rules: [{ required: true, message: 'Please input order number!' }]
                                         })(
                                             <Input />
                                         )}
@@ -218,7 +229,7 @@ class NewOrder extends Component {
                                 <Col span={12}>
                                     <FormItem label="Sale Channel">
                                         {getFieldDecorator('sale_channel_id', {
-                                            rules: [{ required: true, message: '' }]
+                                            rules: [{ required: true, message: 'Please select sale channel!' }]
                                         })(
                                             <Select placeholder="Please select the courier">
                                                 {sale_channels.map((sale_channel) =>
@@ -231,7 +242,7 @@ class NewOrder extends Component {
                             </Row>
                             <FormItem  label="Customer Name">
                                 {getFieldDecorator('customer_name', {
-                                    rules: [{ required: true, message: '' }]
+                                    rules: [{ required: true, message: 'Please input customer name!' }]
                                 })(
                                     <Input />
                                 )}
@@ -241,9 +252,9 @@ class NewOrder extends Component {
                                     <FormItem label="Email">
                                         {getFieldDecorator('customer_email', {
                                             rules: [{
-                                                type: 'email', message: 'The input is not valid E-mail!'
+                                                type: 'email', message: 'Please input a valid E-mail!'
                                             }, {    
-                                                required: true, message: ''
+                                                required: true, message: 'Please input Email!'
                                             }]
                                         })(
                                             <Input />
@@ -253,7 +264,7 @@ class NewOrder extends Component {
                                 <Col span={12}>
                                     <FormItem label="Contact Number">
                                         {getFieldDecorator('customer_contact_num', {
-                                            rules: [{ required: true, message: '' }]
+                                            rules: [{ required: true, message: 'Please input customer contact number!' }]
                                         })(
                                             <Input />
                                         )}
@@ -307,12 +318,11 @@ class NewOrder extends Component {
                                             )}
                                         </FormItem>
                                     </Col>
-
                                     <Col span={10}>
                                         <FormItem label='Postcode'>
-                                            {getFieldDecorator('customer_postcode', {
+                                            {getFieldDecorator('customer_postcode', {     
                                             })(
-                                                <Input />      
+                                                <Input />
                                             )}
                                         </FormItem>
                                     </Col>
@@ -327,16 +337,19 @@ class NewOrder extends Component {
                                     </Button>
                                 </Form.Item>
                                 <Row gutter={8} style={{ backgroundColor: '#e8e8e8', padding: '10px', paddingBottom: '0px', marginBottom: '10px' }}>
+                                    <Col span={2}>
+                                        <p>Item</p>
+                                    </Col>
                                     <Col span={6}>
                                         <p>SKU</p>
                                     </Col>
                                     <Col span={8}>
                                         <p>Code-Package</p>
                                     </Col>
-                                    <Col span={4}>
+                                    <Col span={3}>
                                         <p>Quantity</p>
                                     </Col>
-                                    <Col span={4}>
+                                    <Col span={3}>
                                         <p>Unit Price</p>
                                     </Col>
                                     {/* <Col span={3}>

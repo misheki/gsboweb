@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Layout, Table, Button,  Modal, Input, Form  } from 'antd';
-import { listShippingMethods, createShippingMethod } from '../../helpers/ShippingMethods';
+import { listShippingMethods, createShippingMethod, editShippingMethod, deleteShippingMethod } from '../../helpers/ShippingMethods';
 
 const { Header } = Layout;
 const { Column } = Table;
@@ -57,7 +57,17 @@ class ShippingOption extends Component {
             title: 'Confirm',
             content: 'Are you sure you want to delete this shipping provider?',
             onOk: () => {
-                
+                deleteShippingMethod(this.state.id, access_token)
+                .then(result => {
+                    if (result.result === 'GOOD') {
+                        Modal.success({
+                            title:'Success',
+                            content:'You have successfully deleted this package.',
+                            onOk: () => {
+                                this.showShippingMethodsList();
+                        }});
+                    }   
+                })
             }
         })
     }
@@ -71,7 +81,27 @@ class ShippingOption extends Component {
                 return;
             }
             this.setState({ loading: true });
-            createShippingMethod(values.name, access_token)
+            createShippingMethod(values.courier_name, access_token)
+                .then(result => {
+                    if (result.result === 'GOOD') {
+                        this.setState({ loading: false });
+                        this.handleCancel();
+                        this.showShippingMethodsList();
+                    }
+                })
+        });
+    }
+
+    editShippingMethod = () => {
+        var access_token = sessionStorage.getItem('access_token');
+        const form = this.props.form;
+
+        form.validateFieldsAndScroll((err, values) => {
+            if (err) {
+                return;
+            }
+            this.setState({ loading: true });
+            editShippingMethod(this.state.id, values.courier_name, access_token)
                 .then(result => {
                     if (result.result === 'GOOD') {
                         this.setState({ loading: false });
@@ -85,7 +115,7 @@ class ShippingOption extends Component {
     onClickModal = () => {
         this.setState({
             shipping: {
-               name:'',
+                courier_name:'',
             }
         }, () => this.showModal());
     }
@@ -115,35 +145,33 @@ class ShippingOption extends Component {
                         bordered
                     >
                     <Column width={'50%'} title="Shipping Provider" dataIndex="courier_name" key="courier_name" />
-                    {/* <Column
+                    <Column
                         title='Action'
                         key="action"
                         render={(record) => (
                             <div>
                                 <Button style={{ margin:'10px' }} type="primary"
-                                onClick={()=> this.showEditModal()}>Edit</Button>
+                                onClick={() => this.setState({ shipping: Object.assign({}, record), id: record.id }, () => this.showEditModal())}>Edit</Button>
                                 <Button style={{ margin:'10px' }} type="primary"
-                                onClick={()=> this.handleDelete()}>Delete</Button>
+                                onClick={() => this.setState({ shipping: Object.assign({}, record), id: record.id }, () => this.handleDelete())}>Delete</Button>
                             </div>
-                        )} /> */}
+                        )} />
                     </Table>
                 </div>
                 <Modal
                     visible={this.state.visible}
                     onCancel={this.handleCancel}
                     title={clickView ? 'Add Shipping Provider' : 'Edit Shipping Provider' }
-                    footer={<Button type="primary" loading={loading} onClick={this.submitShippingMethod}>Save</Button>}>
+                    footer={<Button type="primary" loading={loading} onClick={clickView ? this.submitShippingMethod : this.editShippingMethod }>Save</Button>}>
                     { shipping && <Form layout="vertical">
                         <FormItem label="Name">
-                            {getFieldDecorator('name', {
-                                  initialValue: shipping.name,
+                            {getFieldDecorator('courier_name', {
+                                initialValue: shipping.courier_name,
                                 rules: [{ required: true, message: 'Please input the shipping provider' }]
                             })(
-                                <Input  name = 'Name'/>
+                                <Input  name = 'courier_name'/>
                             )}
                         </FormItem>
-                     
-
                     </Form>}
                 </Modal>
             </div>
