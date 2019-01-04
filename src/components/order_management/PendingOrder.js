@@ -695,13 +695,13 @@ class PendingOrder extends Component {
                                 </Col>
                             </Row>
                             {this.packageDetailItems()}
-                                <Form.Item  labelCol={{ span: 12 }} wrapperCol={{ span: 12 }} label="Subtotal : "  className="form-item-right">
+                                <Form.Item  labelCol={{ span: 20 }} wrapperCol={{ span: 3 }} label="Subtotal : "  className="form-item-right">
                                         {/* <p>RM {this.state.order.order_total}</p>  */}
                                 </Form.Item>
-                                <Form.Item  labelCol={{ span: 12 }} wrapperCol={{ span: 12 }} label="Shipping Fee : "  className="form-item-right">
+                                <Form.Item  labelCol={{ span: 20 }} wrapperCol={{ span: 3 }} label="Shipping Fee : "  className="form-item-right">
                                         <p>RM {order.shipping_fee} </p> 
                                 </Form.Item>
-                                <Form.Item  labelCol={{ span: 12 }} wrapperCol={{ span: 12 }} label="Total Amount : "  className="form-item-right">
+                                <Form.Item  labelCol={{ span: 20 }} wrapperCol={{ span: 3 }} label="Total Amount : "  className="form-item-right">
                                         {/* <p>RM {this.state.order.total}</p>  */}
                                 </Form.Item>
                         </div>
