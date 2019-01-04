@@ -112,9 +112,9 @@ class Completed extends Component {
             )
         )
         return(
-            <div style={{padding:'30px',}}>
+            <div style={{padding:'30px', backgroundColor:'white'}}>
                 <Form layout="vertical"> 
-                    <div style={{padding:'20px', marginBottom:'10px', backgroundColor:'white'}}>
+                    <div style={{padding:'20px', marginBottom:'10px'}}>
                         <h2 style={{paddingBottom:'10px'}}>Order Ref. No. {this.state.order.order_ref_num}</h2>    
                         <Row gutter={8}>
                             <Col span={12}>
@@ -142,7 +142,7 @@ class Completed extends Component {
                             </Col>
                         </Row>
                     </div>  
-                    <div style={{ padding:'20px', backgroundColor:'white'}}>
+                    <div style={{ padding:'20px'}}>
                         <h3 style={{paddingBottom:'10px'}}>Product Details</h3>
                             <Row gutter={16} style={{ backgroundColor: '#e8e8e8', padding: '10px', paddingBottom: '0px', marginBottom: '10px' }}>
                                 <Col span={2}>

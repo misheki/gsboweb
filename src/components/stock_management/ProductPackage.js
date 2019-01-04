@@ -66,26 +66,46 @@ class ProductPackage extends Component {
             .then(result => (this._isMounted === true) ? this.setState({ allowed : result }) : null);
     }
 
+    showPackageList() {
+        var access_token = sessionStorage.getItem('access_token');
+        listPackage(access_token)
+            .then(result => {
+                if (result.result === 'GOOD') {
+                    if(this._isMounted) this.setState({ packages: result.data });
+                }
+            })
+    }
+
+    showSkuList() {
+        var access_token = sessionStorage.getItem('access_token');
+        listSku(access_token)
+            .then(result => {
+                if (result.result === 'GOOD') {
+                    if(this._isMounted) this.setState({ skus: result.data });
+                }
+            })
+    }
+
     showAddPackagesModal = () => {
-        this.setState({ visible: true });
+        if(this._isMounted) this.setState({ visible: true });
     }
 
     showAddSkuModal = () => {
-        this.setState({ visible_sku: true });
+        if(this._isMounted) this.setState({ visible_sku: true });
     }
 
     showEditPackagesModal = () => {
-        this.setState({ visible: true, clickView: true });
+        if(this._isMounted) this.setState({ visible: true, clickView: true });
     }
 
     showEditSkuModal = () => {
-        this.setState({ visible_sku: true, clickView: true });
+        if(this._isMounted) this.setState({ visible_sku: true, clickView: true });
     }
     
     handleCancel = () => {
         const form = this.props.form;
         form.resetFields();
-        this.setState({ visible: false, visible_sku: false, clickView: false  });
+        if(this._isMounted) this.setState({ visible: false, visible_sku: false, clickView: false  });
     }
 
     onChangeSwitch = (value) => {
@@ -101,11 +121,11 @@ class ProductPackage extends Component {
                 return;
             }
             
-            this.setState({ loading: true });
+            if(this._isMounted) this.setState({ loading: true });
             createPackage(values.sku_id, values.code, values.name, values.description, values.cost_price, access_token)
                 .then(result => {
                     if (result.result === 'GOOD') {
-                        this.setState({ loading: false });
+                        if(this._isMounted) this.setState({ loading: false });
                         this.handleCancel();
                         this.showPackageList();
                     }
@@ -122,11 +142,11 @@ class ProductPackage extends Component {
                 return;
             }
             
-            this.setState({ loading: true });
+            if(this._isMounted) this.setState({ loading: true });
             editPackage(this.state.package_id, values.description, access_token)
                 .then(result => {
                     if (result.result === 'GOOD') {
-                        this.setState({ loading: false });
+                        if(this._isMounted) this.setState({ loading: false });
                         this.handleCancel();
                         this.showPackageList();
                     }
@@ -143,11 +163,12 @@ class ProductPackage extends Component {
             if (err) {
                 return;
             }
-            this.setState({ loading: true });
+
+            if(this._isMounted) this.setState({ loading: true });
             createSku(values.sku, require_activation, access_token)
                 .then(result => {
                     if (result.result === 'GOOD') {
-                        this.setState({ loading: false });
+                        if(this._isMounted) this.setState({ loading: false });
                         this.handleCancel();
                         this.showSkuList();
                     }
@@ -164,11 +185,12 @@ class ProductPackage extends Component {
             if (err) {
                 return;
             }
-            this.setState({ loading: true });
+
+            if(this._isMounted) this.setState({ loading: true });
             editSku(this.state.sku_id, values.sku, require_activation, access_token)
                 .then(result => {
                     if (result.result === 'GOOD') {
-                        this.setState({ loading: false });
+                        if(this._isMounted) this.setState({ loading: false });
                         this.handleCancel();
                         this.showSkuList();
                     }
@@ -237,7 +259,7 @@ class ProductPackage extends Component {
     }
 
     onClickSkuModal = () => {
-        this.setState({
+        if(this._isMounted) this.setState({
             sku: {
                 sku: '',
                 require_activation: '',
@@ -246,7 +268,7 @@ class ProductPackage extends Component {
     }
     
     onClickPackageModal = () => {
-        this.setState({
+        if(this._isMounted) this.setState({
             newpackage: {
                 sku_id: '',
                 code: '',
@@ -264,171 +286,170 @@ class ProductPackage extends Component {
         
          return (
             <div>
-            <Header style={{ color: 'white', fontSize: '30px' }}>
-                <span>Product Package</span>
-            </Header>
+                <Header style={{ color: 'white', fontSize: '30px' }}>
+                    <span>Product Package</span>
+                </Header>
 
-            <div style={{ padding: '30px' }}>
-                {allowed.includes('newSKU') ? <Button
-                    onClick={this.onClickSkuModal}
-                    style={{ marginBottom: '30px' }}
-                    type="primary"
-                    icon="plus-circle"
-                    size={'large'}>
-                    Add SKU
-                </Button> : null}
+                <div style={{ padding: '30px' }}>
+                    {allowed.includes('newSKU') ? <Button
+                        onClick={this.onClickSkuModal}
+                        style={{ marginBottom: '30px' }}
+                        type="primary"
+                        icon="plus-circle"
+                        size={'large'}>
+                        Add SKU
+                    </Button> : null}
 
-                {allowed.includes('viewSku') ? <Table
-                    dataSource={skus}
-                    rowKey={skus => skus.id}>
-                    <Column title="SKU" dataIndex="sku" key="sku" />
-                    <Column title="Required Activation" dataIndex="require_activation" key="require_activation" />
-                    <Column
-                        title='Action'
-                        key="action"
-                        render={(record) => (
-                            <div>
-                                {allowed.includes('editSku') ? <Button
-                                    style={{ margin:'10px' }}
-                                    type="primary"
-                                    onClick={() => this.setState({ sku: Object.assign({}, record), sku_id: record.id }, () => this.showEditSkuModal())}>
-                                    Edit
-                                </Button> : null}
+                    {allowed.includes('viewSku') ? <Table
+                        dataSource={skus}
+                        rowKey={skus => skus.id}>
+                        <Column title="SKU" dataIndex="sku" key="sku" />
+                        <Column title="Required Activation" dataIndex="require_activation" key="require_activation" />
+                        <Column
+                            title='Action'
+                            key="action"
+                            render={(record) => (
+                                <div>
+                                    {allowed.includes('editSku') ? <Button
+                                        style={{ margin:'10px' }}
+                                        type="primary"
+                                        onClick={() => this.setState({ sku: Object.assign({}, record), sku_id: record.id }, () => this.showEditSkuModal())}>
+                                        Edit
+                                    </Button> : null}
 
-                                {allowed.includes('deleteSku') === true ? <Button
-                                    style={{ margin:'10px' }}
-                                    type="primary" 
-                                    onClick={() => this.setState({ sku: Object.assign({}, record), sku_id: record.id }, () => this.handleDeleteSku())}>
-                                    Delete
-                                </Button> : null}
-                            </div>
-                        )} />
-                </Table> : null}
+                                    {allowed.includes('deleteSku') === true ? <Button
+                                        style={{ margin:'10px' }}
+                                        type="primary" 
+                                        onClick={() => this.setState({ sku: Object.assign({}, record), sku_id: record.id }, () => this.handleDeleteSku())}>
+                                        Delete
+                                    </Button> : null}
+                                </div>
+                            )} />
+                    </Table> : null}
 
-                <Modal
-                    visible={this.state.visible_sku}
-                    onCancel={this.handleCancel}
-                    title={clickView ? 'Edit SKU' : 'Add SKU'  }
-                    footer={<Button type="primary" loading={loading} onClick={clickView ? this.submitEditSku : this.submitSku }>Save</Button>}>
-                    {sku && <Form layout="vertical">
-                        <FormItem label="SKU">
-                            {getFieldDecorator('sku', {
-                                initialValue: sku.sku,
-                                rules: [{ required: true, message: 'Please input the product SKU!' }]
-                            })(
-                                <Input name = 'sku'/>
-                            )}
-                        </FormItem>
-                        <FormItem label="Required Activation">
-                            {getFieldDecorator('require_activation', {
-                                initialValue: sku.require_activation,
+                    <Modal
+                        visible={this.state.visible_sku}
+                        onCancel={this.handleCancel}
+                        title={clickView ? 'Edit SKU' : 'Add SKU'  }
+                        footer={<Button type="primary" loading={loading} onClick={clickView ? this.submitEditSku : this.submitSku }>Save</Button>}>
+                        {sku && <Form layout="vertical">
+                            <FormItem label="SKU">
+                                {getFieldDecorator('sku', {
+                                    initialValue: sku.sku,
+                                    rules: [{ required: true, message: 'Please input the product SKU!' }]
+                                })(
+                                    <Input name = 'sku'/>
+                                )}
+                            </FormItem>
+                            <FormItem label="Required Activation">
+                                {getFieldDecorator('require_activation', {
+                                    initialValue: sku.require_activation,
 
-                            })(
-                                <Switch onChange={this.onChangeSwitch} checkedChildren="Yes" unCheckedChildren="No" defaultChecked />
-                            )}
-                        </FormItem>
-                    </Form>}
-                </Modal>
+                                })(
+                                    <Switch onChange={this.onChangeSwitch} checkedChildren="Yes" unCheckedChildren="No" defaultChecked />
+                                )}
+                            </FormItem>
+                        </Form>}
+                    </Modal>
 
-                {allowed.includes('newPackage') ? <Button
-                    onClick={this.onClickPackageModal}
-                    style={{ marginBottom: '30px' }}
-                    type="primary"
-                    icon="plus-circle"
-                    size={'large'}>
-                    New Package
-                </Button> : null}
+                    {allowed.includes('newPackage') ? <Button
+                        onClick={this.onClickPackageModal}
+                        style={{ marginBottom: '30px' }}
+                        type="primary"
+                        icon="plus-circle"
+                        size={'large'}>
+                        New Package
+                    </Button> : null}
 
-                {allowed.includes('viewPackage') ? <Table
-                    dataSource={packages}
-                    rowKey={packages => packages.id }>
-                    <Column title="SKU" dataIndex="sku_name" key="sku_name" />
-                    <Column title="Code" dataIndex="code" key="code" />
-                    <Column title="Name" dataIndex="name" key="name" />
-                    <Column title="Cost Price" dataIndex="cost_price" key="cost_price" />
-                    <Column title="Req Activation" dataIndex="require_activation" key="require_activation" />
-                    <Column
-                        title='Action'
-                        key="action"
-                        render={(record) => (
-                            <div>
-                                {allowed.includes('editPackage') ? <Button
-                                    style={{ margin:'10px' }}
-                                    type="primary"
-                                    onClick={() => this.setState({ newpackage: Object.assign({}, record), package_id: record.id }, () => this.showEditPackagesModal())}>
-                                    Edit
-                                </Button> : null}
+                    {allowed.includes('viewPackage') ? <Table
+                        dataSource={packages}
+                        rowKey={packages => packages.id }>
+                        <Column title="SKU" dataIndex="sku_name" key="sku_name" />
+                        <Column title="Code" dataIndex="code" key="code" />
+                        <Column title="Name" dataIndex="name" key="name" />
+                        <Column title="Cost Price" dataIndex="cost_price" key="cost_price" />
+                        <Column title="Req Activation" dataIndex="require_activation" key="require_activation" />
+                        <Column
+                            title='Action'
+                            key="action"
+                            render={(record) => (
+                                <div>
+                                    {allowed.includes('editPackage') ? <Button
+                                        style={{ margin:'10px' }}
+                                        type="primary"
+                                        onClick={() => this.setState({ newpackage: Object.assign({}, record), package_id: record.id }, () => this.showEditPackagesModal())}>
+                                        Edit
+                                    </Button> : null}
 
-                                {allowed.includes('deletePackage') ? <Button
-                                    style={{ margin:'10px' }}
-                                    type="primary"  
-                                    onClick={() => this.setState({ newpackage: Object.assign({}, record), package_id: record.id }, () => this.handleDeletePackage())}>
-                                    Delete
-                                </Button> : null}
-                            </div>
-                        )} />
-                </Table> : null}
+                                    {allowed.includes('deletePackage') ? <Button
+                                        style={{ margin:'10px' }}
+                                        type="primary"  
+                                        onClick={() => this.setState({ newpackage: Object.assign({}, record), package_id: record.id }, () => this.handleDeletePackage())}>
+                                        Delete
+                                    </Button> : null}
+                                </div>
+                            )} />
+                    </Table> : null}
 
-                <Modal
-                    visible={this.state.visible}
-                    onCancel={this.handleCancel}
-                    title={clickView ? 'Edit Package' : 'Add new package' }
-                    footer={<Button type="primary" loading={loading} onClick={clickView ? this.handleSubmitEditPackage : this.handleSubmit }>Save</Button>}>
-                    { newpackage && <Form layout="vertical">
-                        <FormItem label="SKU">
-                            {getFieldDecorator('sku_id', {
-                                  initialValue: newpackage.sku_id,
-                                rules: [{ required: true, message: 'Please select the product SKU!' }]
-                            })(
-                                <Select disabled={clickView ? true : false}  placeholder="Please select the product SKU">
-                                    {skus.map((sku) =>
-                                        <Option key={sku.id} value={sku.id}>{sku.sku}</Option>
-                                    )}
-                                </Select>
-                            )}
-                        </FormItem>
+                    <Modal
+                        visible={this.state.visible}
+                        onCancel={this.handleCancel}
+                        title={clickView ? 'Edit Package' : 'Add new package' }
+                        footer={<Button type="primary" loading={loading} onClick={clickView ? this.handleSubmitEditPackage : this.handleSubmit }>Save</Button>}>
+                        { newpackage && <Form layout="vertical">
+                            <FormItem label="SKU">
+                                {getFieldDecorator('sku_id', {
+                                    initialValue: newpackage.sku_id,
+                                    rules: [{ required: true, message: 'Please select the product SKU!' }]
+                                })(
+                                    <Select disabled={clickView ? true : false}  placeholder="Please select the product SKU">
+                                        {skus.map((sku) =>
+                                            <Option key={sku.id} value={sku.id}>{sku.sku}</Option>
+                                        )}
+                                    </Select>
+                                )}
+                            </FormItem>
 
-                        <FormItem label="Code">
-                            {getFieldDecorator('code', {
-                                initialValue: newpackage.code,
-                                rules: [{ required: true, message: 'Please input the product code!' }]
-                            })(
-                                <Input disabled={clickView ? true : false}  name = 'code'/>
-                            )}
-                        </FormItem> 
+                            <FormItem label="Code">
+                                {getFieldDecorator('code', {
+                                    initialValue: newpackage.code,
+                                    rules: [{ required: true, message: 'Please input the product code!' }]
+                                })(
+                                    <Input disabled={clickView ? true : false}  name = 'code'/>
+                                )}
+                            </FormItem> 
 
-                        <FormItem label="Package Name">
-                            {getFieldDecorator('name', {
-                                initialValue: newpackage.name,
-                                rules: [{ required: true, message: 'Please input the product name!' }]
-                            })(
-                                <Input disabled={clickView ? true : false}  name = 'name'/>
-                            )}
-                        </FormItem>
+                            <FormItem label="Package Name">
+                                {getFieldDecorator('name', {
+                                    initialValue: newpackage.name,
+                                    rules: [{ required: true, message: 'Please input the product name!' }]
+                                })(
+                                    <Input disabled={clickView ? true : false}  name = 'name'/>
+                                )}
+                            </FormItem>
 
-                        <FormItem label="Cost Price (RM)">
-                            {getFieldDecorator('cost_price', {
-                                initialValue: newpackage.cost_price,
-                                rules: [{ required: true, message: 'Please input the product cost price!' }]
-                            })(
-                                <Input disabled={clickView ? true : false}   name = 'cost_price'/>
-                            )}
-                        </FormItem>
+                            <FormItem label="Cost Price (RM)">
+                                {getFieldDecorator('cost_price', {
+                                    initialValue: newpackage.cost_price,
+                                    rules: [{ required: true, message: 'Please input the product cost price!' }]
+                                })(
+                                    <Input disabled={clickView ? true : false}   name = 'cost_price'/>
+                                )}
+                            </FormItem>
 
-                        <FormItem label="Description">
-                            {getFieldDecorator('description', {
-                                initialValue: newpackage.description,
-                                rules: [{ required: false, message: 'Please input the product description!' }]
-                            })(
-                                <Input  name = 'description' />
-                            )}
-                        </FormItem>
+                            <FormItem label="Description">
+                                {getFieldDecorator('description', {
+                                    initialValue: newpackage.description,
+                                    rules: [{ required: false, message: 'Please input the product description!' }]
+                                })(
+                                    <Input  name = 'description' />
+                                )}
+                            </FormItem>
 
-                    </Form>}
-                </Modal>
-              
+                        </Form>}
+                    </Modal>
+                </div>
             </div>
-        </div>
         );   
     }
 }

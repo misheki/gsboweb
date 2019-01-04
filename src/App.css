@@ -33,7 +33,6 @@
   }
 }
 
-
 .login-form {
   max-width: 400px;
   margin: 120px auto;
@@ -114,7 +113,8 @@
 }
 
 .form-item {
-  margin-bottom: 0px
+  margin-bottom: 0px;
+  text-align-last: left
 }
 
 .form-item-right {
