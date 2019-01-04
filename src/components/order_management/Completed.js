@@ -71,13 +71,13 @@ class Completed extends Component {
     
           };
 
-        const packageDetailItems =  this.state.order.order_details.map((item) =>
-        item.stocks.map((stock) =>
+        const packageDetailItems =  this.state.order.order_details.map((item, i) =>
+        item.stocks.map((stock, j) =>
             <React.Fragment key={item.id}>
                 <Row gutter={8}>
                     <Col span={2}>
                         <Form.Item>
-                            <Input value={stock.id} disabled />
+                            <Input value={ i + j + 1} disabled />
                         </Form.Item>
                     </Col>
                     <Col span={3}>

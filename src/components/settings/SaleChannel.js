@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Layout, Table, Button, Modal, Input, Form } from 'antd';
-import { listSalesChannels, createSalesChannel } from '../../helpers/SalesChannels';
+import { listSalesChannels, createSalesChannel, editSalesChannel, deleteSalesChannel } from '../../helpers/SalesChannels';
 
 const { Header } = Layout;
 const { Column } = Table;
@@ -57,6 +57,17 @@ class SaleChannel extends Component {
             title: 'Confirm',
             content: 'Are you sure you want to delete this Sales Channel?',
             onOk: () => {
+                deleteSalesChannel(this.state.id, access_token)
+                .then(result => {
+                    if (result.result === 'GOOD') {
+                        Modal.success({
+                            title:'Success',
+                            content:'You have successfully deleted this package.',
+                            onOk: () => {
+                                this.showSalesChannelsList();
+                        }});
+                    }   
+                })
               
             }
         })
@@ -72,6 +83,26 @@ class SaleChannel extends Component {
             }
             this.setState({ loading: true });
             createSalesChannel(values.name, access_token)
+                .then(result => {
+                    if (result.result === 'GOOD') {
+                        this.setState({ loading: false });
+                        this.handleCancel();
+                        this.showSalesChannelsList();
+                    }
+                })
+        });
+    }
+
+    editSaleChannel = () => {
+        var access_token = sessionStorage.getItem('access_token');
+        const form = this.props.form;
+
+        form.validateFieldsAndScroll((err, values) => {
+            if (err) {
+                return;
+            }
+            this.setState({ loading: true });
+            editSalesChannel(this.state.id, values.name, access_token)
                 .then(result => {
                     if (result.result === 'GOOD') {
                         this.setState({ loading: false });
@@ -115,24 +146,24 @@ class SaleChannel extends Component {
                         bordered
                     >
                     <Column width={'50%'} title="Channel Name" dataIndex="name" key="name" />
-                    {/* <Column
+                    <Column
                         title='Action'
                         key="action"
                         render={(record) => (
                             <div>
                                 <Button style={{ margin:'10px' }} type="primary"
-                                onClick={()=> this.showEditModal()}>Edit</Button>
+                                onClick={() => this.setState({ channel: Object.assign({}, record), id: record.id }, ()=> this.showEditModal())}>Edit</Button>
                                 <Button style={{ margin:'10px' }} type="primary"
-                                 onClick={()=> this.handleDelete()}>Delete</Button>
+                                onClick={() => this.setState({ channel: Object.assign({}, record), id: record.id }, ()=> this.handleDelete())}>Delete</Button>
                             </div>
-                        )} /> */}
+                        )} />
                     </Table>
                 </div>
                 <Modal
                     visible={this.state.visible}
                     onCancel={this.handleCancel}
                     title={clickView ? 'Add Channel' : 'Edit' }
-                    footer={<Button type="primary" loading={loading} onClick={this.submitSaleChannel}>Save</Button>}>
+                    footer={<Button type="primary" loading={loading} onClick={clickView ? this.submitSaleChannel : this.editSaleChannel }>Save</Button>}>
                     { channel && <Form layout="vertical">
                         <FormItem label="Name">
                             {getFieldDecorator('name', {
@@ -142,8 +173,6 @@ class SaleChannel extends Component {
                                 <Input  name = 'Name'/>
                             )}
                         </FormItem>
-                     
-
                     </Form>}
                 </Modal>
             </div>
