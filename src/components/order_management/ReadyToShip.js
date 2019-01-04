@@ -1,11 +1,8 @@
 import React, { Component } from 'react';
-import { Layout,  Table, Steps, Button, message, Form, Input, Select, Col, Row, Divider   } from 'antd';
-import { listReadyShip } from '../../helpers/OrderController';
-import { checkAccess } from '../../helpers/PermissionController';
+import { Layout,  Table, Button } from 'antd';
 import  OrderSteps from '../order_management/order_management_components/OrderSteps';
+import { listReadyShip } from '../../helpers/OrderController';
 
-const Option = Select.Option;
-const Step = Steps.Step;
 const { Header } = Layout;
 const { Column } = Table;
 
@@ -15,9 +12,10 @@ class ReadyToShip extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            current: 0,
             confirmed_orders: [],
-            processOrder: false
+            processOrder: false,
+            order_id: '',
+            order_overview: ''
         };
     }
 
@@ -40,13 +38,13 @@ class ReadyToShip extends Component {
             })
     }
 
-    processOrder() {
-        this.setState({ processOrder: true });       
+    processOrder(order_id, record) {
+        this.setState({ order_id: order_id, order_overview: record }, this.setState({ processOrder: true }));       
     }
 
     render() {
-        const { confirmed_orders, processOrder } = this.state;
-        
+        const { confirmed_orders, processOrder, order_id, order_overview } = this.state;
+
         if (processOrder === false) {
             return (
                 <div>
@@ -68,9 +66,9 @@ class ReadyToShip extends Component {
                                 render={(record) => (
                                     <div>
                                         <Button
-                                            style={{ margin:'10px' }}
+                                            style={{ margin: '10px' }}
                                             type="primary"
-                                            onClick={() => this.processOrder()}>
+                                            onClick={() => this.processOrder(record.id, record)}>
                                             Process Order
                                         </Button>
                                     </div>
@@ -86,12 +84,12 @@ class ReadyToShip extends Component {
                     <Header style={{ color: 'white', fontSize: '30px' }}>
                         <span>Ready to Ship</span>
                     </Header>
-                    {OrderSteps}
+                    <OrderSteps order_id={order_id} order_overview={order_overview} />
                 </div>
             );
         }
     }
 }
 
-export default Form.create()( ReadyToShip);
+export default ReadyToShip;
 
