@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { createMenu, listRole, createSubMenu, listMenu, listSubMenu, updateMenu, deleteMenu, deleteSubMenu, updateSubMenu } from '../../helpers/AdminControl';
 import { Layout, Table, Button, Modal, Form, Input, Checkbox, Select } from 'antd';
+import { Helmet } from 'react-helmet';
 
 const { Column } = Table;
 const { Header } = Layout;
@@ -269,6 +270,11 @@ class ManageMenu extends Component {
 
         return (
             <div>
+                <Helmet>
+                    <meta charSet="utf-8" />
+                    <title>Global Sim - Manage Menu</title>
+                </Helmet>
+
                 <Header style={{ color: 'white', fontSize: '30px' }}>
                     <span>Menu Management</span>
                 </Header>

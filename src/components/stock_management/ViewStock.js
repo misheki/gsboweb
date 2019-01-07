@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Layout,  Table, AutoComplete, Input, Button, Icon, Modal, Form } from 'antd';
 import { listStock, writeOff } from '../../helpers/StockController';
 import { checkAccess } from '../../helpers/PermissionController';
+import { Helmet } from 'react-helmet';
 
 const { Header } = Layout;
 const { Column } = Table;
@@ -107,10 +108,15 @@ class ViewStock extends Component {
     render() {
         const { stocks, visible, loading, allowed } = this.state;
         const { getFieldDecorator } = this.props.form;
-        console.log(stocks);
+
         if (allowed.includes('viewStock')) {
             return (
                 <div>
+                    <Helmet>
+                        <meta charSet="utf-8" />
+                        <title>Global Sim - View Stocks</title>
+                    </Helmet>
+
                     <Header style={{ color: 'white', fontSize: '30px' }}>
                         <span>View Stock</span>
                     </Header>    
@@ -171,7 +177,12 @@ class ViewStock extends Component {
         }
         else {
             return (
-                <div></div>
+                <div>
+                    <Helmet>
+                        <meta charSet="utf-8" />
+                        <title>Global Sim - View Stocks</title>
+                    </Helmet>
+                </div>
             );
         }
     }

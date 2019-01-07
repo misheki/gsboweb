@@ -187,11 +187,11 @@ class OrderSteps extends Component {
             title: 'Confirm',
             content: 'Are you sure you want to cancel this order?',
             onOk: () => {
-                this.setState({ cancel_loading: true });
+                if(this._isMounted) this.setState({ cancel_loading: true });
                 cancelOrder(order_id, access_token)
                     .then(result => {
                         if (result.result === 'GOOD') {
-                        this.setState({ cancel_loading: false });
+                            if(this._isMounted) this.setState({ cancel_loading: false });
                             Modal.success({
                                 title:'Success',
                                 content:'You have successfully canceled this order.',

@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { Layout, Form, Row, Col, Table, AutoComplete, Input, Button, Icon  } from 'antd';
+import { Layout, Form, Row, Col, Table, AutoComplete, Input, Button, Icon } from 'antd';
 import { listCompleted } from '../../helpers/OrderController';
 import { checkAccess } from '../../helpers/PermissionController';
+import { Helmet } from 'react-helmet';
 
 const { Header } = Layout;
 const { Column } = Table;
@@ -21,7 +22,6 @@ class Completed extends Component {
             allowed: []
         };
     }
-
 
     componentDidMount() {
         this._isMounted = true;
@@ -191,6 +191,11 @@ class Completed extends Component {
         else if (allowed.includes('viewOrderHistory')) {
             return (
                 <div>
+                    <Helmet>
+                        <meta charSet="utf-8" />
+                        <title>Global Sim - Completed Order</title>
+                    </Helmet>
+
                     <Header style={{ color: 'white', fontSize: '30px' }}>
                         <span>Completed Orders</span>
                     </Header>
@@ -229,7 +234,12 @@ class Completed extends Component {
         }
         else {
             return (
-                <div></div>
+                <div>
+                    <Helmet>
+                        <meta charSet="utf-8" />
+                        <title>Global Sim - Completed Order</title>
+                    </Helmet>
+                </div>
             );
         }
     }      

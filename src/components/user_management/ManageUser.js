@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { listUser, createUser, updateUser, listRole, deleteUser } from '../../helpers/AdminControl';
 import { Layout, Table, Button, Modal, Form, Input, Checkbox } from 'antd';
+import { Helmet } from 'react-helmet';
 
 const { Column } = Table;
 const { Header } = Layout;
@@ -176,6 +177,11 @@ class ManageUser extends Component {
 
         return (
             <div>
+                <Helmet>
+                    <meta charSet="utf-8" />
+                    <title>Global Sim - Manage User</title>
+                </Helmet>
+
                 <Header style={{ color: 'white', fontSize: '30px' }}>
                     <span>User Management</span>
                 </Header>

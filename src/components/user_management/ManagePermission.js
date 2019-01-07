@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { listPermission, createPermission, deletePermission, updatePermission } from '../../helpers/AdminControl';
 import { Layout, Table, Button, Modal, Form, Input } from 'antd';
+import { Helmet } from 'react-helmet';
 
 const { Column } = Table;
 const { Header } = Layout;
@@ -137,6 +138,11 @@ class ManagePermission extends Component {
 
         return (
             <div>
+                <Helmet>
+                    <meta charSet="utf-8" />
+                    <title>Global Sim - Manage Permission</title>
+                </Helmet>
+
                 <Header style={{ color: 'white', fontSize: '30px' }}>
                     <span>User Management</span>
                 </Header>

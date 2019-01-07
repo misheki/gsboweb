@@ -3,6 +3,7 @@ import { Layout, Table, Button } from 'antd';
 import { listPending } from '../../helpers/OrderController';
 import { checkAccess } from '../../helpers/PermissionController';
 import  OrderSteps from '../order_management/order_management_components/OrderSteps';
+import { Helmet } from 'react-helmet';
 
 const { Header } = Layout;
 const { Column } = Table
@@ -60,8 +61,13 @@ class PendingOrder extends Component {
         const { pending_orders, processOrder, allowed, order_id } = this.state;
 
         if (processOrder === false) {
-            return (             
+            return (
                 <div>
+                    <Helmet>
+                        <meta charSet="utf-8" />
+                        <title>Global Sim - Pending Order</title>
+                    </Helmet>
+
                     <Header style={{ color: 'white', fontSize: '30px' }}>
                         <span>Pending Order</span>
                     </Header>
@@ -95,6 +101,11 @@ class PendingOrder extends Component {
         else {
             return (
                 <div>
+                    <Helmet>
+                        <meta charSet="utf-8" />
+                        <title>Global Sim - Process Pending Order</title>
+                    </Helmet>
+
                     <Header style={{ color: 'white', fontSize: '30px' }}>
                         <span>Pending Order</span>
                     </Header>

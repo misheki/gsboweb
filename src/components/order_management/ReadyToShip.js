@@ -3,6 +3,7 @@ import { Layout, Table, Button } from 'antd';
 import  OrderSteps from '../order_management/order_management_components/OrderSteps';
 import { listReadyShip } from '../../helpers/OrderController';
 import { checkAccess } from '../../helpers/PermissionController';
+import { Helmet } from 'react-helmet';
 
 const { Header } = Layout;
 const { Column } = Table;
@@ -62,6 +63,11 @@ class ReadyToShip extends Component {
         if (processOrder === false) {
             return (
                 <div>
+                    <Helmet>
+                        <meta charSet="utf-8" />
+                        <title>Global Sim - Confirm Order</title>
+                    </Helmet>
+
                     <Header style={{ color: 'white', fontSize: '30px' }}>
                         <span>Ready to Ship Orders</span>
                     </Header>
@@ -95,6 +101,11 @@ class ReadyToShip extends Component {
         else {
             return (
                 <div>
+                    <Helmet>
+                        <meta charSet="utf-8" />
+                        <title>Global Sim - Process Confirm Order</title>
+                    </Helmet>
+
                     <Header style={{ color: 'white', fontSize: '30px' }}>
                         <span>Ready to Ship</span>
                     </Header>

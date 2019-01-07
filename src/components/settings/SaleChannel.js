@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Layout, Table, Button, Modal, Input, Form } from 'antd';
 import { listSalesChannels, createSalesChannel, editSalesChannel, deleteSalesChannel } from '../../helpers/SalesChannels';
+import { Helmet } from 'react-helmet';
 
 const { Header } = Layout;
 const { Column } = Table;
@@ -129,11 +130,17 @@ class SaleChannel extends Component {
         const { getFieldDecorator } = this.props.form;
         const data = this.state.sales_channels;
 
-         return (
+        return (
             <div>
-            <Header style={{ color: 'white', fontSize: '30px' }}>
-                <span>Sales Channels</span>
-            </Header>
+                <Helmet>
+                    <meta charSet="utf-8" />
+                    <title>Global Sim - Sale Channel</title>
+                </Helmet>
+
+                <Header style={{ color: 'white', fontSize: '30px' }}>
+                    <span>Sales Channels</span>
+                </Header>
+
                 <div style={{ padding: '30px', width:'80%'}}>
                     <Button
                         onClick={this.onClickModal}
@@ -179,7 +186,7 @@ class SaleChannel extends Component {
                     { channel && <Form layout="vertical">
                         <FormItem label="Name">
                             {getFieldDecorator('name', {
-                                  initialValue: channel.name,
+                                initialValue: channel.name,
                                 rules: [{ required: true, message: 'Please enter a sales channel.' }]
                             })(
                                 <Input  name = 'Name'/>
@@ -188,9 +195,8 @@ class SaleChannel extends Component {
                     </Form>}
                 </Modal>
             </div>
-            
-            );   
-        }      
+        );
+    }
 }
 
 export default Form.create()(SaleChannel);

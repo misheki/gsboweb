@@ -309,13 +309,16 @@ export const completeOrder = (order_id, shipping_method_id, tracking_number, acc
 export const cancelOrder = (order_id, access_token) => {
     return Promise.race([
         new Promise((resolve, reject) =>
-            fetch(global.URL + 'api/order/cancel/' + order_id, {
-                method: 'DELETE',
+            fetch(global.URL + 'api/order/cancel', {
+                method: 'POST',
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
                     'Authorization': 'Bearer ' + access_token
-                }
+                },
+                body: JSON.stringify({
+                    order_id
+                })
             })
             .then((response) => response.json())
             .then((responseJson) => {

@@ -3,6 +3,7 @@ import { Layout, Form, Input, Button, Row, Col, Select, Icon, Modal } from 'antd
 import { createOrder, saleChannelList } from '../../helpers/OrderController';
 import { listSku, listSkuPackage } from '../../helpers/SkuController';
 import { checkAccess } from '../../helpers/PermissionController';
+import { Helmet } from 'react-helmet';
 
 const { Header } = Layout;
 const FormItem = Form.Item;
@@ -210,6 +211,11 @@ class NewOrder extends Component {
         if (allowed.includes('newOrder')) {
          return (
             <div>
+                <Helmet>
+                    <meta charSet="utf-8" />
+                    <title>Global Sim - New Order</title>
+                </Helmet>
+
                 <Header style={{ color: 'white', fontSize: '30px' }}>
                     <span>New Order</span>
                 </Header>
@@ -374,7 +380,12 @@ class NewOrder extends Component {
         }
         else {
             return (
-                <div></div>
+                <div>
+                    <Helmet>
+                        <meta charSet="utf-8" />
+                        <title>Global Sim - New Order</title>
+                    </Helmet>
+                </div>
             );
         }
     }   

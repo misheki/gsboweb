@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Layout } from 'antd';
 import { importStocks } from '../../helpers/Upload';
 import { checkAccess } from '../../helpers/PermissionController';
+import { Helmet } from 'react-helmet';
 
 const { Header } = Layout;
 
@@ -96,6 +97,11 @@ class ImportStock extends Component {
         if (allowed.includes('importStock')) {
             return (
                 <div>
+                    <Helmet>
+                        <meta charSet="utf-8" />
+                        <title>Global Sim - Import Stocks</title>
+                    </Helmet>
+
                     <Header style={{ color: 'white', fontSize: '30px' }}>
                         <span>Import Stocks</span>
                     </Header>
@@ -115,7 +121,12 @@ class ImportStock extends Component {
         }
         else {
             return (
-                <div></div>
+                <div>
+                    <Helmet>
+                        <meta charSet="utf-8" />
+                        <title>Global Sim - Import Stocks</title>
+                    </Helmet>
+                </div>
             );
         }
     }

@@ -3,6 +3,7 @@ import { Layout,  Table, Modal, Button, Form, Input, Select, Switch } from 'antd
 import { listPackage, createPackage, deletePackage, editPackage } from '../../helpers/PackageController';
 import { listSku, createSku, deleteSku, editSku } from '../../helpers/SkuController';
 import { checkAccess } from '../../helpers/PermissionController';
+import { Helmet } from 'react-helmet';
 
 const { Header } = Layout;
 const { Column } = Table;
@@ -266,6 +267,11 @@ class ProductPackage extends Component {
         
          return (
             <div>
+                <Helmet>
+                    <meta charSet="utf-8" />
+                    <title>Global Sim - Product Package</title>
+                </Helmet>
+
                 <Header style={{ color: 'white', fontSize: '30px' }}>
                     <span>Product Package</span>
                 </Header>

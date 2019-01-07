@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Layout, Table, Button,  Modal, Input, Form  } from 'antd';
 import { listShippingMethods, createShippingMethod, editShippingMethod, deleteShippingMethod } from '../../helpers/ShippingMethods';
+import { Helmet } from 'react-helmet';
 
 const { Header } = Layout;
 const { Column } = Table;
@@ -129,9 +130,15 @@ class ShippingOption extends Component {
 
          return (
             <div>
-            <Header style={{ color: 'white', fontSize: '30px' }}>
-                <span>Shipping Options</span>
-            </Header>
+                <Helmet>
+                    <meta charSet="utf-8" />
+                    <title>Global Sim - Shipping Option</title>
+                </Helmet>
+
+                <Header style={{ color: 'white', fontSize: '30px' }}>
+                    <span>Shipping Options</span>
+                </Header>
+
                 <div style={{ padding: '30px', width:'80%'}}>
                     <Button
                         onClick={this.onClickModal}
@@ -186,8 +193,8 @@ class ShippingOption extends Component {
                     </Form>}
                 </Modal>
             </div>
-            );   
-        }      
+        );
+    }
 }
 
 export default  Form.create()(ShippingOption);
