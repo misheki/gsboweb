@@ -280,7 +280,7 @@ class NewOrder extends Component {
                             </Row>
                             <Row gutter={8}>
                                 <Col span={20}>
-                                    <FormItem  label="Shipping Adddress">
+                                    <FormItem  label="Shipping Address">
                                         {getFieldDecorator('customer_address', {
                                         })(
                                             <Input />

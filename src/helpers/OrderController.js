@@ -23,7 +23,6 @@ export const createOrder = (sale_channel_id, order_ref_num, customer_name, custo
             })
             .then((response) => response.json())
             .then((responseJson) => {
-                console.log(responseJson);
                 if (responseJson.result === 'GOOD') {
                     resolve(responseJson);   
                 }
@@ -178,7 +177,6 @@ export const requestStock = (order_id, package_details, access_token) => {
             })
             .then((response) => response.json())
             .then((responseJson) => {
-                console.log(responseJson);
                 if (responseJson.result === 'GOOD') {
                     resolve(responseJson);   
                 }
@@ -296,7 +294,6 @@ export const completeOrder = (order_id, shipping_method_id, tracking_number, acc
             })
             .then((response) => response.json())
             .then((responseJson) => {
-                console.log(responseJson);
                 if (responseJson.result === 'GOOD') {
                     resolve(responseJson);   
                 }
