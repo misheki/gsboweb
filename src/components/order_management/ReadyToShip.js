@@ -42,17 +42,17 @@ class ReadyToShip extends Component {
         listReadyShip(access_token)
             .then(result => {
                 if (result.result === 'GOOD') {
-                    this.setState({ confirmed_orders: result.data });
+                    if(this._isMounted) this.setState({ confirmed_orders: result.data });
                 }
             })
     }
 
     processOrder(order_id) {
-        this.setState({ order_id: order_id }, this.setState({ processOrder: true }));
+        if(this._isMounted) this.setState({ order_id: order_id }, this.setState({ processOrder: true }));
     }
 
     handleOrderCompleted(value) {
-        this.setState({ processOrder: value });
+        if(this._isMounted) this.setState({ processOrder: value });
         this.showOrderlistReadyToShip();
     }
 

@@ -43,25 +43,26 @@ class ImportStock extends Component {
         importStocks(this.state.stocksfile, access_token)
             .then(result => {
                 if (result.result === 'GOOD') {
-                    this.setState({
+                    if(this._isMounted) this.setState({
                         skipped : result.skipped,
                         uploaded : result.uploaded,
                         csv : result.csv,
                     }, () => this.setState({ displaybadresult : false, displaygoodresult : true }));
                 }
             })
-            .catch(err => { 
-                console.log(err);
-                this.setState({ displaybadresult : true, displaygoodresult : false })
+            .catch(err => {
+                if(this._isMounted) this.setState({ displaybadresult : true, displaygoodresult : false })
             })
 
     }
 
     onChange(e) {
         let files = e.target.files || e.dataTransfer.files;
+
         if (!files.length)
-                return;
-        this.setState({ stocksfile : files[0]});
+            return;
+
+        if(this._isMounted) this.setState({ stocksfile : files[0]});
     }
 
     renderResult() {

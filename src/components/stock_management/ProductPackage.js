@@ -45,7 +45,7 @@ class ProductPackage extends Component {
         listPackage(access_token)
             .then(result => {
                 if (result.result === 'GOOD') {
-                    this.setState({ packages: result.data });
+                    if(this._isMounted) this.setState({ packages: result.data });
                 }
             })
     }
@@ -55,7 +55,7 @@ class ProductPackage extends Component {
         listSku(access_token)
             .then(result => {
                 if (result.result === 'GOOD') {
-                    this.setState({ skus: result.data });
+                    if(this._isMounted) this.setState({ skus: result.data });
                 }
             })
     }

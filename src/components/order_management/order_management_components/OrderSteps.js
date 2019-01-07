@@ -52,7 +52,7 @@ class OrderSteps extends Component {
         courierList(access_token)
             .then(result => {
                 if (result.result === 'GOOD') {
-                    this.setState({ couriers: result.data });
+                    if(this._isMounted) this.setState({ couriers: result.data });
                 }
             })
     }
@@ -64,7 +64,7 @@ class OrderSteps extends Component {
         var access_token = sessionStorage.getItem('access_token');
 
         if (this.state.current === 0) {
-            this.setState({ current });
+            if(this._isMounted) this.setState({ current });
         }
         else if (method === 'Courier') {
             form.validateFields(['customer_address', 'customer_contact_num', 'customer_state', 'customer_postcode', 'shipping_method_id', 'tracking_number', 'shipping_fee'], (err, values) => {
@@ -77,7 +77,7 @@ class OrderSteps extends Component {
                 shippingUpdateWithCourier(order.id, values.customer_address, values.customer_contact_num, values.customer_state, values.customer_postcode, values.shipping_method_id, values.tracking_number, values.shipping_fee, access_token)
                     .then(result => {
                         if (result.result === 'GOOD') {
-                            this.setState({
+                            if(this._isMounted) this.setState({
                                 next_loading: false,
                                 current,
                                 method: 'Courier',
@@ -93,7 +93,7 @@ class OrderSteps extends Component {
             shippingUpdateWithoutCourier(order.id, null, null, null, access_token)
                 .then(result => {     
                     if (result.result === 'GOOD') {
-                        this.setState({
+                        if(this._isMounted) this.setState({
                             next_loading: false,
                             current,
                             method: 'Self Pickup',
@@ -112,7 +112,7 @@ class OrderSteps extends Component {
                 if (result.result === 'GOOD') {
                     result.data.forEach(order => {
                         if (order.id === this.props.order_id) {
-                            this.setState({ order_overview: order });
+                            if(this._isMounted) this.setState({ order_overview: order });
                         }
                     });
                 }
@@ -122,7 +122,7 @@ class OrderSteps extends Component {
     prev() {
         this.processOrder(this.state.order.id);
         const current = this.state.current - 1;
-        this.setState({ current });
+        if(this._isMounted) this.setState({ current });
     }
 
     processOrder(order_id) {
@@ -130,7 +130,7 @@ class OrderSteps extends Component {
 
         showOrders(order_id, access_token)
             .then(result => {
-                this.setState({
+                if(this._isMounted) this.setState({
                     order: result.order,
                     package_details: result.package_details,
                     incomplete: result.incomplete
@@ -142,7 +142,7 @@ class OrderSteps extends Component {
     }
 
     handleMethod(value) {
-        this.setState({ method: value });
+        if(this._isMounted) this.setState({ method: value });
     }
 
     handleRequestStock() {
@@ -169,8 +169,7 @@ class OrderSteps extends Component {
                     requestStock(order_id, filtered_stocks, access_token)
                         .then(result => {
                             if (result.result === 'GOOD') {
-                                this.setState({ request_stock_loading: false });
-                                this.setState({ current });
+                                if(this._isMounted) this.setState({ request_stock_loading: false, current });
                             }
                         })
                 }
@@ -182,11 +181,12 @@ class OrderSteps extends Component {
         const { order, tracking_number, shipping_method_id } = this.state;
         var access_token = sessionStorage.getItem('access_token');
 
-        this.setState({ complete_order_loading: true });
+        if(this._isMounted) this.setState({ complete_order_loading: true });
+        
         completeOrder(order.id, shipping_method_id, tracking_number, access_token)
             .then(result => {
                 if (result.result === 'GOOD') {
-                    this.setState({ complete_order_loading: false });
+                    if(this._isMounted) this.setState({ complete_order_loading: false });
                     message.success('Processing complete!');
                     this.props.order_completed(false);
                 }

@@ -44,33 +44,32 @@ class Completed extends Component {
         listCompleted(access_token)
             .then(result => {
                 if (result.result === 'GOOD') {
-                    this.setState({ completed_orders: result.data });
+                    if(this._isMounted) this.setState({ completed_orders: result.data });
                 }
             })
     }
 
     next() {
         const current = this.state.current + 1;
-        this.setState({ current });
+        if(this._isMounted) this.setState({ current });
     }
 
     prev() {
         const current = this.state.current - 1;
-        this.setState({ current });
+        if(this._isMounted) this.setState({ current });
     }
 
     showOrder(order) {
-        this.setState({ order : order}, () => this.setState({ displayDetails : true }))
+        if(this._isMounted) this.setState({ order : order}, () => this.setState({ displayDetails : true }))
     }
 
     renderDetails() {
         this.state.order.order_details.map((item) => console.log(item));
 
         const formItemLayout = {
-            labelCol: {span:8},
-            wrapperCol: { span: 10 },
-    
-          };
+            labelCol: { span: 8 },
+            wrapperCol: { span: 10 }
+        };
 
         const packageDetailItems =  this.state.order.order_details.map((item, i) =>
         item.stocks.map((stock, j) =>

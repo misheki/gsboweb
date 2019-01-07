@@ -47,7 +47,7 @@ class NewOrder extends Component {
         listSku(access_token)
             .then(result => {
                 if (result.result === 'GOOD') {
-                    this.setState({ skus: result.data });
+                    if(this._isMounted) this.setState({ skus: result.data });
                 }
             })
     }
@@ -57,7 +57,7 @@ class NewOrder extends Component {
         listSkuPackage(sku_id, access_token)
             .then(result => {
                 if (result.result === 'GOOD') {
-                    this.setState({ packages: result.data });
+                    if(this._isMounted) this.setState({ packages: result.data });
                 }
             })
     }
@@ -67,7 +67,7 @@ class NewOrder extends Component {
         saleChannelList(access_token)
             .then(result => {
                 if (result.result === 'GOOD') {
-                    this.setState({ sale_channels: result.data });
+                    if(this._isMounted) this.setState({ sale_channels: result.data });
                 }
             })
     }
@@ -103,11 +103,11 @@ class NewOrder extends Component {
                 return;
             }
 
-            this.setState({ loading: true });
+            if(this._isMounted) this.setState({ loading: true });
             createOrder(values.sale_channel_id, values.order_ref_num, values.customer_name, values.customer_email, values.customer_contact_num, values.customer_address, values.customer_postcode, values.customer_state, values.package_details, values.shipping_fee, access_token)
                 .then(result => {
                     if (result.result === 'GOOD') {
-                        this.setState({ loading: false });
+                        if(this._isMounted) this.setState({ loading: false });
                         form.resetFields();
                         Modal.success({
                             title: 'Success',
@@ -206,6 +206,7 @@ class NewOrder extends Component {
                 </Row>
             </React.Fragment>
         ));
+        
         if (allowed.includes('newOrder')) {
          return (
             <div>

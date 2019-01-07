@@ -42,17 +42,17 @@ class PendingOrder extends Component {
         listPending(access_token)
             .then(result => {
                 if (result.result === 'GOOD') {
-                    this.setState({ pending_orders: result.data });
+                    if(this._isMounted) this.setState({ pending_orders: result.data });
                 }
             })
     }
 
     processOrder(order_id) {
-        this.setState({ order_id: order_id }, this.setState({ processOrder: true }));
+        if(this._isMounted) this.setState({ order_id: order_id }, this.setState({ processOrder: true }));
     }
 
     handleOrderCompleted(value) {
-        this.setState({ processOrder: value });
+        if(this._isMounted) this.setState({ processOrder: value });
         this.showOrderlistPending();
     }
 
