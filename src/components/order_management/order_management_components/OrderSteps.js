@@ -187,7 +187,8 @@ class OrderSteps extends Component {
             .then(result => {
                 if (result.result === 'GOOD') {
                     this.setState({ complete_order_loading: false });
-                    message.success('Processing complete!');      
+                    message.success('Processing complete!');
+                    this.props.order_completed(false);
                 }
             })
     }

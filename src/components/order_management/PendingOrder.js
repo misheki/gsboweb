@@ -51,6 +51,10 @@ class PendingOrder extends Component {
         this.setState({ order_id: order_id }, this.setState({ processOrder: true }));
     }
 
+    handleOrderCompleted(value) {
+        this.setState({ processOrder: value });
+    }
+
     render() {
         const { pending_orders, processOrder, allowed, order_id } = this.state;
 
@@ -93,7 +97,7 @@ class PendingOrder extends Component {
                     <Header style={{ color: 'white', fontSize: '30px' }}>
                         <span>Pending Order</span>
                     </Header>
-                    <OrderSteps order_id={order_id} />
+                    <OrderSteps order_id={order_id} order_completed={this.handleOrderCompleted.bind(this)} />
                 </div>
             );
         }
