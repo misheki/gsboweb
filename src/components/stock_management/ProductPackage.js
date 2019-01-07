@@ -41,6 +41,12 @@ class ProductPackage extends Component {
         this._isMounted = false;
     }
 
+    getPermissions() {
+        var access_token = sessionStorage.getItem('access_token');
+        checkAccess(this.state.required, access_token)
+            .then(result => (this._isMounted === true) ? this.setState({ allowed : result }) : null);
+    }
+
     showPackageList() {
         var access_token = sessionStorage.getItem('access_token');
         listPackage(access_token)
@@ -48,6 +54,12 @@ class ProductPackage extends Component {
                 if (result.result === 'GOOD') {
                     if(this._isMounted) this.setState({ packages: result.data });
                 }
+            })
+            .catch(error => {
+                Modal.error({
+                    title: 'Error',
+                    content: error
+                })
             })
     }
 
@@ -59,12 +71,12 @@ class ProductPackage extends Component {
                     if(this._isMounted) this.setState({ skus: result.data });
                 }
             })
-    }
-
-    getPermissions() {
-        var access_token = sessionStorage.getItem('access_token');
-        checkAccess(this.state.required, access_token)
-            .then(result => (this._isMounted === true) ? this.setState({ allowed : result }) : null);
+            .catch(error => {
+                Modal.error({
+                    title: 'Error',
+                    content: error
+                })
+            })
     }
 
     showAddPackagesModal = () => {
@@ -111,6 +123,12 @@ class ProductPackage extends Component {
                         this.showPackageList();
                     }
                 })
+                .catch(error => {
+                    Modal.error({
+                        title: 'Error',
+                        content: error
+                    })
+                })
         });
     }
 
@@ -131,6 +149,12 @@ class ProductPackage extends Component {
                         this.handleCancel();
                         this.showPackageList();
                     }
+                })
+                .catch(error => {
+                    Modal.error({
+                        title: 'Error',
+                        content: error
+                    })
                 })
         });
     }
@@ -154,6 +178,12 @@ class ProductPackage extends Component {
                         this.showSkuList();
                     }
                 })
+                .catch(error => {
+                    Modal.error({
+                        title: 'Error',
+                        content: error
+                    })
+                })
         });
     }
 
@@ -176,6 +206,12 @@ class ProductPackage extends Component {
                         this.showSkuList();
                     }
                 })
+                .catch(error => {
+                    Modal.error({
+                        title: 'Error',
+                        content: error
+                    })
+                })
         });
     }
 
@@ -194,16 +230,18 @@ class ProductPackage extends Component {
                                 content:'You have successfully deleted this SKU.',
                                 onOk: () => {
                                     this.showSkuList();
-                            }});
-                        } else  if (result.result === 'STOCKEXIST') {
-                            Modal.error({
-                                title:'Error',
-                                content:'You cannot delete this SKU because it has stocks under it.',
-                                onOk: () => {
-                                    this.showSkuList();
-                            }});
+                                }
+                            });
                         }
-                       
+                    })
+                    .catch(error => {
+                        Modal.error({
+                            title: 'Error',
+                            content: error,
+                            onOk: () => {
+                                this.showSkuList();
+                            }
+                        })
                     })
             }
         })
@@ -224,16 +262,18 @@ class ProductPackage extends Component {
                                 content:'You have successfully deleted this package.',
                                 onOk: () => {
                                     this.showPackageList();
-                            }});
-                        } else  if (result.result === 'STOCKEXIST') {
-                            Modal.error({
-                                title:'Error',
-                                content:'You cannot delete this package because there are stocks under it.',
-                                onOk: () => {
-                                    this.showPackageList();
-                            }});
+                                }
+                            });
                         }
-                       
+                    })
+                    .catch(error => {
+                        Modal.error({
+                            title: 'Error',
+                            content: error,
+                            onOk: () => {
+                                this.showPackageList();
+                            }
+                        })
                     })
             }
         })

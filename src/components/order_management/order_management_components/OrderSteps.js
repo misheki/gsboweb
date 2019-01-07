@@ -56,6 +56,12 @@ class OrderSteps extends Component {
                     if(this._isMounted) this.setState({ couriers: result.data });
                 }
             })
+            .catch(error => {
+                Modal.error({
+                    title: 'Error',
+                    content: error
+                })
+            })
     }
 
     next() {
@@ -87,6 +93,12 @@ class OrderSteps extends Component {
                             }, this.fetchListReadyShip());
                         }
                     })
+                    .catch(error => {
+                        Modal.error({
+                            title: 'Error',
+                            content: error
+                        })
+                    })
             })
         }
         else {
@@ -101,6 +113,12 @@ class OrderSteps extends Component {
                             shipping_method_id: null
                         }, this.fetchListReadyShip());
                     }
+                })
+                .catch(error => {
+                    Modal.error({
+                        title: 'Error',
+                        content: error
+                    })
                 })
         }
     }
@@ -117,6 +135,12 @@ class OrderSteps extends Component {
                         }
                     });
                 }
+            })
+            .catch(error => {
+                Modal.error({
+                    title: 'Error',
+                    content: error
+                })
             })
     }
 
@@ -139,6 +163,12 @@ class OrderSteps extends Component {
                     processOrder: true,
                     method: result.order.shipping_method_id !== null ? 'Courier' : 'Self Pickup'
                 }));
+            })
+            .catch(error => {
+                Modal.error({
+                    title: 'Error',
+                    content: error
+                })
             })
     }
 
@@ -173,6 +203,12 @@ class OrderSteps extends Component {
                                 if(this._isMounted) this.setState({ request_stock_loading: false, current });
                             }
                         })
+                        .catch(error => {
+                            Modal.error({
+                                title: 'Error',
+                                content: error
+                            })
+                        })
                 }
             })
         });
@@ -201,6 +237,12 @@ class OrderSteps extends Component {
                             });
                         }
                     })
+                    .catch(error => {
+                        Modal.error({
+                            title: 'Error',
+                            content: error
+                        })
+                    })
             }
         })
     }
@@ -218,6 +260,12 @@ class OrderSteps extends Component {
                     message.success('Processing complete!');
                     this.props.process_order(false);
                 }
+            })
+            .catch(error => {
+                Modal.error({
+                    title: 'Error',
+                    content: error
+                })
             })
     }
 
@@ -753,7 +801,7 @@ class OrderSteps extends Component {
                     {allowed.includes('shipOrder') ? (current < steps.length - 1 && current !== 0 && <Button loading={next_loading} type="primary" onClick={() => this.next()}>Next</Button>) : null}
                     {allowed.includes('processOrder') ? (current === 0 && (order.status === 'pending' ?
                     <div>
-                        {order.status === 'pending' ? <Button loading={cancel_loading} type="danger" style={{ marginRight: 8 }} onClick={() => this.handleCancelOrder()}>Cancel</Button> : null}
+                        {order.status === 'pending' ? <Button loading={cancel_loading} type="danger" style={{ marginRight: 8 }} onClick={() => this.handleCancelOrder()}>Cancel this order</Button> : null}
                         <Button disabled={incomplete} loading={request_stock_loading} type="primary" onClick={() => this.handleRequestStock()}>Save, Request Stock & Continue</Button>
                     </div>
                     : <Button type="primary" onClick={() => this.next()}>Next</Button>)) : null}

@@ -25,7 +25,30 @@ export const createOrder = (sale_channel_id, order_ref_num, customer_name, custo
             .then((responseJson) => {
                 console.log(responseJson);
                 if (responseJson.result === 'GOOD') {
-                    resolve(responseJson);   
+                    resolve(responseJson);
+                }
+                else {
+                    var error = '';
+
+                    switch (responseJson.result) {
+                        case 'DUPLICATEORDERREFNUM':
+                            error = 'The order reference number is already exists!';
+                            break;
+
+                        case 'CONTACTMUSTNUMBER':
+                            error = 'The customer contact number must be a number!';
+                            break;
+
+                        case 'POSTCODEMUSTNUMBER':
+                            error = 'The postcode must be a number!';
+                            break;
+
+                        default:
+                            error = responseJson.msg;
+                            break;
+                    }
+
+                    reject(error);
                 }
             })
             .catch((error) => {
@@ -51,6 +74,17 @@ export const listPending = (access_token) => {
                 if (responseJson.result === 'GOOD') {
                     resolve(responseJson);   
                 }
+                else {
+                    var error = '';
+
+                    switch (responseJson.result) {
+                        default:
+                            error = responseJson.msg;
+                            break;
+                    }
+
+                    reject(error);
+                }
             })
             .catch((error) => {
                 reject(error);
@@ -74,6 +108,17 @@ export const listReadyShip = (access_token) => {
             .then((responseJson) => {
                 if (responseJson.result === 'GOOD') {
                     resolve(responseJson);   
+                }
+                else {
+                    var error = '';
+
+                    switch (responseJson.result) {
+                        default:
+                            error = responseJson.msg;
+                            break;
+                    }
+
+                    reject(error);
                 }
             })
             .catch((error) => {
@@ -102,6 +147,17 @@ export const listCompleted = (search, access_token) => {
                 if (responseJson.result === 'GOOD') {
                     resolve(responseJson);   
                 }
+                else {
+                    var error = '';
+
+                    switch (responseJson.result) {
+                        default:
+                            error = responseJson.msg;
+                            break;
+                    }
+
+                    reject(error);
+                }
             })
             .catch((error) => {
                 reject(error);
@@ -125,6 +181,17 @@ export const saleChannelList = (access_token) => {
             .then((responseJson) => {
                 if (responseJson.result === 'GOOD') {
                     resolve(responseJson);   
+                }
+                else {
+                    var error = '';
+
+                    switch (responseJson.result) {
+                        default:
+                            error = responseJson.msg;
+                            break;
+                    }
+
+                    reject(error);
                 }
             })
             .catch((error) => {
@@ -153,6 +220,17 @@ export const showOrders = (order_id, access_token) => {
                 if (responseJson.result === 'GOOD') {
                     resolve(responseJson);   
                 }
+                else {
+                    var error = '';
+
+                    switch (responseJson.result) {
+                        default:
+                            error = responseJson.msg;
+                            break;
+                    }
+
+                    reject(error);
+                }
             })
             .catch((error) => {
                 reject(error);
@@ -178,9 +256,23 @@ export const requestStock = (order_id, package_details, access_token) => {
             })
             .then((response) => response.json())
             .then((responseJson) => {
-                console.log(responseJson);
                 if (responseJson.result === 'GOOD') {
                     resolve(responseJson);   
+                }
+                else {
+                    var error = '';
+
+                    switch (responseJson.result) {
+                        case 'ALREADYREQUEST':
+                            error = 'You have already requested the stocks for this order!';
+                            break;
+                    
+                        default:
+                            error = responseJson.msg;
+                            break;
+                    }
+
+                    reject(error);
                 }
             })
             .catch((error) => {
@@ -205,6 +297,17 @@ export const courierList = (access_token) => {
             .then((responseJson) => {
                 if (responseJson.result === 'GOOD') {
                     resolve(responseJson);   
+                }
+                else {
+                    var error = '';
+
+                    switch (responseJson.result) {
+                        default:
+                            error = responseJson.msg;
+                            break;
+                    }
+
+                    reject(error);
                 }
             })
             .catch((error) => {
@@ -240,6 +343,17 @@ export const shippingUpdateWithCourier = (order_id, customer_address, customer_c
                 if (responseJson.result === 'GOOD') {
                     resolve(responseJson);   
                 }
+                else {
+                    var error = '';
+
+                    switch (responseJson.result) {
+                        default:
+                            error = responseJson.msg;
+                            break;
+                    }
+
+                    reject(error);
+                }
             })
             .catch((error) => {
                 reject(error);
@@ -270,6 +384,17 @@ export const shippingUpdateWithoutCourier = (order_id, shipping_method_id, shipp
                 if (responseJson.result === 'GOOD') {
                     resolve(responseJson);   
                 }
+                else {
+                    var error = '';
+
+                    switch (responseJson.result) {
+                        default:
+                            error = responseJson.msg;
+                            break;
+                    }
+
+                    reject(error);
+                }
             })
             .catch((error) => {
                 reject(error);
@@ -296,9 +421,23 @@ export const completeOrder = (order_id, shipping_method_id, tracking_number, acc
             })
             .then((response) => response.json())
             .then((responseJson) => {
-                console.log(responseJson);
                 if (responseJson.result === 'GOOD') {
                     resolve(responseJson);   
+                }
+                else {
+                    var error = '';
+
+                    switch (responseJson.result) {
+                        case 'ALREADYCOMPLETE':
+                            error = 'You have already completed this order!';
+                            break;
+                    
+                        default:
+                            error = responseJson.msg
+                            break;
+                    }
+
+                    reject(error);
                 }
             })
             .catch((error) => {
@@ -326,6 +465,17 @@ export const cancelOrder = (order_id, access_token) => {
             .then((responseJson) => {
                 if (responseJson.result === 'GOOD') {
                     resolve(responseJson);   
+                }
+                else {
+                    var error = '';
+
+                    switch (responseJson.result) {
+                        default:
+                            error = responseJson.msg;
+                            break;
+                    }
+
+                    reject(error);
                 }
             })
             .catch((error) => {

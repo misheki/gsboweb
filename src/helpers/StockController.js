@@ -17,6 +17,17 @@ export const listStock = (sim_card_number, access_token) => {
                 if (responseJson.result === 'GOOD') {
                     resolve(responseJson);   
                 }
+                else {
+                    var error = '';
+                    
+                    switch (responseJson.result) {
+                        default:
+                            error = responseJson.msg;
+                            break;
+                    }
+                    
+                    reject(error);
+                }
             })
             .catch((error) => {
                 reject(error);
@@ -44,6 +55,17 @@ export const writeOff = (stock_id, remarks, access_token) => {
             .then((responseJson) => {
                 if (responseJson.result === 'GOOD') {
                     resolve(responseJson);   
+                }
+                else {
+                    var error = '';
+                    
+                    switch (responseJson.result) {
+                        default:
+                            error = responseJson.msg;
+                            break;
+                    }
+                    
+                    reject(error);
                 }
             })
             .catch((error) => {
