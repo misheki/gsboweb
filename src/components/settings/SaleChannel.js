@@ -46,6 +46,12 @@ class SaleChannel extends Component {
                     if(this._isMounted) this.setState({ sales_channels: result.data });
                 }
             })
+            .catch(error => {
+                Modal.error({
+                    title: 'Error',
+                    content: error
+                })
+            })
     }
 
     showModal = () => {
@@ -77,10 +83,16 @@ class SaleChannel extends Component {
                             content:'You have successfully deleted this package.',
                             onOk: () => {
                                 this.showSalesChannelsList();
-                        }});
+                            }
+                        });
                     }   
                 })
-              
+                .catch(error => {
+                    Modal.error({
+                        title: 'Error',
+                        content: error
+                    })
+                })
             }
         })
     }
@@ -103,6 +115,12 @@ class SaleChannel extends Component {
                         this.showSalesChannelsList();
                     }
                 })
+                .catch(error => {
+                    Modal.error({
+                        title: 'Error',
+                        content: error
+                    })
+                })
         });
     }
 
@@ -123,6 +141,12 @@ class SaleChannel extends Component {
                         this.handleCancel();
                         this.showSalesChannelsList();
                     }
+                })
+                .catch(error => {
+                    Modal.error({
+                        title: 'Error',
+                        content: error
+                    })
                 })
         });
     }

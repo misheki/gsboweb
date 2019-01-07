@@ -122,3 +122,8 @@
   text-align-last: right;
 
 }
+
+.ant-checkbox-group-item {
+  display: flex;
+  height: 25px;
+}

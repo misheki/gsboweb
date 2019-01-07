@@ -17,6 +17,17 @@ export const createSalesChannel = (name, access_token) => {
                 if (responseJson.result === 'GOOD') {
                     resolve(responseJson);   
                 }
+                else {
+                    var error = '';
+
+                    switch (responseJson.result) {                    
+                        default:
+                            error = responseJson.msg;
+                            break;
+                    }
+
+                    reject(error);
+                }
             })
             .catch((error) => {
                 reject(error);
@@ -41,6 +52,17 @@ export const listSalesChannels = (access_token) => {
                 if (responseJson.result === 'GOOD') {
                     resolve(responseJson);   
                 }
+                else {
+                    var error = '';
+
+                    switch (responseJson.result) {                    
+                        default:
+                            error = responseJson.msg;
+                            break;
+                    }
+
+                    reject(error);
+                }
             })
             .catch((error) => {
                 reject(error);
@@ -61,8 +83,25 @@ export const deleteSalesChannel = (salechannel_id, access_token) => {
                 }
             })
             .then((response) => response.json())
-            .then((responseJson) => {            
-                    resolve(responseJson);           
+            .then((responseJson) => {
+                if (responseJson.result === 'GOOD') {
+                    resolve(responseJson);
+                }
+                else {
+                    var error = '';
+
+                    switch (responseJson.result) {
+                        case 'ORDEREXIST':
+                            error = 'You cannot delete this sale channel because it has orders under it.'
+                            break;
+                    
+                        default:
+                            error = responseJson.msg;
+                            break;
+                    }
+
+                    reject(error);
+                }           
             })
             .catch((error) => {
                 reject(error);
@@ -90,6 +129,17 @@ export const editSalesChannel = (salechannel_id, name, access_token) => {
             .then((responseJson) => {
                 if (responseJson.result === 'GOOD') {
                     resolve(responseJson);   
+                }
+                else {
+                    var error = '';
+
+                    switch (responseJson.result) {                    
+                        default:
+                            error = responseJson.msg;
+                            break;
+                    }
+
+                    reject(error);
                 }
             })
             .catch((error) => {

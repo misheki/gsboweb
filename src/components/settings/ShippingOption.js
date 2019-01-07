@@ -45,10 +45,16 @@ class ShippingOption extends Component {
                     if(this._isMounted) this.setState({ shipping_methods: result.data });
                 }
             })
+            .catch(error => {
+                Modal.error({
+                    title: 'Error',
+                    content: error
+                })
+            })
     }
  
     showModal = () => {
-        if(this._isMounted) this.setState({ visible: true , clickView: true});
+        if(this._isMounted) this.setState({ visible: true , clickView: true });
     }
 
     showEditModal = () => {
@@ -58,7 +64,7 @@ class ShippingOption extends Component {
     handleCancel = () => {
         const form = this.props.form;
         form.resetFields();
-        if(this._isMounted) this.setState({ visible: false, clickView: false  });
+        if(this._isMounted) this.setState({ visible: false, clickView: false });
     }
 
     handleDelete() {
@@ -76,8 +82,15 @@ class ShippingOption extends Component {
                             content:'You have successfully deleted this package.',
                             onOk: () => {
                                 this.showShippingMethodsList();
-                        }});
+                            }
+                        });
                     }   
+                })
+                .catch(error => {
+                    Modal.error({
+                        title: 'Error',
+                        content: error
+                    })
                 })
             }
         })

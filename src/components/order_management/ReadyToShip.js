@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Layout, Table, Button } from 'antd';
+import { Layout, Table, Button, Modal } from 'antd';
 import  OrderSteps from '../order_management/order_management_components/OrderSteps';
 import { listReadyShip } from '../../helpers/OrderController';
 import { checkAccess } from '../../helpers/PermissionController';
@@ -45,6 +45,12 @@ class ReadyToShip extends Component {
                 if (result.result === 'GOOD') {
                     if(this._isMounted) this.setState({ confirmed_orders: result.data });
                 }
+            })
+            .catch(error => {
+                Modal.error({
+                    title: 'Error',
+                    content: error
+                })
             })
     }
 

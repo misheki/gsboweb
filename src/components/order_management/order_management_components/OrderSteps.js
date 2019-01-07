@@ -24,7 +24,7 @@ class OrderSteps extends Component {
             method: 'Self Pickup',
             tracking_number: '',
             shipping_method_id: '',
-            required: ['processOrder', 'shipOrder'],
+            required: ['processOrder', 'shipOrder', 'cancelOrder'],
             allowed: [],
             incomplete: false,
             order_overview: ''
@@ -55,6 +55,12 @@ class OrderSteps extends Component {
                 if (result.result === 'GOOD') {
                     if(this._isMounted) this.setState({ couriers: result.data });
                 }
+            })
+            .catch(error => {
+                Modal.error({
+                    title: 'Error',
+                    content: error
+                })
             })
     }
 
@@ -87,6 +93,12 @@ class OrderSteps extends Component {
                             }, this.fetchListReadyShip());
                         }
                     })
+                    .catch(error => {
+                        Modal.error({
+                            title: 'Error',
+                            content: error
+                        })
+                    })
             })
         }
         else {
@@ -101,6 +113,12 @@ class OrderSteps extends Component {
                             shipping_method_id: null
                         }, this.fetchListReadyShip());
                     }
+                })
+                .catch(error => {
+                    Modal.error({
+                        title: 'Error',
+                        content: error
+                    })
                 })
         }
     }
@@ -117,6 +135,12 @@ class OrderSteps extends Component {
                         }
                     });
                 }
+            })
+            .catch(error => {
+                Modal.error({
+                    title: 'Error',
+                    content: error
+                })
             })
     }
 
@@ -139,6 +163,12 @@ class OrderSteps extends Component {
                     processOrder: true,
                     method: result.order.shipping_method_id !== null ? 'Courier' : 'Self Pickup'
                 }));
+            })
+            .catch(error => {
+                Modal.error({
+                    title: 'Error',
+                    content: error
+                })
             })
     }
 
@@ -167,11 +197,17 @@ class OrderSteps extends Component {
                     });
 
                     this.setState({ request_stock_loading: true });
-                    requestStock(order_id, filtered_stocks, access_token)
+                    requestStock(order_id, filtered_stocks, values.customer_name, values.customer_email, values.customer_contact_num, access_token)
                         .then(result => {
                             if (result.result === 'GOOD') {
                                 if(this._isMounted) this.setState({ request_stock_loading: false, current });
                             }
+                        })
+                        .catch(error => {
+                            Modal.error({
+                                title: 'Error',
+                                content: error
+                            })
                         })
                 }
             })
@@ -201,6 +237,12 @@ class OrderSteps extends Component {
                             });
                         }
                     })
+                    .catch(error => {
+                        Modal.error({
+                            title: 'Error',
+                            content: error
+                        })
+                    })
             }
         })
     }
@@ -218,6 +260,12 @@ class OrderSteps extends Component {
                     message.success('Processing complete!');
                     this.props.process_order(false);
                 }
+            })
+            .catch(error => {
+                Modal.error({
+                    title: 'Error',
+                    content: error
+                })
             })
     }
 
@@ -753,7 +801,7 @@ class OrderSteps extends Component {
                     {allowed.includes('shipOrder') ? (current < steps.length - 1 && current !== 0 && <Button loading={next_loading} type="primary" onClick={() => this.next()}>Next</Button>) : null}
                     {allowed.includes('processOrder') ? (current === 0 && (order.status === 'pending' ?
                     <div>
-                        {order.status === 'pending' ? <Button loading={cancel_loading} type="danger" style={{ marginRight: 8 }} onClick={() => this.handleCancelOrder()}>Cancel</Button> : null}
+                        {allowed.includes('cancelOrder') ? ((order.status === 'pending') ? <Button loading={cancel_loading} type="danger" style={{ marginRight: 8 }} onClick={() => this.handleCancelOrder()}>Cancel this order</Button> : null) : null}
                         <Button disabled={incomplete} loading={request_stock_loading} type="primary" onClick={() => this.handleRequestStock()}>Save, Request Stock & Continue</Button>
                     </div>
                     : <Button type="primary" onClick={() => this.next()}>Next</Button>)) : null}
@@ -765,6 +813,14 @@ class OrderSteps extends Component {
     render() {
         return (
             <div>
+                <Button
+                    type="primary"
+                    icon="left"
+                    onClick={() => this.props.process_order(false)}
+                    style={{ margin: '20px', marginLeft: '40px' }}>
+                    Back
+                </Button>
+
                 {this.renderProcessOrder()}
             </div>
         );

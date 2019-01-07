@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Layout, Form, Row, Col, Table, AutoComplete, Input, Button, Icon } from 'antd';
+import { Layout, Form, Row, Col, Table, AutoComplete, Input, Button, Icon, Modal } from 'antd';
 import { listCompleted } from '../../helpers/OrderController';
 import { checkAccess } from '../../helpers/PermissionController';
 import { Helmet } from 'react-helmet';
@@ -48,6 +48,12 @@ class Completed extends Component {
                     if(this._isMounted) this.setState({ completed_orders: result.data });
                 }
             })
+            .catch(error => {
+                Modal.error({
+                    title: 'Error',
+                    content: error
+                })
+            })
     }
 
     handleSearch() {
@@ -59,6 +65,12 @@ class Completed extends Component {
                 if (result.result === 'GOOD') {
                     if(this._isMounted) this.setState({ completed_orders: result.data });
                 }
+            })
+            .catch(error => {
+                Modal.error({
+                    title: 'Error',
+                    content: error
+                })
             })
     }
 
