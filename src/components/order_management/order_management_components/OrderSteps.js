@@ -74,10 +74,17 @@ class OrderSteps extends Component {
                 }
     
                 this.setState({ next_loading: true });
+
                 shippingUpdateWithCourier(order.id, values.customer_address, values.customer_contact_num, values.customer_state, values.customer_postcode, values.shipping_method_id, values.tracking_number, values.shipping_fee, access_token)
                     .then(result => {
                         if (result.result === 'GOOD') {
-                            this.setState({ next_loading: false, current, method: 'Courier', tracking_number: values.tracking_number, shipping_method_id: values.shipping_method_id }, this.fetchListReadyShip());
+                            this.setState({
+                                next_loading: false,
+                                current,
+                                method: 'Courier',
+                                tracking_number: values.tracking_number,
+                                shipping_method_id: values.shipping_method_id
+                            }, this.fetchListReadyShip());
                         }
                     })
             })
@@ -87,7 +94,12 @@ class OrderSteps extends Component {
             shippingUpdateWithoutCourier(order.id, null, null, access_token)
                 .then(result => {     
                     if (result.result === 'GOOD') {
-                        this.setState({ next_loading: false, current, method: 'Self Pickup', shipping_method_id: null }, this.fetchListReadyShip());
+                        this.setState({
+                            next_loading: false,
+                            current,
+                            method: 'Self Pickup',
+                            shipping_method_id: null
+                        }, this.fetchListReadyShip());
                     }
                 })
         }
@@ -116,11 +128,20 @@ class OrderSteps extends Component {
 
     processOrder(order_id) {
         var access_token = sessionStorage.getItem('access_token');
+
         this.setState({ process_order_loading: true });
 
         showOrders(order_id, access_token)
             .then(result => {
-                this.setState({ order: result.order, package_details: result.package_details, incomplete: result.incomplete }, this.setState({ processOrder: true, process_order_loading: false }));
+                this.setState({
+                    order: result.order,
+                    package_details: result.package_details,
+                    incomplete: result.incomplete
+                }, this.setState({
+                    processOrder: true,
+                    process_order_loading: false,
+                    method: result.order.shipping_method_id !== null ? 'Courier' : 'Self Pickup'
+                }));
             })
     }
 
@@ -424,10 +445,6 @@ class OrderSteps extends Component {
         //     this.setState({ current: 1 });
         // }
 
-        // if (order.shipping_method_id) {
-        //     this.setState({ method: 'Courier' });
-        // }
-
         const steps = [{
             title: 'Order Details',
             content:  
@@ -631,8 +648,8 @@ class OrderSteps extends Component {
         }, {
             title: 'Confirm Order',
             content: 
-                <Form layout="vertical" style={{backgroundColor:'white'}}> 
-                    <div style={{padding:'20px', marginBottom:'10px'}}>
+                <Form> 
+                    <div style={{padding:'20px', marginBottom:'10px', textAlign:'left'}}>
                         <h2 style={{paddingBottom:'10px'}}>Order Ref. No.{order.order_ref_num}</h2>    
                         <Row gutter={8}>
                             <Col span={12}>
@@ -640,63 +657,61 @@ class OrderSteps extends Component {
                                 <Form.Item {...formItemLayout} label="Order Date : "  className="form-item">
                                 <p>{order.created_at}</p> 
                                 </Form.Item>
-                                <Form.Item  {...formItemLayout} label="Sales Channel : " className="form-item">
+                                <Form.Item {...formItemLayout} label="Sales Channel : " className="form-item">
                                     <p>{order.sale_channel_name} </p>
                                 </Form.Item>
-                                <Form.Item  {...formItemLayout} label="Shipping Method : " className="form-item">
+                                <Form.Item {...formItemLayout} label="Shipping Method : " className="form-item">
                                     <p>{order_overview.shipping_method ? order_overview.shipping_method : 'Self Pickup'} </p>
                                 </Form.Item>
-                                <Form.Item  {...formItemLayout} label="Tracking Number : " className="form-item">
+                                {order_overview.shipping_method_id !== null ? <Form.Item {...formItemLayout} label="Tracking Number : " className="form-item">
                                     <p>{order.tracking_number} </p>
-                                </Form.Item>
+                                </Form.Item> : null}
 
                             </Col>
                             <Col span={12}>
-                                <h3 style={{paddingBottom:'10px'}}>Customer Details </h3>  
+                                <h3 style={{paddingBottom: '10px' }}>Customer Details</h3>  
                                 <p>{order.customer_name}</p> 
                                 <p>{order.customer_address}</p> 
                                 <p>{order.customer_postcode}, {order.customer_state}</p> 
                                 <p>{order.customer_contact_num}</p> 
                                 <p>{order.customer_email}</p> 
                             </Col>
-                        </Row>   
-                        <h3 style={{paddingBottom:'10px'}}>Product Details</h3>
-                        <div style={{ backgroundColor: 'white', padding:'10px'}}>
-                            <Row gutter={16} style={{ backgroundColor: '#e8e8e8', padding: '10px', paddingBottom: '0px', marginBottom: '10px' }}>
-                                <Col span={2}>
-                                    <p>Item</p>
-                                </Col>
-                                <Col span={3}>
-                                    <p>SKU</p>
-                                </Col>
-                                <Col span={7}>
-                                    <p>Package</p>
-                                </Col>
-                                <Col span={6}>
-                                    <p>Sim Card Number</p>
-                                </Col>
-                                <Col span={4}>
-                                    <p>Serial Number</p>
-                                </Col>
-                                <Col span={2}>
-                                    <p>Unit Price</p>
-                                </Col>
-                            </Row>
-                            {this.packageDetailItems()}
-                            <div style={{float:'right', width:'30%'}}>
-                                <Form.Item  labelCol={{ span: 12 }} wrapperCol={{ span: 12 }} label="Subtotal : "  className="form-item">
-                                    <p>RM {order_overview.total_amount}</p> 
-                                </Form.Item>
-                                <Form.Item  labelCol={{ span: 12 }} wrapperCol={{ span: 12 }} label="Shipping Fee : "  className="form-item">
-                                    <p>RM {order_overview.shipping_fee}</p>
-                                </Form.Item>
-                                <Form.Item  labelCol={{ span: 12 }} wrapperCol={{ span: 12 }} label="Total Amount : "  className="form-item">
-                                    <p>RM {order_overview.total}</p> 
-                                </Form.Item>
-                            </div>
-                        </div>
+                        </Row>
                     </div>
-            </Form>
+                    <div style={{padding: '20px', textAlign: 'left' }}>
+                        <h3 style={{paddingBottom: '10px' }}>Product Details</h3>
+                        <Row gutter={16} style={{ backgroundColor: '#e8e8e8', padding: '10px', paddingBottom: '0px', marginBottom: '10px' }}>
+                            <Col span={2}>
+                                <p>Item</p>
+                            </Col>
+                            <Col span={3}>
+                                <p>SKU</p>
+                            </Col>
+                            <Col span={7}>
+                                <p>Package</p>
+                            </Col>
+                            <Col span={6}>
+                                <p>Sim Card Number</p>
+                            </Col>
+                            <Col span={4}>
+                                <p>Serial Number</p>
+                            </Col>
+                            <Col span={2}>
+                                <p>Unit Price</p>
+                            </Col>
+                        </Row>
+                        {this.packageDetailItems()}
+                        <Form.Item  labelCol={{ span: 20 }} wrapperCol={{ span: 4 }} label="Subtotal : " className="form-item-right">
+                            <p>RM {order_overview.total_amount}</p> 
+                        </Form.Item>
+                        {order_overview.shipping_method_id !== null ? <Form.Item  labelCol={{ span: 20 }} wrapperCol={{ span: 4 }} label="Shipping Fee : " className="form-item-right">
+                            <p>RM {order_overview.shipping_fee}</p>
+                        </Form.Item> : null}
+                        <Form.Item  labelCol={{ span: 20 }} wrapperCol={{ span: 4 }} label="Total Amount : " className="form-item-right">
+                            <p>RM {order_overview.total}</p> 
+                        </Form.Item>
+                    </div>
+                </Form>
         }];
      
         return (
@@ -711,7 +726,12 @@ class OrderSteps extends Component {
                     {current > 0 && (<Button style={{ marginRight: 8 }} onClick={() => this.prev()}>Previous</Button>)}
                     {current === steps.length - 1 && <Button loading={complete_order_loading} type="primary" onClick={() => this.handleCompleteOrder()}>Complete Order</Button>}
                     {allowed.includes('shipOrder') ? (current < steps.length - 1 && current !== 0 && <Button loading={next_loading} type="primary" onClick={() => this.next()}>Next</Button>) : null}
-                    {allowed.includes('processOrder') ? (current === 0 && (order.status === 'pending' ? <Button disabled={incomplete} loading={request_stock_loading} type="primary" onClick={() => this.handleRequestStock()}>Save, Request Stock & Continue</Button> : <Button type="primary" onClick={() => this.next()}>Next</Button>)) : null}
+                    {allowed.includes('processOrder') ? (current === 0 && (order.status === 'pending' ?
+                    <div>
+                        {order.status === 'pending' ? <Button type="danger" style={{ marginRight: 8 }} onClick={() => this.handleCancelOrder()}>Cancel</Button> : null}
+                        <Button disabled={incomplete} loading={request_stock_loading} type="primary" onClick={() => this.handleRequestStock()}>Save, Request Stock & Continue</Button>
+                    </div>
+                    : <Button type="primary" onClick={() => this.next()}>Next</Button>)) : null}
                 </div>
             </div>
         );
