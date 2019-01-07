@@ -83,20 +83,22 @@ export const listReadyShip = (access_token) => {
     ])
 }
 
-export const listCompleted = (access_token) => {
+export const listCompleted = (search, access_token) => {
     return Promise.race([
         new Promise((resolve, reject) =>
             fetch(global.URL + 'api/order/list/completed', {
-                method: 'GET',
+                method: 'POST',
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
                     'Authorization': 'Bearer ' + access_token
-                }
+                },
+                body: JSON.stringify({
+                    search
+                })
             })
             .then((response) => response.json())
             .then((responseJson) => {
-                console.log(responseJson);
                 if (responseJson.result === 'GOOD') {
                     resolve(responseJson);   
                 }

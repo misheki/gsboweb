@@ -19,7 +19,8 @@ class Completed extends Component {
             order: null,
             displayDetails: false,
             required: ['viewOrderHistory'],
-            allowed: []
+            allowed: [],
+            search: ''
         };
     }
 
@@ -41,7 +42,19 @@ class Completed extends Component {
 
     showOrderlistCompleted() {
         var access_token = sessionStorage.getItem('access_token');
-        listCompleted(access_token)
+        listCompleted(null, access_token)
+            .then(result => {
+                if (result.result === 'GOOD') {
+                    if(this._isMounted) this.setState({ completed_orders: result.data });
+                }
+            })
+    }
+
+    handleSearch() {
+        var access_token = sessionStorage.getItem('access_token');
+        const { search } = this.state;
+
+        listCompleted(search, access_token)
             .then(result => {
                 if (result.result === 'GOOD') {
                     if(this._isMounted) this.setState({ completed_orders: result.data });
@@ -200,17 +213,17 @@ class Completed extends Component {
                         <span>Completed Orders</span>
                     </Header>
                     <div className="global-search-wrapper" >
-                        {/* <AutoComplete
+                        <AutoComplete
                             className="global-search"
                             size="large"
-                            // onSearch={(search) => this.setState({ search })}
-                            placeholder="Search..">
+                            onSearch={(search) => this._isMounted === true ? this.setState({ search }) : null}
+                            placeholder="Search Order Number">
                             <Input suffix={(
-                                <Button className="search-btn" size="large" type="primary" >
+                                <Button className="search-btn" size="large" type="primary" onClick={() => this.handleSearch()}>
                                     <Icon type="search" />
                                 </Button>
                             )} />
-                        </AutoComplete> */}
+                        </AutoComplete>
                     </div>
                     <div style={{ padding: '30px', paddingTop:'0px' }}>
                         <Table
@@ -218,15 +231,14 @@ class Completed extends Component {
                             rowKey={completed_orders => completed_orders.id}
                             onRow={(order) => {
                                 return {
-                                onClick: () => {this.showOrder(order)}
+                                    onClick: () => {this.showOrder(order)}
                                 };
-                            }}
-                            >
+                            }}>
                             <Column title="Order Number" dataIndex="order_ref_num" key="order_ref_num" />
-                                <Column title="Order Date" dataIndex="order_date" key="order_date" />
-                                <Column title="Customer Name" dataIndex="customer_name" key="customer_name" />
-                                <Column title="Total" dataIndex="total" key="total" />
-                                <Column title="Order Status" dataIndex="order_status" key="order_status" />
+                            <Column title="Order Date" dataIndex="order_date" key="order_date" />
+                            <Column title="Customer Name" dataIndex="customer_name" key="customer_name" />
+                            <Column title="Total" dataIndex="total" key="total" />
+                            <Column title="Order Status" dataIndex="order_status" key="order_status" />
                         </Table>
                     </div>
                 </div>
