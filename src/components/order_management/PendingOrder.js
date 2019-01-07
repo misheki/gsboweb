@@ -53,6 +53,7 @@ class PendingOrder extends Component {
 
     handleOrderCompleted(value) {
         this.setState({ processOrder: value });
+        this.showOrderlistPending();
     }
 
     render() {

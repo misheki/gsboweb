@@ -53,6 +53,7 @@ class ReadyToShip extends Component {
 
     handleOrderCompleted(value) {
         this.setState({ processOrder: value });
+        this.showOrderlistReadyToShip();
     }
 
     render() {
