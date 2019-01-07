@@ -194,10 +194,11 @@ class OrderSteps extends Component {
                             if(this._isMounted) this.setState({ cancel_loading: false });
                             Modal.success({
                                 title:'Success',
-                                content:'You have successfully canceled this order.',
+                                content:'You have successfully cancelled this order.',
                                 onOk: () => {
                                     this.props.process_order(false);
-                            }});
+                                }
+                            });
                         }
                     })
             }
