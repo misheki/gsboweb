@@ -184,7 +184,9 @@ class Completed extends Component {
                                 {this.state.order.shipping_fee != null ? 
                                 <FormItem  labelCol={{ span: 20 }} wrapperCol={{ span: 3 }} label="Shipping Fee : "  className="form-item-right">
                                         <p>RM {this.state.order.shipping_fee} </p> 
-                                </FormItem>: null}
+                                </FormItem>: <FormItem  labelCol={{ span: 20 }} wrapperCol={{ span: 3 }} label="Shipping Fee : "  className="form-item-right">
+                                        <p>RM 0.00 </p> 
+                                </FormItem>}
                                 <FormItem  labelCol={{ span: 20 }} wrapperCol={{ span: 3 }} label="Total Amount : "  className="form-item-right">
                                         <p>RM {this.state.order.total}</p> 
                                 </FormItem>
