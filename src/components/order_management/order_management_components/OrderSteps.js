@@ -16,7 +16,6 @@ class OrderSteps extends Component {
             processOrder: false,
             order: '',
             package_details: [],
-            // process_order_loading: false,
             request_stock_loading: false,
             complete_order_loading: false,
             next_loading: false,
@@ -24,7 +23,7 @@ class OrderSteps extends Component {
             method: 'Self Pickup',
             tracking_number: '',
             shipping_method_id: '',
-            required: ['viewOrderHistory', 'processOrder', 'shipOrder'],
+            required: ['processOrder', 'shipOrder'],
             allowed: [],
             incomplete: false,
             order_overview: ''
@@ -129,8 +128,6 @@ class OrderSteps extends Component {
     processOrder(order_id) {
         var access_token = sessionStorage.getItem('access_token');
 
-        this.setState({ process_order_loading: true });
-
         showOrders(order_id, access_token)
             .then(result => {
                 this.setState({
@@ -139,7 +136,6 @@ class OrderSteps extends Component {
                     incomplete: result.incomplete
                 }, this.setState({
                     processOrder: true,
-                    process_order_loading: false,
                     method: result.order.shipping_method_id !== null ? 'Courier' : 'Self Pickup'
                 }));
             })
