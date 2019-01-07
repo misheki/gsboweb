@@ -66,26 +66,6 @@ class ProductPackage extends Component {
             .then(result => (this._isMounted === true) ? this.setState({ allowed : result }) : null);
     }
 
-    showPackageList() {
-        var access_token = sessionStorage.getItem('access_token');
-        listPackage(access_token)
-            .then(result => {
-                if (result.result === 'GOOD') {
-                    if(this._isMounted) this.setState({ packages: result.data });
-                }
-            })
-    }
-
-    showSkuList() {
-        var access_token = sessionStorage.getItem('access_token');
-        listSku(access_token)
-            .then(result => {
-                if (result.result === 'GOOD') {
-                    if(this._isMounted) this.setState({ skus: result.data });
-                }
-            })
-    }
-
     showAddPackagesModal = () => {
         if(this._isMounted) this.setState({ visible: true });
     }

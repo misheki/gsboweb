@@ -107,7 +107,7 @@ class ViewStock extends Component {
     render() {
         const { stocks, visible, loading, allowed } = this.state;
         const { getFieldDecorator } = this.props.form;
-        
+
         if (allowed.includes('viewStock')) {
             return (
                 <div>
@@ -141,6 +141,7 @@ class ViewStock extends Component {
                                 render={(record) => (
                                     <div>
                                         {allowed.includes('writeoffStock') === true ? <Button
+                                            disabled={record.stock_status === 'Sold' ? true : false}
                                             style={{ margin:'10px' }}
                                             type="primary" onClick={() => (this._isMounted === true) ? this.setState({ stock_id: record.id }, this.showWriteOffModal) : null}>
                                             Write Off
