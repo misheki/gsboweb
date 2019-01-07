@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Layout,  Table, AutoComplete, Input, Button, Icon, Modal, Form } from 'antd';
 import { listStock, writeOff } from '../../helpers/StockController';
 import { checkAccess } from '../../helpers/PermissionController';
+import { Helmet } from 'react-helmet';
 
 const { Header } = Layout;
 const { Column } = Table;
@@ -45,7 +46,7 @@ class ViewStock extends Component {
         listStock(null, access_token)
             .then(result => {
                 if (result.result === 'GOOD') {
-                    this.setState({ stocks: result.data });
+                    if(this._isMounted) this.setState({ stocks: result.data });
                 }
             })
     }
@@ -57,7 +58,7 @@ class ViewStock extends Component {
         listStock(search, access_token)
             .then(result => {
                 if (result.result === 'GOOD') {
-                    this.setState({ stocks: result.data });
+                    if(this._isMounted) this.setState({ stocks: result.data });
                 }
             })
     }
@@ -65,11 +66,11 @@ class ViewStock extends Component {
     handleCancel = () => {
         const form = this.props.form;
         form.resetFields();
-        this.setState({ visible: false });
+        if(this._isMounted) this.setState({ visible: false });
     }
 
     showWriteOffModal = () => {
-        this.setState({ visible: true });
+        if(this._isMounted) this.setState({ visible: true });
     }
 
     handleWriteOff = () => {
@@ -86,12 +87,12 @@ class ViewStock extends Component {
                 title: 'Confirm',
                 content: 'Are you sure you want to write off this stock?',
                 onOk: () => {
-                    this.setState({ loading: true });
+                    if(this._isMounted) this.setState({ loading: true });
                     writeOff(stock_id, values.remarks, access_token)
                         .then(result => {
                             if (result.result === 'GOOD') {
                                 this.showListStock();
-                                this.setState({ loading: false, visible: false });
+                                if(this._isMounted) this.setState({ loading: false, visible: false });
                                 form.resetFields();
                                 Modal.success({
                                     title: 'Success',
@@ -107,10 +108,15 @@ class ViewStock extends Component {
     render() {
         const { stocks, visible, loading, allowed } = this.state;
         const { getFieldDecorator } = this.props.form;
-        console.log(allowed);
+
         if (allowed.includes('viewStock')) {
             return (
                 <div>
+                    <Helmet>
+                        <meta charSet="utf-8" />
+                        <title>Global Sim - View Stocks</title>
+                    </Helmet>
+
                     <Header style={{ color: 'white', fontSize: '30px' }}>
                         <span>View Stock</span>
                     </Header>    
@@ -118,7 +124,7 @@ class ViewStock extends Component {
                         <AutoComplete
                             className="global-search"
                             size="large"
-                            onSearch={(search) => this.setState({ search })}
+                            onSearch={(search) => (this._isMounted === true) ? this.setState({ search }) : null}
                             placeholder="Search sim card number">
                             <Input suffix={(
                                 <Button className="search-btn" size="large" type="primary" onClick={() => this.handleSearch()}>
@@ -141,8 +147,9 @@ class ViewStock extends Component {
                                 render={(record) => (
                                     <div>
                                         {allowed.includes('writeoffStock') === true ? <Button
+                                            disabled={record.stock_status === 'Sold' ? true : false}
                                             style={{ margin:'10px' }}
-                                            type="primary" onClick={() => this.setState({ stock_id: record.id }, this.showWriteOffModal)}>
+                                            type="primary" onClick={() => (this._isMounted === true) ? this.setState({ stock_id: record.id }, this.showWriteOffModal) : null}>
                                             Write Off
                                         </Button> : null}
                                     </div>
@@ -170,7 +177,12 @@ class ViewStock extends Component {
         }
         else {
             return (
-                <div></div>
+                <div>
+                    <Helmet>
+                        <meta charSet="utf-8" />
+                        <title>Global Sim - View Stocks</title>
+                    </Helmet>
+                </div>
             );
         }
     }

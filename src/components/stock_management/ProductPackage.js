@@ -3,6 +3,7 @@ import { Layout,  Table, Modal, Button, Form, Input, Select, Switch } from 'antd
 import { listPackage, createPackage, deletePackage, editPackage } from '../../helpers/PackageController';
 import { listSku, createSku, deleteSku, editSku } from '../../helpers/SkuController';
 import { checkAccess } from '../../helpers/PermissionController';
+import { Helmet } from 'react-helmet';
 
 const { Header } = Layout;
 const { Column } = Table;
@@ -45,32 +46,6 @@ class ProductPackage extends Component {
         listPackage(access_token)
             .then(result => {
                 if (result.result === 'GOOD') {
-                    this.setState({ packages: result.data });
-                }
-            })
-    }
-
-    showSkuList() {
-        var access_token = sessionStorage.getItem('access_token');
-        listSku(access_token)
-            .then(result => {
-                if (result.result === 'GOOD') {
-                    this.setState({ skus: result.data });
-                }
-            })
-    }
-
-    getPermissions() {
-        var access_token = sessionStorage.getItem('access_token');
-        checkAccess(this.state.required, access_token)
-            .then(result => (this._isMounted === true) ? this.setState({ allowed : result }) : null);
-    }
-
-    showPackageList() {
-        var access_token = sessionStorage.getItem('access_token');
-        listPackage(access_token)
-            .then(result => {
-                if (result.result === 'GOOD') {
                     if(this._isMounted) this.setState({ packages: result.data });
                 }
             })
@@ -84,6 +59,12 @@ class ProductPackage extends Component {
                     if(this._isMounted) this.setState({ skus: result.data });
                 }
             })
+    }
+
+    getPermissions() {
+        var access_token = sessionStorage.getItem('access_token');
+        checkAccess(this.state.required, access_token)
+            .then(result => (this._isMounted === true) ? this.setState({ allowed : result }) : null);
     }
 
     showAddPackagesModal = () => {
@@ -286,6 +267,11 @@ class ProductPackage extends Component {
         
          return (
             <div>
+                <Helmet>
+                    <meta charSet="utf-8" />
+                    <title>Global Sim - Product Package</title>
+                </Helmet>
+
                 <Header style={{ color: 'white', fontSize: '30px' }}>
                     <span>Product Package</span>
                 </Header>

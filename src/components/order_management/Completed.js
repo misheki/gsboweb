@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { Layout, Form, Row, Col, Table, AutoComplete, Input, Button, Icon  } from 'antd';
+import { Layout, Form, Row, Col, Table, AutoComplete, Input, Button, Icon } from 'antd';
 import { listCompleted } from '../../helpers/OrderController';
 import { checkAccess } from '../../helpers/PermissionController';
+import { Helmet } from 'react-helmet';
 
 const { Header } = Layout;
 const { Column } = Table;
@@ -18,10 +19,10 @@ class Completed extends Component {
             order: null,
             displayDetails: false,
             required: ['viewOrderHistory'],
-            allowed: []
+            allowed: [],
+            search: ''
         };
     }
-
 
     componentDidMount() {
         this._isMounted = true;
@@ -41,36 +42,47 @@ class Completed extends Component {
 
     showOrderlistCompleted() {
         var access_token = sessionStorage.getItem('access_token');
-        listCompleted(access_token)
+        listCompleted(null, access_token)
             .then(result => {
                 if (result.result === 'GOOD') {
-                    this.setState({ completed_orders: result.data });
+                    if(this._isMounted) this.setState({ completed_orders: result.data });
+                }
+            })
+    }
+
+    handleSearch() {
+        var access_token = sessionStorage.getItem('access_token');
+        const { search } = this.state;
+
+        listCompleted(search, access_token)
+            .then(result => {
+                if (result.result === 'GOOD') {
+                    if(this._isMounted) this.setState({ completed_orders: result.data });
                 }
             })
     }
 
     next() {
         const current = this.state.current + 1;
-        this.setState({ current });
+        if(this._isMounted) this.setState({ current });
     }
 
     prev() {
         const current = this.state.current - 1;
-        this.setState({ current });
+        if(this._isMounted) this.setState({ current });
     }
 
     showOrder(order) {
-        this.setState({ order : order}, () => this.setState({ displayDetails : true }))
+        if(this._isMounted) this.setState({ order : order}, () => this.setState({ displayDetails : true }))
     }
 
     renderDetails() {
         this.state.order.order_details.map((item) => console.log(item));
 
         const formItemLayout = {
-            labelCol: {span:8},
-            wrapperCol: { span: 10 },
-    
-          };
+            labelCol: { span: 8 },
+            wrapperCol: { span: 10 }
+        };
 
         const packageDetailItems =  this.state.order.order_details.map((item, i) =>
         item.stocks.map((stock, j) =>
@@ -192,21 +204,26 @@ class Completed extends Component {
         else if (allowed.includes('viewOrderHistory')) {
             return (
                 <div>
+                    <Helmet>
+                        <meta charSet="utf-8" />
+                        <title>Global Sim - Completed Order</title>
+                    </Helmet>
+
                     <Header style={{ color: 'white', fontSize: '30px' }}>
                         <span>Completed Orders</span>
                     </Header>
                     <div className="global-search-wrapper" >
-                        {/* <AutoComplete
+                        <AutoComplete
                             className="global-search"
                             size="large"
-                            // onSearch={(search) => this.setState({ search })}
-                            placeholder="Search..">
+                            onSearch={(search) => this._isMounted === true ? this.setState({ search }) : null}
+                            placeholder="Search Order Number">
                             <Input suffix={(
-                                <Button className="search-btn" size="large" type="primary" >
+                                <Button className="search-btn" size="large" type="primary" onClick={() => this.handleSearch()}>
                                     <Icon type="search" />
                                 </Button>
                             )} />
-                        </AutoComplete> */}
+                        </AutoComplete>
                     </div>
                     <div style={{ padding: '30px', paddingTop:'0px' }}>
                         <Table
@@ -214,15 +231,14 @@ class Completed extends Component {
                             rowKey={completed_orders => completed_orders.id}
                             onRow={(order) => {
                                 return {
-                                onClick: () => {this.showOrder(order)}
+                                    onClick: () => {this.showOrder(order)}
                                 };
-                            }}
-                            >
+                            }}>
                             <Column title="Order Number" dataIndex="order_ref_num" key="order_ref_num" />
-                                <Column title="Order Date" dataIndex="order_date" key="order_date" />
-                                <Column title="Customer Name" dataIndex="customer_name" key="customer_name" />
-                                <Column title="Total" dataIndex="total" key="total" />
-                                <Column title="Order Status" dataIndex="order_status" key="order_status" />
+                            <Column title="Order Date" dataIndex="order_date" key="order_date" />
+                            <Column title="Customer Name" dataIndex="customer_name" key="customer_name" />
+                            <Column title="Total" dataIndex="total" key="total" />
+                            <Column title="Order Status" dataIndex="order_status" key="order_status" />
                         </Table>
                     </div>
                 </div>
@@ -230,7 +246,12 @@ class Completed extends Component {
         }
         else {
             return (
-                <div></div>
+                <div>
+                    <Helmet>
+                        <meta charSet="utf-8" />
+                        <title>Global Sim - Completed Order</title>
+                    </Helmet>
+                </div>
             );
         }
     }      

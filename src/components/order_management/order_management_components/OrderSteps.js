@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Steps, Button, message, Form, Input, Select, Col, Row, Divider, Modal } from 'antd';
-import { showOrders, requestStock, courierList, completeOrder, shippingUpdateWithCourier, shippingUpdateWithoutCourier, listReadyShip } from '../../../helpers/OrderController';
+import { showOrders, requestStock, courierList, completeOrder, shippingUpdateWithCourier, shippingUpdateWithoutCourier, listReadyShip, cancelOrder } from '../../../helpers/OrderController';
 import { checkAccess } from '../../../helpers/PermissionController';
 
 const Option = Select.Option;
@@ -16,15 +16,15 @@ class OrderSteps extends Component {
             processOrder: false,
             order: '',
             package_details: [],
-            // process_order_loading: false,
             request_stock_loading: false,
             complete_order_loading: false,
             next_loading: false,
+            cancel_loading: false,
             couriers: [],
             method: 'Self Pickup',
             tracking_number: '',
             shipping_method_id: '',
-            required: ['viewOrderHistory', 'processOrder', 'shipOrder'],
+            required: ['processOrder', 'shipOrder'],
             allowed: [],
             incomplete: false,
             order_overview: ''
@@ -53,7 +53,7 @@ class OrderSteps extends Component {
         courierList(access_token)
             .then(result => {
                 if (result.result === 'GOOD') {
-                    this.setState({ couriers: result.data });
+                    if(this._isMounted) this.setState({ couriers: result.data });
                 }
             })
     }
@@ -65,7 +65,7 @@ class OrderSteps extends Component {
         var access_token = sessionStorage.getItem('access_token');
 
         if (this.state.current === 0) {
-            this.setState({ current });
+            if(this._isMounted) this.setState({ current });
         }
         else if (method === 'Courier') {
             form.validateFields(['customer_address', 'customer_contact_num', 'customer_state', 'customer_postcode', 'shipping_method_id', 'tracking_number', 'shipping_fee'], (err, values) => {
@@ -74,20 +74,32 @@ class OrderSteps extends Component {
                 }
     
                 this.setState({ next_loading: true });
+
                 shippingUpdateWithCourier(order.id, values.customer_address, values.customer_contact_num, values.customer_state, values.customer_postcode, values.shipping_method_id, values.tracking_number, values.shipping_fee, access_token)
                     .then(result => {
                         if (result.result === 'GOOD') {
-                            this.setState({ next_loading: false, current, method: 'Courier', tracking_number: values.tracking_number, shipping_method_id: values.shipping_method_id }, this.fetchListReadyShip());
+                            if(this._isMounted) this.setState({
+                                next_loading: false,
+                                current,
+                                method: 'Courier',
+                                tracking_number: values.tracking_number,
+                                shipping_method_id: values.shipping_method_id
+                            }, this.fetchListReadyShip());
                         }
                     })
             })
         }
         else {
             this.setState({ next_loading: true });
-            shippingUpdateWithoutCourier(order.id, null, null, access_token)
+            shippingUpdateWithoutCourier(order.id, null, null, null, access_token)
                 .then(result => {     
                     if (result.result === 'GOOD') {
-                        this.setState({ next_loading: false, current, method: 'Self Pickup', shipping_method_id: null }, this.fetchListReadyShip());
+                        if(this._isMounted) this.setState({
+                            next_loading: false,
+                            current,
+                            method: 'Self Pickup',
+                            shipping_method_id: null
+                        }, this.fetchListReadyShip());
                     }
                 })
         }
@@ -101,7 +113,7 @@ class OrderSteps extends Component {
                 if (result.result === 'GOOD') {
                     result.data.forEach(order => {
                         if (order.id === this.props.order_id) {
-                            this.setState({ order_overview: order });
+                            if(this._isMounted) this.setState({ order_overview: order });
                         }
                     });
                 }
@@ -111,21 +123,27 @@ class OrderSteps extends Component {
     prev() {
         this.processOrder(this.state.order.id);
         const current = this.state.current - 1;
-        this.setState({ current });
+        if(this._isMounted) this.setState({ current });
     }
 
     processOrder(order_id) {
         var access_token = sessionStorage.getItem('access_token');
-        this.setState({ process_order_loading: true });
 
         showOrders(order_id, access_token)
             .then(result => {
-                this.setState({ order: result.order, package_details: result.package_details, incomplete: result.incomplete }, this.setState({ processOrder: true, process_order_loading: false }));
+                if(this._isMounted) this.setState({
+                    order: result.order,
+                    package_details: result.package_details,
+                    incomplete: result.incomplete
+                }, this.setState({
+                    processOrder: true,
+                    method: result.order.shipping_method_id !== null ? 'Courier' : 'Self Pickup'
+                }));
             })
     }
 
     handleMethod(value) {
-        this.setState({ method: value });
+        if(this._isMounted) this.setState({ method: value });
     }
 
     handleRequestStock() {
@@ -152,8 +170,7 @@ class OrderSteps extends Component {
                     requestStock(order_id, filtered_stocks, access_token)
                         .then(result => {
                             if (result.result === 'GOOD') {
-                                this.setState({ request_stock_loading: false });
-                                this.setState({ current });
+                                if(this._isMounted) this.setState({ request_stock_loading: false, current });
                             }
                         })
                 }
@@ -161,16 +178,45 @@ class OrderSteps extends Component {
         });
     }
 
+    handleCancelOrder() {
+        const { order } = this.state;
+        var order_id = order.id;
+        var access_token = sessionStorage.getItem('access_token');
+
+        confirm({
+            title: 'Confirm',
+            content: 'Are you sure you want to cancel this order?',
+            onOk: () => {
+                if(this._isMounted) this.setState({ cancel_loading: true });
+                cancelOrder(order_id, access_token)
+                    .then(result => {
+                        if (result.result === 'GOOD') {
+                            if(this._isMounted) this.setState({ cancel_loading: false });
+                            Modal.success({
+                                title:'Success',
+                                content:'You have successfully cancelled this order.',
+                                onOk: () => {
+                                    this.props.process_order(false);
+                                }
+                            });
+                        }
+                    })
+            }
+        })
+    }
+
     handleCompleteOrder() {
         const { order, tracking_number, shipping_method_id } = this.state;
         var access_token = sessionStorage.getItem('access_token');
 
-        this.setState({ complete_order_loading: true });
+        if(this._isMounted) this.setState({ complete_order_loading: true });
+        
         completeOrder(order.id, shipping_method_id, tracking_number, access_token)
             .then(result => {
                 if (result.result === 'GOOD') {
-                    this.setState({ complete_order_loading: false });
-                    message.success('Processing complete!');      
+                    if(this._isMounted) this.setState({ complete_order_loading: false });
+                    message.success('Processing complete!');
+                    this.props.process_order(false);
                 }
             })
     }
@@ -411,7 +457,7 @@ class OrderSteps extends Component {
     }
 
     renderProcessOrder() {
-        const { current, order, request_stock_loading, couriers, method, next_loading, complete_order_loading, allowed, incomplete, order_overview } = this.state;
+        const { current, order, request_stock_loading, couriers, method, next_loading, complete_order_loading, allowed, incomplete, order_overview, cancel_loading } = this.state;
         const { getFieldDecorator } = this.props.form;
         var order_status = order.status === 'pending' ? false : true;
 
@@ -422,10 +468,6 @@ class OrderSteps extends Component {
 
         // if (order.status === 'pending' && current === 0) {
         //     this.setState({ current: 1 });
-        // }
-
-        // if (order.shipping_method_id) {
-        //     this.setState({ method: 'Courier' });
         // }
 
         const steps = [{
@@ -631,8 +673,8 @@ class OrderSteps extends Component {
         }, {
             title: 'Confirm Order',
             content: 
-                <Form layout="vertical" style={{backgroundColor:'white'}}> 
-                    <div style={{padding:'20px', marginBottom:'10px'}}>
+                <Form> 
+                    <div style={{padding:'20px', marginBottom:'10px', textAlign:'left'}}>
                         <h2 style={{paddingBottom:'10px'}}>Order Ref. No.{order.order_ref_num}</h2>    
                         <Row gutter={8}>
                             <Col span={12}>
@@ -640,63 +682,61 @@ class OrderSteps extends Component {
                                 <Form.Item {...formItemLayout} label="Order Date : "  className="form-item">
                                 <p>{order.created_at}</p> 
                                 </Form.Item>
-                                <Form.Item  {...formItemLayout} label="Sales Channel : " className="form-item">
+                                <Form.Item {...formItemLayout} label="Sales Channel : " className="form-item">
                                     <p>{order.sale_channel_name} </p>
                                 </Form.Item>
-                                <Form.Item  {...formItemLayout} label="Shipping Method : " className="form-item">
+                                <Form.Item {...formItemLayout} label="Shipping Method : " className="form-item">
                                     <p>{order_overview.shipping_method ? order_overview.shipping_method : 'Self Pickup'} </p>
                                 </Form.Item>
-                                <Form.Item  {...formItemLayout} label="Tracking Number : " className="form-item">
+                                {order_overview.shipping_method_id !== null ? <Form.Item {...formItemLayout} label="Tracking Number : " className="form-item">
                                     <p>{order.tracking_number} </p>
-                                </Form.Item>
+                                </Form.Item> : null}
 
                             </Col>
                             <Col span={12}>
-                                <h3 style={{paddingBottom:'10px'}}>Customer Details </h3>  
+                                <h3 style={{paddingBottom: '10px' }}>Customer Details</h3>  
                                 <p>{order.customer_name}</p> 
                                 <p>{order.customer_address}</p> 
                                 <p>{order.customer_postcode}, {order.customer_state}</p> 
                                 <p>{order.customer_contact_num}</p> 
                                 <p>{order.customer_email}</p> 
                             </Col>
-                        </Row>   
-                        <h3 style={{paddingBottom:'10px'}}>Product Details</h3>
-                        <div style={{ backgroundColor: 'white', padding:'10px'}}>
-                            <Row gutter={16} style={{ backgroundColor: '#e8e8e8', padding: '10px', paddingBottom: '0px', marginBottom: '10px' }}>
-                                <Col span={2}>
-                                    <p>Item</p>
-                                </Col>
-                                <Col span={3}>
-                                    <p>SKU</p>
-                                </Col>
-                                <Col span={7}>
-                                    <p>Package</p>
-                                </Col>
-                                <Col span={6}>
-                                    <p>Sim Card Number</p>
-                                </Col>
-                                <Col span={4}>
-                                    <p>Serial Number</p>
-                                </Col>
-                                <Col span={2}>
-                                    <p>Unit Price</p>
-                                </Col>
-                            </Row>
-                            {this.packageDetailItems()}
-                            <div style={{float:'right', width:'30%'}}>
-                                <Form.Item  labelCol={{ span: 12 }} wrapperCol={{ span: 12 }} label="Subtotal : "  className="form-item">
-                                    <p>RM {order_overview.total_amount}</p> 
-                                </Form.Item>
-                                <Form.Item  labelCol={{ span: 12 }} wrapperCol={{ span: 12 }} label="Shipping Fee : "  className="form-item">
-                                    <p>RM {order_overview.shipping_fee}</p>
-                                </Form.Item>
-                                <Form.Item  labelCol={{ span: 12 }} wrapperCol={{ span: 12 }} label="Total Amount : "  className="form-item">
-                                    <p>RM {order_overview.total}</p> 
-                                </Form.Item>
-                            </div>
-                        </div>
+                        </Row>
                     </div>
-            </Form>
+                    <div style={{padding: '20px', textAlign: 'left' }}>
+                        <h3 style={{paddingBottom: '10px' }}>Product Details</h3>
+                        <Row gutter={16} style={{ backgroundColor: '#e8e8e8', padding: '10px', paddingBottom: '0px', marginBottom: '10px' }}>
+                            <Col span={2}>
+                                <p>Item</p>
+                            </Col>
+                            <Col span={3}>
+                                <p>SKU</p>
+                            </Col>
+                            <Col span={7}>
+                                <p>Package</p>
+                            </Col>
+                            <Col span={6}>
+                                <p>Sim Card Number</p>
+                            </Col>
+                            <Col span={4}>
+                                <p>Serial Number</p>
+                            </Col>
+                            <Col span={2}>
+                                <p>Unit Price</p>
+                            </Col>
+                        </Row>
+                        {this.packageDetailItems()}
+                        <Form.Item  labelCol={{ span: 20 }} wrapperCol={{ span: 4 }} label="Subtotal : " className="form-item-right">
+                            <p>RM {order_overview.total_amount}</p> 
+                        </Form.Item>
+                        {order_overview.shipping_method_id !== null ? <Form.Item  labelCol={{ span: 20 }} wrapperCol={{ span: 4 }} label="Shipping Fee : " className="form-item-right">
+                            <p>RM {order_overview.shipping_fee}</p>
+                        </Form.Item> : null}
+                        <Form.Item  labelCol={{ span: 20 }} wrapperCol={{ span: 4 }} label="Total Amount : " className="form-item-right">
+                            <p>RM {order_overview.total}</p> 
+                        </Form.Item>
+                    </div>
+                </Form>
         }];
      
         return (
@@ -711,7 +751,12 @@ class OrderSteps extends Component {
                     {current > 0 && (<Button style={{ marginRight: 8 }} onClick={() => this.prev()}>Previous</Button>)}
                     {current === steps.length - 1 && <Button loading={complete_order_loading} type="primary" onClick={() => this.handleCompleteOrder()}>Complete Order</Button>}
                     {allowed.includes('shipOrder') ? (current < steps.length - 1 && current !== 0 && <Button loading={next_loading} type="primary" onClick={() => this.next()}>Next</Button>) : null}
-                    {allowed.includes('processOrder') ? (current === 0 && (order.status === 'pending' ? <Button disabled={incomplete} loading={request_stock_loading} type="primary" onClick={() => this.handleRequestStock()}>Save, Request Stock & Continue</Button> : <Button type="primary" onClick={() => this.next()}>Next</Button>)) : null}
+                    {allowed.includes('processOrder') ? (current === 0 && (order.status === 'pending' ?
+                    <div>
+                        {order.status === 'pending' ? <Button loading={cancel_loading} type="danger" style={{ marginRight: 8 }} onClick={() => this.handleCancelOrder()}>Cancel</Button> : null}
+                        <Button disabled={incomplete} loading={request_stock_loading} type="primary" onClick={() => this.handleRequestStock()}>Save, Request Stock & Continue</Button>
+                    </div>
+                    : <Button type="primary" onClick={() => this.next()}>Next</Button>)) : null}
                 </div>
             </div>
         );

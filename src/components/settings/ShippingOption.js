@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Layout, Table, Button,  Modal, Input, Form  } from 'antd';
 import { listShippingMethods, createShippingMethod, editShippingMethod, deleteShippingMethod } from '../../helpers/ShippingMethods';
 import { checkAccess } from '../../helpers/PermissionController';
+import { Helmet } from 'react-helmet';
 
 const { Header } = Layout;
 const { Column } = Table;
@@ -41,23 +42,23 @@ class ShippingOption extends Component {
         listShippingMethods(access_token)
             .then(result => {
                 if (result.result === 'GOOD') {    
-                    this.setState({ shipping_methods: result.data });
+                    if(this._isMounted) this.setState({ shipping_methods: result.data });
                 }
             })
     }
  
     showModal = () => {
-        this.setState({ visible: true , clickView: true});
+        if(this._isMounted) this.setState({ visible: true , clickView: true});
     }
 
     showEditModal = () => {
-        this.setState({ visible: true });
+        if(this._isMounted) this.setState({ visible: true });
     }
 
     handleCancel = () => {
         const form = this.props.form;
         form.resetFields();
-        this.setState({ visible: false, clickView: false  });
+        if(this._isMounted) this.setState({ visible: false, clickView: false  });
     }
 
     handleDelete() {
@@ -90,11 +91,12 @@ class ShippingOption extends Component {
             if (err) {
                 return;
             }
-            this.setState({ loading: true });
+            
+            if(this._isMounted) this.setState({ loading: true });
             createShippingMethod(values.courier_name, access_token)
                 .then(result => {
                     if (result.result === 'GOOD') {
-                        this.setState({ loading: false });
+                        if(this._isMounted) this.setState({ loading: false });
                         this.handleCancel();
                         this.showShippingMethodsList();
                     }
@@ -110,11 +112,12 @@ class ShippingOption extends Component {
             if (err) {
                 return;
             }
-            this.setState({ loading: true });
+
+            if(this._isMounted) this.setState({ loading: true });
             editShippingMethod(this.state.id, values.courier_name, access_token)
                 .then(result => {
                     if (result.result === 'GOOD') {
-                        this.setState({ loading: false });
+                        if(this._isMounted) this.setState({ loading: false });
                         this.handleCancel();
                         this.showShippingMethodsList();
                     }
@@ -123,7 +126,7 @@ class ShippingOption extends Component {
     }
 
     onClickModal = () => {
-        this.setState({
+        if(this._isMounted) this.setState({
             shipping: {
                 courier_name:'',
             }
@@ -138,9 +141,15 @@ class ShippingOption extends Component {
         if (allowed.includes('viewShippingMethod')) {
          return (
             <div>
-            <Header style={{ color: 'white', fontSize: '30px' }}>
-                <span>Shipping Options</span>
-            </Header>
+                <Helmet>
+                    <meta charSet="utf-8" />
+                    <title>Global Sim - Shipping Option</title>
+                </Helmet>
+
+                <Header style={{ color: 'white', fontSize: '30px' }}>
+                    <span>Shipping Options</span>
+                </Header>
+
                 <div style={{ padding: '30px', width:'80%'}}>
                     {allowed.includes('newShippingMethod') ?
                         <Button
@@ -163,6 +172,7 @@ class ShippingOption extends Component {
                         key="action"
                         render={(record) => (
                             <div>
+<<<<<<< HEAD
                                 {allowed.includes('editShippingMethod') ?
                                     <Button style={{ margin:'10px' }} type="primary"
                                     onClick={() => this.setState({ shipping: Object.assign({}, record), id: record.id }, () => this.showEditModal())}>Edit</Button>
@@ -171,6 +181,21 @@ class ShippingOption extends Component {
                                     <Button style={{ margin:'10px' }} type="primary"
                                     onClick={() => this.setState({ shipping: Object.assign({}, record), id: record.id }, () => this.handleDelete())}>Delete</Button>
                                 : null }
+=======
+                                <Button
+                                    style={{ margin:'10px' }}
+                                    type="primary"
+                                    onClick={() => this._isMounted === true ? this.setState({ shipping: Object.assign({}, record), id: record.id }, () => this.showEditModal()) : null}>
+                                    Edit
+                                </Button>
+
+                                <Button
+                                    style={{ margin:'10px' }}
+                                    type="primary"
+                                    onClick={() => this._isMounted === true ? this.setState({ shipping: Object.assign({}, record), id: record.id }, () => this.handleDelete()) : null}
+                                    >Delete
+                                </Button>
+>>>>>>> 5545e9398bbcb398566dda44d7f55a98d6f596fc
                             </div>
                         )} />
                     </Table>
@@ -192,6 +217,7 @@ class ShippingOption extends Component {
                     </Form>}
                 </Modal>
             </div>
+<<<<<<< HEAD
             );    
         }  
         else {
@@ -201,6 +227,10 @@ class ShippingOption extends Component {
         }
     }
            
+=======
+        );
+    }
+>>>>>>> 5545e9398bbcb398566dda44d7f55a98d6f596fc
 }
 
 export default  Form.create()(ShippingOption);

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Layout } from 'antd';
 import { importStocks } from '../../helpers/Upload';
 import { checkAccess } from '../../helpers/PermissionController';
+import { Helmet } from 'react-helmet';
 
 const { Header } = Layout;
 
@@ -43,25 +44,26 @@ class ImportStock extends Component {
         importStocks(this.state.stocksfile, access_token)
             .then(result => {
                 if (result.result === 'GOOD') {
-                    this.setState({
+                    if(this._isMounted) this.setState({
                         skipped : result.skipped,
                         uploaded : result.uploaded,
                         csv : result.csv,
                     }, () => this.setState({ displaybadresult : false, displaygoodresult : true }));
                 }
             })
-            .catch(err => { 
-                console.log(err);
-                this.setState({ displaybadresult : true, displaygoodresult : false })
+            .catch(err => {
+                if(this._isMounted) this.setState({ displaybadresult : true, displaygoodresult : false })
             })
 
     }
 
     onChange(e) {
         let files = e.target.files || e.dataTransfer.files;
+
         if (!files.length)
-                return;
-        this.setState({ stocksfile : files[0]});
+            return;
+
+        if(this._isMounted) this.setState({ stocksfile : files[0]});
     }
 
     renderResult() {
@@ -95,6 +97,11 @@ class ImportStock extends Component {
         if (allowed.includes('importStock')) {
             return (
                 <div>
+                    <Helmet>
+                        <meta charSet="utf-8" />
+                        <title>Global Sim - Import Stocks</title>
+                    </Helmet>
+
                     <Header style={{ color: 'white', fontSize: '30px' }}>
                         <span>Import Stocks</span>
                     </Header>
@@ -114,7 +121,12 @@ class ImportStock extends Component {
         }
         else {
             return (
-                <div></div>
+                <div>
+                    <Helmet>
+                        <meta charSet="utf-8" />
+                        <title>Global Sim - Import Stocks</title>
+                    </Helmet>
+                </div>
             );
         }
     }

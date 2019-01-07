@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { listRole, createRole, deleteRole, updateRole, listPermission } from '../../helpers/AdminControl';
 import { Layout, Table, Button, Modal, Form, Input, Checkbox } from 'antd';
+import { Helmet } from 'react-helmet';
 
 const { Column } = Table;
 const { Header } = Layout;
@@ -9,6 +10,8 @@ const CheckboxGroup = Checkbox.Group;
 const confirm = Modal.confirm;
 
 class ManageRole extends Component {
+    _isMounted = false;
+
     constructor(props) {
         super(props);
         this.state = {
@@ -20,8 +23,13 @@ class ManageRole extends Component {
     }
 
     componentDidMount() {
+        this._isMounted = true;
         this.showListRole();
         this.showListPermission();
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
     }
 
     showListRole() {
@@ -30,7 +38,7 @@ class ManageRole extends Component {
         listRole(access_token)
             .then(result => {
                 if (result.result === 'GOOD') {
-                    this.setState({ roles: result.permission_role });
+                    if(this._isMounted) this.setState({ roles: result.permission_role });
                 }
             })
     }
@@ -41,25 +49,23 @@ class ManageRole extends Component {
         listPermission(access_token)
             .then(result => {
                 if (result.result === 'GOOD') {
-                    this.setState({
-                        permissions: result.data,
-                    });
+                    if(this._isMounted) this.setState({ permissions: result.data });
                 }
             })
     }
 
     showAddModal = () => {
-        this.setState({ visible: true, clickAdd: true });
+        if(this._isMounted) this.setState({ visible: true, clickAdd: true });
     }
 
     showEditModal = () => {
-        this.setState({ visible: true });
+        if(this._isMounted) this.setState({ visible: true });
     }
 
     handleCancel = () => {
         const form = this.props.form;
         form.resetFields();
-        this.setState({ visible: false }, () => this.setState({ clickAdd: false }));
+        if(this._isMounted) this.setState({ visible: false }, () => this.setState({ clickAdd: false }));
     }
 
     handleCreate = () => {
@@ -75,7 +81,7 @@ class ManageRole extends Component {
                 .then(result => {
                     if (result.result === 'GOOD') {
                         this.showListRole();
-                        this.setState({ visible: false, clickAdd: false });
+                        if(this._isMounted) this.setState({ visible: false, clickAdd: false });
                         form.resetFields();
                     }
                 })
@@ -96,7 +102,7 @@ class ManageRole extends Component {
                 .then(result => {
                     if (result.result === 'GOOD') {
                         this.showListRole();
-                        this.setState({ visible: false, clickAdd: false });
+                        if(this._isMounted) this.setState({ visible: false, clickAdd: false });
                         form.resetFields();
                     }
                 })
@@ -122,7 +128,7 @@ class ManageRole extends Component {
     }
 
     onChangeNewRole = () => {
-        this.setState({
+        if(this._isMounted) this.setState({
             role: {
                 name: ''
             }
@@ -146,6 +152,11 @@ class ManageRole extends Component {
 
         return (
             <div>
+                <Helmet>
+                    <meta charSet="utf-8" />
+                    <title>Global Sim - Manage Role</title>
+                </Helmet>
+
                 <Header style={{ color: 'white', fontSize: '30px' }}>
                     <span>User Management</span>
                 </Header>
@@ -165,7 +176,7 @@ class ManageRole extends Component {
                         rowKey={roles => roles.role_id}
                         onRow={(record) => {
                             return {
-                                onClick: () => {this.setState({ role: Object.assign({}, record), role_id: record.role_id }, this.showEditModal)}
+                                onClick: () => {if(this._isMounted) this.setState({ role: Object.assign({}, record), role_id: record.role_id }, this.showEditModal)}
                             };
                         }}>
                         <Column title="Role" dataIndex="role_name" key="role_name" width="20%"/>

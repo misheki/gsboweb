@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { listPermission, createPermission, deletePermission, updatePermission } from '../../helpers/AdminControl';
 import { Layout, Table, Button, Modal, Form, Input } from 'antd';
+import { Helmet } from 'react-helmet';
 
 const { Column } = Table;
 const { Header } = Layout;
@@ -8,6 +9,8 @@ const FormItem = Form.Item;
 const confirm = Modal.confirm;
 
 class ManagePermission extends Component {
+    _isMounted = false;
+
     constructor(props) {
         super(props);
         this.state = {
@@ -18,7 +21,12 @@ class ManagePermission extends Component {
     }
 
     componentDidMount() {
+        this._isMounted = true;
         this.showListPermission();
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
     }
 
     showListPermission() {
@@ -27,23 +35,23 @@ class ManagePermission extends Component {
         listPermission(access_token)
             .then(result => {
                 if (result.result === 'GOOD') {
-                    this.setState({ permissions: result.data });
+                    if(this._isMounted) this.setState({ permissions: result.data });
                 }
             })
     }
 
     showAddModal = () => {
-        this.setState({ visible: true, clickAdd: true });
+        if(this._isMounted) this.setState({ visible: true, clickAdd: true });
     }
 
     showEditModal = () => {
-        this.setState({ visible: true });
+        if(this._isMounted) this.setState({ visible: true });
     }
 
     handleCancel = () => {
         const form = this.props.form;
         form.resetFields();
-        this.setState({ visible: false }, () => this.setState({ clickAdd: false }));
+        if(this._isMounted) this.setState({ visible: false }, () => this.setState({ clickAdd: false }));
     }
 
     handleCreate = () => {
@@ -59,7 +67,7 @@ class ManagePermission extends Component {
                 .then(result => {
                     if (result.result === 'GOOD') {
                         this.showListPermission();
-                        this.setState({ visible: false, clickAdd: false });
+                        if(this._isMounted) this.setState({ visible: false, clickAdd: false });
                         form.resetFields();
                     }
                 })
@@ -80,7 +88,7 @@ class ManagePermission extends Component {
                 .then(result => {
                     if (result.result === 'GOOD') {
                         this.showListPermission();
-                        this.setState({ visible: false, clickAdd: false });
+                        if(this._isMounted) this.setState({ visible: false, clickAdd: false });
                         form.resetFields();
                     }
                 })
@@ -106,7 +114,7 @@ class ManagePermission extends Component {
     }
 
     onChangeNewPermission = () => {
-        this.setState({
+        if(this._isMounted) this.setState({
             permission: {
                 name: ''
             }
@@ -130,6 +138,11 @@ class ManagePermission extends Component {
 
         return (
             <div>
+                <Helmet>
+                    <meta charSet="utf-8" />
+                    <title>Global Sim - Manage Permission</title>
+                </Helmet>
+
                 <Header style={{ color: 'white', fontSize: '30px' }}>
                     <span>User Management</span>
                 </Header>
@@ -149,7 +162,7 @@ class ManagePermission extends Component {
                         rowKey={permissions => permissions.id}
                         onRow={(record) => {
                             return {
-                                onClick: () => {this.setState({ permission: Object.assign({}, record), permission_id: record.id }, this.showEditModal)}
+                                onClick: () => {if(this._isMounted) this.setState({ permission: Object.assign({}, record), permission_id: record.id }, this.showEditModal)}
                             };
                         }}>
                         <Column title="Permission Name" dataIndex="name" key="name" />
