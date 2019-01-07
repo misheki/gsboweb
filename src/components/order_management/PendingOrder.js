@@ -51,7 +51,7 @@ class PendingOrder extends Component {
         if(this._isMounted) this.setState({ order_id: order_id }, this.setState({ processOrder: true }));
     }
 
-    handleOrderCompleted(value) {
+    handleProcessOrder(value) {
         if(this._isMounted) this.setState({ processOrder: value });
         this.showOrderlistPending();
     }
@@ -98,7 +98,7 @@ class PendingOrder extends Component {
                     <Header style={{ color: 'white', fontSize: '30px' }}>
                         <span>Pending Order</span>
                     </Header>
-                    <OrderSteps order_id={order_id} order_completed={this.handleOrderCompleted.bind(this)} />
+                    <OrderSteps order_id={order_id} process_order={this.handleProcessOrder.bind(this)} />
                 </div>
             );
         }

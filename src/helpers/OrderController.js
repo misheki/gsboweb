@@ -305,3 +305,27 @@ export const completeOrder = (order_id, shipping_method_id, tracking_number, acc
         )
     ])
 };
+
+export const cancelOrder = (order_id, access_token) => {
+    return Promise.race([
+        new Promise((resolve, reject) =>
+            fetch(global.URL + 'api/order/cancel/' + order_id, {
+                method: 'DELETE',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + access_token
+                }
+            })
+            .then((response) => response.json())
+            .then((responseJson) => {
+                if (responseJson.result === 'GOOD') {
+                    resolve(responseJson);   
+                }
+            })
+            .catch((error) => {
+                reject(error);
+            })
+        )
+    ])
+};

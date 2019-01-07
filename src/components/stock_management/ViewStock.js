@@ -107,7 +107,7 @@ class ViewStock extends Component {
     render() {
         const { stocks, visible, loading, allowed } = this.state;
         const { getFieldDecorator } = this.props.form;
-
+        console.log(stocks);
         if (allowed.includes('viewStock')) {
             return (
                 <div>

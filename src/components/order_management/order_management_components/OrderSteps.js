@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Steps, Button, message, Form, Input, Select, Col, Row, Divider, Modal } from 'antd';
-import { showOrders, requestStock, courierList, completeOrder, shippingUpdateWithCourier, shippingUpdateWithoutCourier, listReadyShip } from '../../../helpers/OrderController';
+import { showOrders, requestStock, courierList, completeOrder, shippingUpdateWithCourier, shippingUpdateWithoutCourier, listReadyShip, cancelOrder } from '../../../helpers/OrderController';
 import { checkAccess } from '../../../helpers/PermissionController';
 
 const Option = Select.Option;
@@ -177,6 +177,30 @@ class OrderSteps extends Component {
         });
     }
 
+    handleCancelOrder() {
+        const { order } = this.state;
+        var order_id = order.id;
+        var access_token = sessionStorage.getItem('access_token');
+
+        confirm({
+            title: 'Confirm',
+            content: 'Are you sure you want to cancel this order?',
+            onOk: () => {
+                cancelOrder(order_id, access_token)
+                    .then(result => {
+                        if (result.result === 'GOOD') {
+                            Modal.success({
+                                title:'Success',
+                                content:'You have successfully canceled this order.',
+                                onOk: () => {
+                                    this.props.process_order(false);
+                            }});
+                        }
+                    })
+            }
+        })
+    }
+
     handleCompleteOrder() {
         const { order, tracking_number, shipping_method_id } = this.state;
         var access_token = sessionStorage.getItem('access_token');
@@ -188,7 +212,7 @@ class OrderSteps extends Component {
                 if (result.result === 'GOOD') {
                     if(this._isMounted) this.setState({ complete_order_loading: false });
                     message.success('Processing complete!');
-                    this.props.order_completed(false);
+                    this.props.process_order(false);
                 }
             })
     }
