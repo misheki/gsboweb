@@ -240,7 +240,7 @@ class NewOrder extends Component {
                                         })(
                                             <Select placeholder="Please select the courier">
                                                 {sale_channels.map((sale_channel) =>
-                                                    <Option key={sale_channel.id} value={sale_channel.id}>{sale_channel.name.toUpperCase()}</Option>
+                                                    <Option key={sale_channel.id} value={sale_channel.id}>{sale_channel.name}</Option>
                                                 )}
                                         </Select>
                                         )}
