@@ -19,6 +19,7 @@ class OrderSteps extends Component {
             request_stock_loading: false,
             complete_order_loading: false,
             next_loading: false,
+            cancel_loading: false,
             couriers: [],
             method: 'Self Pickup',
             tracking_number: '',
@@ -186,9 +187,11 @@ class OrderSteps extends Component {
             title: 'Confirm',
             content: 'Are you sure you want to cancel this order?',
             onOk: () => {
+                this.setState({ cancel_loading: true });
                 cancelOrder(order_id, access_token)
                     .then(result => {
                         if (result.result === 'GOOD') {
+                        this.setState({ cancel_loading: false });
                             Modal.success({
                                 title:'Success',
                                 content:'You have successfully canceled this order.',
@@ -453,7 +456,7 @@ class OrderSteps extends Component {
     }
 
     renderProcessOrder() {
-        const { current, order, request_stock_loading, couriers, method, next_loading, complete_order_loading, allowed, incomplete, order_overview } = this.state;
+        const { current, order, request_stock_loading, couriers, method, next_loading, complete_order_loading, allowed, incomplete, order_overview, cancel_loading } = this.state;
         const { getFieldDecorator } = this.props.form;
         var order_status = order.status === 'pending' ? false : true;
 
@@ -749,7 +752,7 @@ class OrderSteps extends Component {
                     {allowed.includes('shipOrder') ? (current < steps.length - 1 && current !== 0 && <Button loading={next_loading} type="primary" onClick={() => this.next()}>Next</Button>) : null}
                     {allowed.includes('processOrder') ? (current === 0 && (order.status === 'pending' ?
                     <div>
-                        {order.status === 'pending' ? <Button type="danger" style={{ marginRight: 8 }} onClick={() => this.handleCancelOrder()}>Cancel</Button> : null}
+                        {order.status === 'pending' ? <Button loading={cancel_loading} type="danger" style={{ marginRight: 8 }} onClick={() => this.handleCancelOrder()}>Cancel</Button> : null}
                         <Button disabled={incomplete} loading={request_stock_loading} type="primary" onClick={() => this.handleRequestStock()}>Save, Request Stock & Continue</Button>
                     </div>
                     : <Button type="primary" onClick={() => this.next()}>Next</Button>)) : null}
