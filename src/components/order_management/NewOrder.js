@@ -168,7 +168,7 @@ class NewOrder extends Component {
                             })(
                                 <Select placeholder="Please select the product SKU">
                                     {skus.map((sku) =>
-                                        <Option key={sku.id} value={sku.id} onClick={() => this.showListPackage(k, sku.id)}>{sku.sku}</Option>
+                                        <Option key={sku.id} value={sku.id}>{sku.sku}</Option>
                                     )}
                                 </Select>
                             )}
@@ -179,7 +179,7 @@ class NewOrder extends Component {
                             {getFieldDecorator(`package_details[${k}]package_id`, {
                                 rules: [{ required: true, message: 'Please select the product package!' }]
                             })(
-                                <Select placeholder="Please select the product package">
+                                <Select placeholder="Please select the product package" onFocus={() => this.showListPackage(k, getFieldValue(`package_details[${k}]sku_id`))}>
                                     {packages.map((product_package) =>
                                         <Option key={product_package.id} value={product_package.id}>{product_package.code + ' - ' + product_package.name}</Option>
                                     )}
