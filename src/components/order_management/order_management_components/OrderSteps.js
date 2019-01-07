@@ -813,6 +813,14 @@ class OrderSteps extends Component {
     render() {
         return (
             <div>
+                <Button
+                    type="primary"
+                    icon="left"
+                    onClick={() => this.props.process_order(false)}
+                    style={{ margin: '20px', marginLeft: '40px' }}>
+                    Back
+                </Button>
+
                 {this.renderProcessOrder()}
             </div>
         );
