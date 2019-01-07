@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Layout, Form, Input, Button  } from 'antd';
+import { Helmet } from 'react-helmet';
 
 const { Header } = Layout;
 
@@ -13,12 +14,17 @@ class ChangePassword extends Component {
     }
 
     render() {
-
          return (
             <div>
-            <Header style={{ color: 'white', fontSize: '30px' }}>
-                <span>Change Password</span>
-            </Header>
+                <Helmet>
+                    <meta charSet="utf-8" />
+                    <title>Global Sim - Change Password</title>
+                </Helmet>
+
+                <Header style={{ color: 'white', fontSize: '30px' }}>
+                    <span>Change Password</span>
+                </Header>
+
                 <div style={{ padding: '30px', width:'50%'}}>
                     <Form > 
                         <Form.Item  label="Current Password" >
@@ -36,8 +42,8 @@ class ChangePassword extends Component {
                     </Form>
                 </div>
             </div>
-            );   
-        }      
+        );
+    }
 }
 
 export default ChangePassword;
