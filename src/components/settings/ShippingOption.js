@@ -172,7 +172,6 @@ class ShippingOption extends Component {
                         key="action"
                         render={(record) => (
                             <div>
-<<<<<<< HEAD
                                 {allowed.includes('editShippingMethod') ?
                                     <Button style={{ margin:'10px' }} type="primary"
                                     onClick={() => this.setState({ shipping: Object.assign({}, record), id: record.id }, () => this.showEditModal())}>Edit</Button>
@@ -181,21 +180,6 @@ class ShippingOption extends Component {
                                     <Button style={{ margin:'10px' }} type="primary"
                                     onClick={() => this.setState({ shipping: Object.assign({}, record), id: record.id }, () => this.handleDelete())}>Delete</Button>
                                 : null }
-=======
-                                <Button
-                                    style={{ margin:'10px' }}
-                                    type="primary"
-                                    onClick={() => this._isMounted === true ? this.setState({ shipping: Object.assign({}, record), id: record.id }, () => this.showEditModal()) : null}>
-                                    Edit
-                                </Button>
-
-                                <Button
-                                    style={{ margin:'10px' }}
-                                    type="primary"
-                                    onClick={() => this._isMounted === true ? this.setState({ shipping: Object.assign({}, record), id: record.id }, () => this.handleDelete()) : null}
-                                    >Delete
-                                </Button>
->>>>>>> 5545e9398bbcb398566dda44d7f55a98d6f596fc
                             </div>
                         )} />
                     </Table>
@@ -217,7 +201,6 @@ class ShippingOption extends Component {
                     </Form>}
                 </Modal>
             </div>
-<<<<<<< HEAD
             );    
         }  
         else {
@@ -227,10 +210,6 @@ class ShippingOption extends Component {
         }
     }
            
-=======
-        );
-    }
->>>>>>> 5545e9398bbcb398566dda44d7f55a98d6f596fc
 }
 
 export default  Form.create()(ShippingOption);

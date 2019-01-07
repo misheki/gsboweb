@@ -139,13 +139,8 @@ class SaleChannel extends Component {
         const { channel, loading, clickView, allowed } = this.state;
         const { getFieldDecorator } = this.props.form;
         const data = this.state.sales_channels;
-<<<<<<< HEAD
         if (allowed.includes('viewSalesChannel')) {
          return (
-=======
-
-        return (
->>>>>>> 5545e9398bbcb398566dda44d7f55a98d6f596fc
             <div>
                 <Helmet>
                     <meta charSet="utf-8" />
@@ -178,7 +173,6 @@ class SaleChannel extends Component {
                         key="action"
                         render={(record) => (
                             <div>
-<<<<<<< HEAD
                                 {allowed.includes('editSalesChannel') ?
                                     <Button style={{ margin:'10px' }} type="primary"
                                         onClick={() => this.setState({ channel: Object.assign({}, record), id: record.id }, ()=> this.showEditModal())}>Edit</Button>
@@ -187,21 +181,6 @@ class SaleChannel extends Component {
                                     <Button style={{ margin:'10px' }} type="primary"
                                         onClick={() => this.setState({ channel: Object.assign({}, record), id: record.id }, ()=> this.handleDelete())}>Delete</Button>
                                 : null }
-=======
-                                <Button
-                                    style={{ margin:'10px' }}
-                                    type="primary"
-                                    onClick={() => this._isMounted === true ? this.setState({ channel: Object.assign({}, record), id: record.id }, ()=> this.showEditModal()) : null}>
-                                    Edit
-                                </Button>
-
-                                <Button
-                                    style={{ margin:'10px' }}
-                                    type="primary"
-                                    onClick={() => this._isMounted === true ? this.setState({ channel: Object.assign({}, record), id: record.id }, ()=> this.handleDelete()) : null}>
-                                    Delete
-                                </Button>
->>>>>>> 5545e9398bbcb398566dda44d7f55a98d6f596fc
                             </div>
                         )} />
                     </Table>
@@ -223,7 +202,6 @@ class SaleChannel extends Component {
                     </Form>}
                 </Modal>
             </div>
-<<<<<<< HEAD
             
             );   
         }  
@@ -233,10 +211,6 @@ class SaleChannel extends Component {
             );
         }  
     }  
-=======
-        );
-    }
->>>>>>> 5545e9398bbcb398566dda44d7f55a98d6f596fc
 }
 
 export default Form.create()(SaleChannel);
