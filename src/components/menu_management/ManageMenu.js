@@ -342,7 +342,7 @@ class ManageMenu extends Component {
                                 })(
                                     <CheckboxGroup name="role">
                                         {roles.map((role) =>
-                                            <Checkbox key={role.id} value={role.id}>{role.name}</Checkbox>
+                                            <Checkbox className="ant-checkbox-group-item" key={role.id} value={role.id}>{role.name}</Checkbox>
                                         )}
                                     </CheckboxGroup>
                                 )}
@@ -428,7 +428,7 @@ class ManageMenu extends Component {
                                 })(
                                     <CheckboxGroup name="role">
                                         {roles.map((role) =>
-                                            <Checkbox key={role.id} value={role.id}>{role.name}</Checkbox>
+                                            <Checkbox className="ant-checkbox-group-item" key={role.id} value={role.id}>{role.name}</Checkbox>
                                         )}
                                     </CheckboxGroup>
                                 )}
