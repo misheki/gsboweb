@@ -197,7 +197,7 @@ class OrderSteps extends Component {
                     });
 
                     this.setState({ request_stock_loading: true });
-                    requestStock(order_id, filtered_stocks, access_token)
+                    requestStock(order_id, filtered_stocks, values.customer_name, values.customer_email, values.customer_contact_num, access_token)
                         .then(result => {
                             if (result.result === 'GOOD') {
                                 if(this._isMounted) this.setState({ request_stock_loading: false, current });

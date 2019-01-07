@@ -239,7 +239,7 @@ export const showOrders = (order_id, access_token) => {
     ])
 };
 
-export const requestStock = (order_id, package_details, access_token) => {
+export const requestStock = (order_id, package_details, customer_name, customer_email, customer_contact_num, access_token) => {
     return Promise.race([
         new Promise((resolve, reject) =>
             fetch(global.URL + 'api/order/request/stock', {
@@ -251,7 +251,10 @@ export const requestStock = (order_id, package_details, access_token) => {
                 },
                 body: JSON.stringify({
                     order_id,
-                    package_details
+                    package_details,
+                    customer_name,
+                    customer_email,
+                    customer_contact_num
                 })
             })
             .then((response) => response.json())
