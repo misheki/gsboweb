@@ -235,7 +235,6 @@ export const shippingUpdateWithCourier = (order_id, customer_address, customer_c
             })
             .then((response) => response.json())
             .then((responseJson) => {
-                console.log(responseJson);
                 if (responseJson.result === 'GOOD') {
                     resolve(responseJson);   
                 }
@@ -247,7 +246,7 @@ export const shippingUpdateWithCourier = (order_id, customer_address, customer_c
     ])
 };
 
-export const shippingUpdateWithoutCourier = (order_id, shipping_method_id, shipping_fee, access_token) => {
+export const shippingUpdateWithoutCourier = (order_id, shipping_method_id, shipping_fee, tracking_number, access_token) => {
     return Promise.race([
         new Promise((resolve, reject) =>
             fetch(global.URL + 'api/order/shipping/update', {
@@ -260,12 +259,12 @@ export const shippingUpdateWithoutCourier = (order_id, shipping_method_id, shipp
                 body: JSON.stringify({
                     order_id,
                     shipping_method_id,
-                    shipping_fee
+                    shipping_fee,
+                    tracking_number
                 })
             })
             .then((response) => response.json())
             .then((responseJson) => {
-                console.log(responseJson);
                 if (responseJson.result === 'GOOD') {
                     resolve(responseJson);   
                 }

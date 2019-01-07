@@ -91,7 +91,7 @@ class OrderSteps extends Component {
         }
         else {
             this.setState({ next_loading: true });
-            shippingUpdateWithoutCourier(order.id, null, null, access_token)
+            shippingUpdateWithoutCourier(order.id, null, null, null, access_token)
                 .then(result => {     
                     if (result.result === 'GOOD') {
                         this.setState({
