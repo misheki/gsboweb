@@ -49,6 +49,12 @@ class ViewStock extends Component {
                     if(this._isMounted) this.setState({ stocks: result.data });
                 }
             })
+            .catch(error => {
+                Modal.error({
+                    title: 'Error',
+                    content: error
+                })
+            })
     }
 
     handleSearch() {
@@ -60,6 +66,12 @@ class ViewStock extends Component {
                 if (result.result === 'GOOD') {
                     if(this._isMounted) this.setState({ stocks: result.data });
                 }
+            })
+            .catch(error => {
+                Modal.error({
+                    title: 'Error',
+                    content: error
+                })
             })
     }
 
@@ -99,6 +111,12 @@ class ViewStock extends Component {
                                     content: 'You have successfully wrote off this stock!',
                                 });
                             }
+                        })
+                        .catch(error => {
+                            Modal.error({
+                                title: 'Error',
+                                content: error
+                            })
                         })
                 }
             })

@@ -205,7 +205,7 @@ class ManageRole extends Component {
                                 })(
                                     <CheckboxGroup name="permission">
                                         {permissions.map((permission) =>
-                                            <Checkbox key={permission.id} value={permission.id}>{permission.name}</Checkbox>
+                                            <Checkbox className="ant-checkbox-group-item" key={permission.id} value={permission.id}>{permission.name}</Checkbox>
                                         )}
                                     </CheckboxGroup>
                                 )}

@@ -41,6 +41,17 @@ export const listShippingMethods = (access_token) => {
                 if (responseJson.result === 'GOOD') {
                     resolve(responseJson);   
                 }
+                else {
+                    var error = '';
+
+                    switch (responseJson.result) {
+                        default:
+                            error = responseJson.msg;
+                            break;
+                    }
+
+                    reject(error);
+                }
             })
             .catch((error) => {
                 reject(error);
@@ -61,8 +72,25 @@ export const deleteShippingMethod = (shipping_method_id, access_token) => {
                 }
             })
             .then((response) => response.json())
-            .then((responseJson) => {            
-                    resolve(responseJson);           
+            .then((responseJson) => {
+                if (responseJson.result === 'GOOD') {
+                    resolve(responseJson);
+                }
+                else {
+                    var error = '';
+
+                    switch (responseJson.result) {
+                        case 'ORDEREXIST':
+                            error = 'You cannot delete this shipping method because it has orders under it.';
+                            break;
+
+                        default:
+                            error = responseJson.msg;
+                            break;
+                    }
+
+                    reject(error);
+                }
             })
             .catch((error) => {
                 reject(error);
@@ -90,6 +118,17 @@ export const editShippingMethod = (shipping_method_id, name, access_token) => {
             .then((responseJson) => {
                 if (responseJson.result === 'GOOD') {
                     resolve(responseJson);   
+                }
+                else {
+                    var error = '';
+
+                    switch (responseJson.result) {
+                        default:
+                            error = responseJson.msg;
+                            break;
+                    }
+
+                    reject(error);
                 }
             })
             .catch((error) => {

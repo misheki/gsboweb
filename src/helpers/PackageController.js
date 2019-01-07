@@ -21,6 +21,17 @@ export const createPackage = (sku_id, code, name, description, cost_price, acces
                 if (responseJson.result === 'GOOD') {
                     resolve(responseJson);   
                 }
+                else {
+                    var error = '';
+
+                    switch (responseJson.result) {
+                        default:
+                            error = responseJson.msg;
+                            break;
+                    }
+
+                    reject(error);
+                }
             })
             .catch((error) => {
                 reject(error);
@@ -45,6 +56,17 @@ export const listPackage = (access_token) => {
                 if (responseJson.result === 'GOOD') {
                     resolve(responseJson);   
                 }
+                else {
+                    var error = '';
+
+                    switch (responseJson.result) {
+                        default:
+                            error = responseJson.msg;
+                            break;
+                    }
+
+                    reject(error);
+                }
             })
             .catch((error) => {
                 reject(error);
@@ -66,14 +88,24 @@ export const deletePackage = (package_id, access_token) => {
             })
             .then((response) => response.json())
             .then((responseJson) => {
-                console.warn(responseJson);               
                 if (responseJson.result === 'GOOD') {
                     resolve(responseJson);   
                 }
-                else if (responseJson.result === 'STOCKEXIST') {
-                    resolve(responseJson);   
+                else {
+                    var error = '';
+
+                    switch (responseJson.result) {
+                        case 'STOCKEXIST':
+                            error = 'You cannot delete this package because there are stocks under it.';
+                            break;
+                    
+                        default:
+                            error = responseJson.msg;
+                            break;
+                    }
+
+                    reject(error);
                 }
-                
             })
             .catch((error) => {
                 reject(error);

@@ -51,6 +51,12 @@ class NewOrder extends Component {
                     if(this._isMounted) this.setState({ skus: result.data });
                 }
             })
+            .catch(error => {
+                Modal.error({
+                    title: 'Error',
+                    content: error
+                })
+            })
     }
 
     showListPackage(k, sku_id) {
@@ -61,6 +67,12 @@ class NewOrder extends Component {
                     if(this._isMounted) this.setState({ packages: result.data });
                 }
             })
+            .catch(error => {
+                Modal.error({
+                    title: 'Error',
+                    content: error
+                })
+            })
     }
 
     showCourierList() {
@@ -70,6 +82,12 @@ class NewOrder extends Component {
                 if (result.result === 'GOOD') {
                     if(this._isMounted) this.setState({ sale_channels: result.data });
                 }
+            })
+            .catch(error => {
+                Modal.error({
+                    title: 'Error',
+                    content: error
+                })
             })
     }
 
@@ -115,6 +133,13 @@ class NewOrder extends Component {
                             content: 'You have successfully created a new order.',
                         });
                     }
+                })
+                .catch(error => {
+                    if(this._isMounted) this.setState({ loading: false });
+                    Modal.error({
+                        title: 'Error',
+                        content: error
+                    })
                 })
         });
     }

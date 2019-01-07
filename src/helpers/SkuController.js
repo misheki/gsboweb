@@ -14,6 +14,17 @@ export const listSku = (access_token) => {
                 if (responseJson.result === 'GOOD') {
                     resolve(responseJson);   
                 }
+                else {
+                    var error = '';
+
+                    switch (responseJson.result) {
+                        default:
+                            error = responseJson.msg;
+                            break;
+                    }
+
+                    reject(error);
+                }
             })
             .catch((error) => {
                 reject(error);
@@ -40,6 +51,17 @@ export const listSkuPackage = (sku_id, access_token) => {
             .then((responseJson) => {
                 if (responseJson.result === 'GOOD') {
                     resolve(responseJson);   
+                }
+                else {
+                    var error = '';
+
+                    switch (responseJson.result) {
+                        default:
+                            error = responseJson.msg;
+                            break;
+                    }
+
+                    reject(error);
                 }
             })
             .catch((error) => {
@@ -121,7 +143,24 @@ export const deleteSku = (sku_id, access_token) => {
             })
             .then((response) => response.json())
             .then((responseJson) => {
-                resolve(responseJson);   
+                if (responseJson.result === 'GOOD') {
+                    resolve(responseJson);
+                }
+                else {
+                    var error = '';
+
+                    switch (responseJson.result) {
+                        case 'STOCKEXIST':
+                            error = 'You cannot delete this SKU because it has stocks under it.';
+                            break;
+                    
+                        default:
+                            error = responseJson.msg;
+                            break;
+                    }
+
+                    reject(error);
+                }
             })
             .catch((error) => {
                 reject(error);
