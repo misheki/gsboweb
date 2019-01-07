@@ -31,23 +31,23 @@ class ShippingOption extends Component {
         listShippingMethods(access_token)
             .then(result => {
                 if (result.result === 'GOOD') {    
-                    this.setState({ shipping_methods: result.data });
+                    if(this._isMounted) this.setState({ shipping_methods: result.data });
                 }
             })
     }
  
     showModal = () => {
-        this.setState({ visible: true , clickView: true});
+        if(this._isMounted) this.setState({ visible: true , clickView: true});
     }
 
     showEditModal = () => {
-        this.setState({ visible: true });
+        if(this._isMounted) this.setState({ visible: true });
     }
 
     handleCancel = () => {
         const form = this.props.form;
         form.resetFields();
-        this.setState({ visible: false, clickView: false  });
+        if(this._isMounted) this.setState({ visible: false, clickView: false  });
     }
 
     handleDelete() {
@@ -80,11 +80,12 @@ class ShippingOption extends Component {
             if (err) {
                 return;
             }
-            this.setState({ loading: true });
+            
+            if(this._isMounted) this.setState({ loading: true });
             createShippingMethod(values.courier_name, access_token)
                 .then(result => {
                     if (result.result === 'GOOD') {
-                        this.setState({ loading: false });
+                        if(this._isMounted) this.setState({ loading: false });
                         this.handleCancel();
                         this.showShippingMethodsList();
                     }
@@ -100,11 +101,12 @@ class ShippingOption extends Component {
             if (err) {
                 return;
             }
-            this.setState({ loading: true });
+
+            if(this._isMounted) this.setState({ loading: true });
             editShippingMethod(this.state.id, values.courier_name, access_token)
                 .then(result => {
                     if (result.result === 'GOOD') {
-                        this.setState({ loading: false });
+                        if(this._isMounted) this.setState({ loading: false });
                         this.handleCancel();
                         this.showShippingMethodsList();
                     }
@@ -113,7 +115,7 @@ class ShippingOption extends Component {
     }
 
     onClickModal = () => {
-        this.setState({
+        if(this._isMounted) this.setState({
             shipping: {
                 courier_name:'',
             }
@@ -150,10 +152,19 @@ class ShippingOption extends Component {
                         key="action"
                         render={(record) => (
                             <div>
-                                <Button style={{ margin:'10px' }} type="primary"
-                                onClick={() => this.setState({ shipping: Object.assign({}, record), id: record.id }, () => this.showEditModal())}>Edit</Button>
-                                <Button style={{ margin:'10px' }} type="primary"
-                                onClick={() => this.setState({ shipping: Object.assign({}, record), id: record.id }, () => this.handleDelete())}>Delete</Button>
+                                <Button
+                                    style={{ margin:'10px' }}
+                                    type="primary"
+                                    onClick={() => this._isMounted === true ? this.setState({ shipping: Object.assign({}, record), id: record.id }, () => this.showEditModal()) : null}>
+                                    Edit
+                                </Button>
+
+                                <Button
+                                    style={{ margin:'10px' }}
+                                    type="primary"
+                                    onClick={() => this._isMounted === true ? this.setState({ shipping: Object.assign({}, record), id: record.id }, () => this.handleDelete()) : null}
+                                    >Delete
+                                </Button>
                             </div>
                         )} />
                     </Table>

@@ -10,6 +10,8 @@ const confirm = Modal.confirm;
 const Option = Select.Option;
 
 class ManageMenu extends Component {
+    _isMounted = false;
+
     constructor(props) {
         super(props);
         this.state = {
@@ -23,7 +25,12 @@ class ManageMenu extends Component {
     }
 
     componentDidMount() {
+        this._isMounted = true;
         this.loadPage();
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
     }
 
     loadPage() {
@@ -38,7 +45,7 @@ class ManageMenu extends Component {
         listRole(access_token)
             .then(result => {
                 if (result.result === 'GOOD') {
-                    this.setState({ roles: result.data });
+                    if(this._isMounted) this.setState({ roles: result.data });
                 }
             })
     }
@@ -49,7 +56,7 @@ class ManageMenu extends Component {
         listMenu(access_token)
             .then(result => {
                 if (result.result === 'GOOD') {
-                    this.setState({ menus: result.data });
+                    if(this._isMounted) this.setState({ menus: result.data });
                 }
             })
     }
@@ -60,23 +67,23 @@ class ManageMenu extends Component {
         listSubMenu(access_token)
             .then(result => {
                 if (result.result === 'GOOD') {
-                    this.setState({ submenus: result.data });
+                    if(this._isMounted) this.setState({ submenus: result.data });
                 }
             })
     }
 
     showAddMenuModal = () => {
-        this.setState({ visibleMenu: true, clickAdd: true });
+        if(this._isMounted) this.setState({ visibleMenu: true, clickAdd: true });
     }
 
     showEditMenuModal = () => {
-        this.setState({ visibleMenu: true });
+        if(this._isMounted) this.setState({ visibleMenu: true });
     }
 
     handleMenuCancel = () => {
         const form = this.props.form;
         form.resetFields();
-        this.setState({ visibleMenu: false }, () => this.setState({ clickAdd: false }));
+        if(this._isMounted) this.setState({ visibleMenu: false }, () => this.setState({ clickAdd: false }));
     }
 
     handleMenuCreate = () => {
@@ -92,7 +99,7 @@ class ManageMenu extends Component {
                 .then(result => {
                     if (result.result === 'GOOD') {
                         form.resetFields();
-                        this.setState({ visibleMenu: false, clickAdd: false });
+                        if(this._isMounted) this.setState({ visibleMenu: false, clickAdd: false });
                         this.loadPage();
                         this.props.reloadMenu();
                     }
@@ -113,7 +120,7 @@ class ManageMenu extends Component {
                 .then(result => {
                     if (result.result === 'GOOD') {
                         form.resetFields();
-                        this.setState({ visibleMenu: false, clickAdd: false });
+                        if(this._isMounted) this.setState({ visibleMenu: false, clickAdd: false });
                         this.loadPage();
                         this.props.reloadMenu();
                     }
@@ -131,7 +138,7 @@ class ManageMenu extends Component {
                 deleteMenu(menu_id, access_token)
                     .then(result => {
                         if (result.result === 'GOOD') {
-                            this.handleMenuCancel();
+                            if(this._isMounted) this.handleMenuCancel();
                             this.loadPage();
                             this.props.reloadMenu();
                         }
@@ -150,17 +157,17 @@ class ManageMenu extends Component {
     }
 
     showAddSubMenuModal = () => {
-        this.setState({ visibleSubMenu: true, clickAdd: true });
+        if(this._isMounted) this.setState({ visibleSubMenu: true, clickAdd: true });
     }
 
     showEditSubMenuModal = () => {
-        this.setState({ visibleSubMenu: true });
+        if(this._isMounted) this.setState({ visibleSubMenu: true });
     }
 
     handleSubMenuCancel = () => {
         const form = this.props.form;
         form.resetFields();
-        this.setState({ visibleSubMenu: false }, () => this.setState({ clickAdd: false }));
+        if(this._isMounted) this.setState({ visibleSubMenu: false }, () => this.setState({ clickAdd: false }));
     }
 
     handleSubMenuCreate = () => {
@@ -176,7 +183,7 @@ class ManageMenu extends Component {
                 .then(result => {
                     if (result.result === 'GOOD') {
                         form.resetFields();
-                        this.setState({ visibleSubMenu: false, clickAdd: false });
+                        if(this._isMounted) this.setState({ visibleSubMenu: false, clickAdd: false });
                         this.loadPage();
                         this.props.reloadMenu();
                     }
@@ -197,7 +204,7 @@ class ManageMenu extends Component {
                 .then(result => {
                     if (result.result === 'GOOD') {
                         form.resetFields();
-                        this.setState({ visibleSubMenu: false, clickAdd: false });
+                        if(this._isMounted) this.setState({ visibleSubMenu: false, clickAdd: false });
                         this.loadPage();
                         this.props.reloadMenu();
                     }
@@ -225,7 +232,7 @@ class ManageMenu extends Component {
     }
 
     onChangeNewSubMenu = () => {
-        this.setState({
+        if(this._isMounted) this.setState({
             submenu: {
                 menu_id: '',
                 name: '',
@@ -281,7 +288,7 @@ class ManageMenu extends Component {
                         rowKey={menus => menus.id}
                         onRow={(record) => {
                             return {
-                                onClick: () => {this.setState({ menu: Object.assign({}, record), menu_id: record.id, footer_role_id: record.roles_id }, this.showEditMenuModal)}
+                                onClick: () => {if(this._isMounted) this.setState({ menu: Object.assign({}, record), menu_id: record.id, footer_role_id: record.roles_id }, this.showEditMenuModal)}
                             };
                         }}>
                         <Column title="Order" dataIndex="order" key="order" />
@@ -353,7 +360,7 @@ class ManageMenu extends Component {
                         rowKey={submenus => submenus.id}
                         onRow={(record) => {
                             return {
-                                onClick: () => {this.setState({ submenu: Object.assign({}, record), submenu_id: record.id, footer_role_id: record.roles_id }, this.showEditSubMenuModal)}
+                                onClick: () => {if(this._isMounted) this.setState({ submenu: Object.assign({}, record), submenu_id: record.id, footer_role_id: record.roles_id }, this.showEditSubMenuModal)}
                             };
                         }}>
                         <Column title="Order" dataIndex="order" key="order" />

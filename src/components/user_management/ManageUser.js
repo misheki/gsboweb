@@ -32,7 +32,7 @@ class ManageUser extends Component {
         listUser(access_token)
             .then(result => {
                 if (result.result === 'GOOD') {
-                    this.setState({ data: result.data });
+                    if(this._isMounted) this.setState({ data: result.data });
                 }
             })
     }
@@ -43,28 +43,28 @@ class ManageUser extends Component {
         listRole(access_token)
             .then(result => {
                 if (result.result === 'GOOD') {
-                    this.setState({ roles: result.data });
+                    if(this._isMounted) this.setState({ roles: result.data });
                 }
             })
     }
 
     showAddModal = () => {
-        this.setState({ visible: true, clickAdd: true });
+        if(this._isMounted) this.setState({ visible: true, clickAdd: true });
     }
 
     showEditModal = () => {
-        this.setState({ visible: true });
+        if(this._isMounted) this.setState({ visible: true });
     }
 
     handleCancel = () => {
         const form = this.props.form;
         form.resetFields();
-        this.setState({ visible: false }, () => this.setState({ clickAdd: false }));
+        if(this._isMounted) this.setState({ visible: false }, () => this.setState({ clickAdd: false }));
     }
 
     handleConfirmBlur = (e) => {
         const value = e.target.value;
-        this.setState({ confirmDirty: this.state.confirmDirty || !!value });
+        if(this._isMounted) this.setState({ confirmDirty: this.state.confirmDirty || !!value });
     }
 
     compareToFirstPassword = (rule, value, callback) => {
@@ -102,7 +102,7 @@ class ManageUser extends Component {
                     if (result.result === 'GOOD') {
                         form.resetFields();
                         this.showListUser();
-                        this.setState({ visible: false, clickAdd: false });
+                        if(this._isMounted) this.setState({ visible: false, clickAdd: false });
                     }
                 })
         });
@@ -123,7 +123,7 @@ class ManageUser extends Component {
                     if (result.result === 'GOOD') {
                         form.resetFields();
                         this.showListUser();
-                        this.setState({ visible: false, clickAdd: false });
+                        if(this._isMounted) this.setState({ visible: false, clickAdd: false });
                     }
                 })
         });
@@ -148,7 +148,7 @@ class ManageUser extends Component {
     }
 
     onChangeNewUser = () => {
-        this.setState({
+        if(this._isMounted) this.setState({
             user: {
                 name: '',
                 username: '',
@@ -194,7 +194,7 @@ class ManageUser extends Component {
                         rowKey={data => data.id}
                         onRow={(record) => {
                             return {
-                                onClick: () => {this.setState({ user: Object.assign({}, record), user_id: record.id }, this.showEditModal)}
+                                onClick: () => {if(this._isMounted) this.setState({ user: Object.assign({}, record), user_id: record.id }, this.showEditModal)}
                             };
                         }}>
                         <Column title="Name" dataIndex="name" key="name" />

@@ -8,6 +8,7 @@ const FormItem = Form.Item;
 const confirm = Modal.confirm;
 
 class SaleChannel extends Component {
+    _isMounted = false;
 
     constructor(props) {
         super(props);
@@ -31,23 +32,23 @@ class SaleChannel extends Component {
         listSalesChannels(access_token)
             .then(result => {
                 if (result.result === 'GOOD') {    
-                    this.setState({ sales_channels: result.data });
+                    if(this._isMounted) this.setState({ sales_channels: result.data });
                 }
             })
     }
 
     showModal = () => {
-        this.setState({ visible: true , clickView: true});
+        if(this._isMounted) this.setState({ visible: true , clickView: true});
     }
 
     showEditModal = () => {
-        this.setState({ visible: true });
+        if(this._isMounted) this.setState({ visible: true });
     }
 
     handleCancel = () => {
         const form = this.props.form;
         form.resetFields();
-        this.setState({ visible: false, clickView: false  });
+        if(this._isMounted) this.setState({ visible: false, clickView: false  });
     }
 
     handleDelete() {
@@ -81,11 +82,12 @@ class SaleChannel extends Component {
             if (err) {
                 return;
             }
-            this.setState({ loading: true });
+
+            if(this._isMounted) this.setState({ loading: true });
             createSalesChannel(values.name, access_token)
                 .then(result => {
                     if (result.result === 'GOOD') {
-                        this.setState({ loading: false });
+                        if(this._isMounted) this.setState({ loading: false });
                         this.handleCancel();
                         this.showSalesChannelsList();
                     }
@@ -101,11 +103,12 @@ class SaleChannel extends Component {
             if (err) {
                 return;
             }
-            this.setState({ loading: true });
+
+            if(this._isMounted) this.setState({ loading: true });
             editSalesChannel(this.state.id, values.name, access_token)
                 .then(result => {
                     if (result.result === 'GOOD') {
-                        this.setState({ loading: false });
+                        if(this._isMounted) this.setState({ loading: false });
                         this.handleCancel();
                         this.showSalesChannelsList();
                     }
@@ -114,7 +117,7 @@ class SaleChannel extends Component {
     }
 
     onClickModal = () => {
-        this.setState({
+        if(this._isMounted) this.setState({
             channel: {
                name:'',
             }
@@ -151,10 +154,19 @@ class SaleChannel extends Component {
                         key="action"
                         render={(record) => (
                             <div>
-                                <Button style={{ margin:'10px' }} type="primary"
-                                onClick={() => this.setState({ channel: Object.assign({}, record), id: record.id }, ()=> this.showEditModal())}>Edit</Button>
-                                <Button style={{ margin:'10px' }} type="primary"
-                                onClick={() => this.setState({ channel: Object.assign({}, record), id: record.id }, ()=> this.handleDelete())}>Delete</Button>
+                                <Button
+                                    style={{ margin:'10px' }}
+                                    type="primary"
+                                    onClick={() => this._isMounted === true ? this.setState({ channel: Object.assign({}, record), id: record.id }, ()=> this.showEditModal()) : null}>
+                                    Edit
+                                </Button>
+
+                                <Button
+                                    style={{ margin:'10px' }}
+                                    type="primary"
+                                    onClick={() => this._isMounted === true ? this.setState({ channel: Object.assign({}, record), id: record.id }, ()=> this.handleDelete()) : null}>
+                                    Delete
+                                </Button>
                             </div>
                         )} />
                     </Table>
