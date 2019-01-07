@@ -50,12 +50,12 @@
 
 .global-search-wrapper {
   padding-right: 50px;
-  width: 80%;
+  width: 100%;
   padding:30px;
 }
 
 .global-search {
-  width: 100%;
+  width: 30%;
 }
 .global-search.ant-select-auto-complete .ant-select-selection--single {
   margin-right: -46px;
