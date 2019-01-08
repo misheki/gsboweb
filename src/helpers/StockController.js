@@ -1,4 +1,4 @@
-export const listStock = (sim_card_number, access_token) => {
+export const listStock = (serial_number, sku_id, package_id, status_id, access_token) => {
     return Promise.race([
         new Promise((resolve, reject) =>
             fetch(global.URL + 'api/stock/list', {
@@ -9,7 +9,10 @@ export const listStock = (sim_card_number, access_token) => {
                     'Authorization': 'Bearer ' + access_token
                 },
                 body: JSON.stringify({
-                    sim_card_number
+                    serial_number,
+                    sku_id,
+                    package_id,
+                    status_id
                 })
             })
             .then((response) => response.json())
