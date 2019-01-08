@@ -111,6 +111,13 @@ class ProductPackage extends Component {
                         this.showPackageList();
                     }
                 })
+                .catch(error => {
+                    if(this._isMounted) this.setState({ loading: false });
+                    Modal.error({
+                        title: 'Error',
+                        content: error
+                    })
+                })
         });
     }
 
@@ -131,6 +138,13 @@ class ProductPackage extends Component {
                         this.handleCancel();
                         this.showPackageList();
                     }
+                })
+                .catch(error => {
+                    if(this._isMounted) this.setState({ loading: false });
+                    Modal.error({
+                        title: 'Error',
+                        content: error
+                    })
                 })
         });
     }
@@ -154,6 +168,13 @@ class ProductPackage extends Component {
                         this.showSkuList();
                     }
                 })
+                .catch(error => {
+                    if(this._isMounted) this.setState({ loading: false });
+                    Modal.error({
+                        title: 'Error',
+                        content: error
+                    })
+                })
         });
     }
 
@@ -175,6 +196,13 @@ class ProductPackage extends Component {
                         this.handleCancel();
                         this.showSkuList();
                     }
+                })
+                .catch(error => {
+                    if(this._isMounted) this.setState({ loading: false });
+                    Modal.error({
+                        title: 'Error',
+                        content: error
+                    })
                 })
         });
     }

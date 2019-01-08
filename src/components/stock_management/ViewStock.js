@@ -204,33 +204,9 @@ class ViewStock extends Component {
                         <span>View Stock</span>
                     </Header>    
                     <div className="global-search-wrapper" >
-                         <Select
-                            showSearch
-                            style={{ width: 180, marginRight:5}}
-                            placeholder="Filter by SKU"
-                            optionFilterProp="children"
-                            filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                           >
-                            {/* {sku_filter.map(sku => <Option key={sku[0]}>{sku[1]}</Option>)} */}
-                        </Select>
-                        <Select
-                            showSearch
-                            style={{ width: 180,  marginRight:5 }}
-                            placeholder="Filter by Packages"
-                            optionFilterProp="children"
-                            filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                        >
-                            
-                        </Select>
-                        <Select
-                            showSearch
-                            style={{ width: 180,  marginRight:5 }}
-                            placeholder="Filter by Status"
-                            optionFilterProp="children"
-                            filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                        >
-                            
-                        </Select>
+                        {this.showSkuFilter()}
+                        {this.showPackageFilter()}
+                        {this.showStatusFilter()}
                         <AutoComplete
                             className="global-search"
                             onSearch={(search) => (this._isMounted === true) ? (search.length > 0 ? this.setState({ search }) : this.setState({ search : null })) : null}
