@@ -318,7 +318,7 @@ class ProductPackage extends Component {
                         dataSource={skus}
                         rowKey={skus => skus.id}>
                         <Column title="SKU" dataIndex="sku" key="sku" />
-                        <Column title="Required Activation" dataIndex="require_activation" key="require_activation" />
+                        <Column title="Requires Activation" dataIndex="require_activation" key="require_activation" />
                         <Column
                             title='Action'
                             key="action"
@@ -382,7 +382,7 @@ class ProductPackage extends Component {
                         <Column title="Code" dataIndex="code" key="code" />
                         <Column title="Name" dataIndex="name" key="name" />
                         <Column title="Cost Price" dataIndex="cost_price" key="cost_price" />
-                        <Column title="Req Activation" dataIndex="require_activation" key="require_activation" />
+                        <Column title="Requires Activation" dataIndex="require_activation" key="require_activation" />
                         <Column
                             title='Action'
                             key="action"

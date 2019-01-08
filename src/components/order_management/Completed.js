@@ -160,11 +160,12 @@ class Completed extends Component {
                                     <p>{this.state.order.sales_channel} </p>
                                 </FormItem>
                                 <FormItem  {...formItemLayout} label="Shipping Method : " className="form-item">
-                                    <p>{this.state.order.shipping_method} </p>
+                                    <p>{this.state.order.shipping_method ? this.state.order.shipping_method : 'Self Pickup'} </p>
                                 </FormItem>
+                                {this.state.order.shipping_method ?
                                 <FormItem  {...formItemLayout} label="Tracking Number : " className="form-item">
-                                    <p>{this.state.order.tracking_number} </p>
-                                </FormItem>
+                                    <p>{this.state.order.tracking_number}</p>
+                                </FormItem> : null}
                             </Col>
                             <Col span={12}>
                                 <h3 style={{paddingBottom:'10px'}}>Customer Details </h3>  
