@@ -17,6 +17,9 @@ class ViewStock extends Component {
         super(props);
         this.state = {
            stocks: [],
+           skus: null,
+           packages: null,
+           statuses: null,
            search: null,
            sku_filter: null,
            package_filter: null,
@@ -25,8 +28,7 @@ class ViewStock extends Component {
            loading: false,
            stock_id: '',
            required: ['viewStock', 'writeoffStock'],
-           allowed: [],
-
+           allowed: []
         };
     }
 
@@ -48,14 +50,16 @@ class ViewStock extends Component {
 
     showListStock() {
         var access_token = sessionStorage.getItem('access_token');
-        listStock(null, access_token)
-            .then(result => {               
+        const {search, sku_filter, package_filter, status_filter} = this.state;
+
+        listStock(search, sku_filter, package_filter, status_filter, access_token)
+            .then(result => {              
                 if (result.result === 'GOOD') {
                     if(this._isMounted) this.setState({ 
                                             stocks: result.data, 
-                                            sku_filter: result.sku_list, 
-                                            package_filter:result.packages_list, 
-                                            status_filter:result.status_list  });
+                                            skus: result.sku_list, 
+                                            packages:result.packages_list, 
+                                            statuses:result.status_list  });
                 }
             })
             .catch(error => {
@@ -66,26 +70,20 @@ class ViewStock extends Component {
             })
     }
 
-    handleSearch() {
-        var access_token = sessionStorage.getItem('access_token');
-        var { search } = this.state;
-
-        listStock(search, access_token)
-            .then(result => {
-                if (result.result === 'GOOD') {
-                    if(this._isMounted) this.setState({ stocks: result.data });
-                }
-            })
-            .catch(error => {
-                Modal.error({
-                    title: 'Error',
-                    content: error
-                })
-            })
+    handleSkuFilter = (value)  => {
+        if(this._isMounted) this.setState({ sku_filter : value }, () => this.showListStock());
     }
 
-    handleClearFilter(){
-        this.setState({search: null, sku_filter:null, package_filter:null, status_filter:null})
+    handlePackageFilter = (value)  => {
+        if(this._isMounted) this.setState({ package_filter : value }, () => this.showListStock());
+    }
+
+    handleStatusFilter = (value)  => {
+        if(this._isMounted) this.setState({ status_filter : value }, () => this.showListStock());
+    }
+
+    handleClearFilter = () => {
+        if(this._isMounted) this.setState({search: null, sku_filter:null, package_filter:null, status_filter:null}, () => this.showListStock());
     }
 
     handleCancel = () => {
@@ -137,11 +135,62 @@ class ViewStock extends Component {
         });
     }
 
+    showSkuFilter() {
+        const { skus } = this.state;
+
+        if(skus != null){
+            return (
+                <Select
+                    showSearch
+                    style={{ width: 180, marginRight:5}}
+                    placeholder="Filter by SKU"
+                    value={this.state.sku_filter ? this.state.sku_filter : undefined}
+                    onChange={this.handleSkuFilter}>
+                    {skus.map(sku => <Option key={sku.id} value={sku.id}>{sku.sku}</Option>)}
+                </Select>
+            );
+        }
+    }
+
+    showPackageFilter() {
+        const { packages } = this.state;
+
+        if(packages != null){
+
+            return (
+                <Select
+                    showSearch
+                    style={{ width: 180, marginRight:5}}
+                    placeholder="Filter by Package"
+                    value={this.state.package_filter ? this.state.package_filter : undefined}
+                    onChange={this.handlePackageFilter}>
+                    {packages.map(pkg => <Option key={pkg.id} value={pkg.id}>{pkg.code}</Option>)}
+                </Select>
+            );
+        }
+    }
+
+    showStatusFilter() {
+        const { statuses } = this.state;
+
+        if(statuses != null){
+
+            return (
+                <Select
+                    showSearch
+                    style={{ width: 180, marginRight:5}}
+                    placeholder="Filter by Status"
+                    value={this.state.status_filter ? this.state.status_filter : undefined}
+                    onChange={this.handleStatusFilter}>
+                    {statuses.map(status => <Option key={status.id} value={status.id}>{status.name}</Option>)}
+                </Select>
+            );
+        }
+    }
+
     render() {
-        const { stocks, visible, loading, allowed, status_filter, sku_filter, package_filter } = this.state;
+        const { stocks, visible, loading, allowed } = this.state;
         const { getFieldDecorator } = this.props.form;
-        console.warn(sku_filter);
-        console.warn(package_filter);
 
         if (allowed.includes('viewStock')) {
             return (
@@ -155,39 +204,16 @@ class ViewStock extends Component {
                         <span>View Stock</span>
                     </Header>    
                     <div className="global-search-wrapper" >
-                         <Select
-                            showSearch
-                            style={{ width: 180, marginRight:5}}
-                            placeholder="Filter by SKU"
-                            optionFilterProp="children"
-                            filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                           >
-                            {sku_filter.map(sku => <Option key={sku[0]}>{sku[1]}</Option>)}
-                        </Select>
-                        <Select
-                            showSearch
-                            style={{ width: 180,  marginRight:5 }}
-                            placeholder="Filter by Packages"
-                            optionFilterProp="children"
-                            filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                        >
-                            
-                        </Select>
-                        <Select
-                            showSearch
-                            style={{ width: 180,  marginRight:5 }}
-                            placeholder="Filter by Status"
-                            optionFilterProp="children"
-                            filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                        >
-                            
-                        </Select>
+                        {this.showSkuFilter()}
+                        {this.showPackageFilter()}
+                        {this.showStatusFilter()}
                         <AutoComplete
                             className="global-search"
-                            onSearch={(search) => (this._isMounted === true) ? this.setState({ search }) : null}
-                            placeholder="Search sim card number">
+                            onSearch={(search) => (this._isMounted === true) ? (search.length > 0 ? this.setState({ search }) : this.setState({ search : null })) : null}
+                            placeholder="Search Serial Number"
+                            value={this.state.search}>
                             <Input suffix={(
-                                <Button className="search-btn" type="primary" onClick={() => this.handleSearch()}>
+                                <Button className="search-btn" type="primary" onClick={() => this.showListStock()}>
                                     <Icon type="search" />
                                 </Button>
                             )} />
