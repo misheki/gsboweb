@@ -53,7 +53,7 @@ class ViewStock extends Component {
         const {search, sku_filter, package_filter, status_filter} = this.state;
 
         listStock(search, sku_filter, package_filter, status_filter, access_token)
-            .then(result => {              
+            .then(result => {            
                 if (result.result === 'GOOD') {
                     if(this._isMounted) this.setState({ 
                                             stocks: result.data, 
@@ -224,6 +224,7 @@ class ViewStock extends Component {
                         <Table
                             dataSource={stocks}
                             rowKey={stocks => stocks.id}>
+                            <Column title="SKU" dataIndex="sku_name" key="sku_name" />
                             <Column title="Serial Number" dataIndex="serial_number" key="serial_number" />
                             <Column title="Stock Status" dataIndex="stock_status" key="stock_status" />
                             <Column title="Package Code" dataIndex="package_code" key="package_code" />
