@@ -82,10 +82,15 @@ class ReadyToShip extends Component {
                             dataSource={confirmed_orders}
                             rowKey={confirmed_orders => confirmed_orders.id}>
                             <Column title="Order Number" dataIndex="order_ref_num" key="order_ref_num" />
-                            <Column title="Order Date" dataIndex="created_at" key="created_at" />
+                            <Column title="Order Date" dataIndex="order_date" key="order_date" />
                             <Column title="Customer Name" dataIndex="customer_name" key="customer_name" />
-                            <Column title="Total" dataIndex="total_amount" key="total_amount" />
-                            <Column title="Order Status" dataIndex="order_status" key="order_status" />
+                            <Column title="Total (RM)" dataIndex="total_amount" key="total_amount" />
+                            <Column
+                                title="Order Status"
+                                key="order_status"
+                                render={(record) => (
+                                    <span style={{ color: 'blue' }}>{record.order_status}</span>
+                                )} />
                             <Column
                                 title='Action'
                                 key="action"
