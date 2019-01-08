@@ -94,6 +94,7 @@ class OrderSteps extends Component {
                         }
                     })
                     .catch(error => {
+                        if(this._isMounted) this.setState({ next_loading: false });
                         Modal.error({
                             title: 'Error',
                             content: error
@@ -115,6 +116,7 @@ class OrderSteps extends Component {
                     }
                 })
                 .catch(error => {
+                    if(this._isMounted) this.setState({ next_loading: false });
                     Modal.error({
                         title: 'Error',
                         content: error
@@ -204,6 +206,7 @@ class OrderSteps extends Component {
                             }
                         })
                         .catch(error => {
+                            if(this._isMounted) this.setState({ request_stock_loading: false });
                             Modal.error({
                                 title: 'Error',
                                 content: error
@@ -238,6 +241,7 @@ class OrderSteps extends Component {
                         }
                     })
                     .catch(error => {
+                        if(this._isMounted) this.setState({ cancel_loading: false });
                         Modal.error({
                             title: 'Error',
                             content: error
@@ -262,6 +266,7 @@ class OrderSteps extends Component {
                 }
             })
             .catch(error => {
+                if(this._isMounted) this.setState({ complete_order_loading: false });
                 Modal.error({
                     title: 'Error',
                     content: error
