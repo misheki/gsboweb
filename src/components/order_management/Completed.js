@@ -89,8 +89,6 @@ class Completed extends Component {
     }
 
     renderDetails() {
-        this.state.order.order_details.map((item) => console.log(item));
-
         const formItemLayout = {
             labelCol: { span: 8 },
             wrapperCol: { span: 10 }
@@ -98,7 +96,7 @@ class Completed extends Component {
 
         const packageDetailItems =  this.state.order.order_details.map((item, i) =>
         item.stocks.map((stock, j) =>
-            <React.Fragment key={item.id}>
+            <React.Fragment key={j}>
                 <Row gutter={8}>
                     <Col span={2}>
                         <Form.Item>
@@ -137,6 +135,13 @@ class Completed extends Component {
         )
         return(
             <div style={{padding:'30px', backgroundColor:'white'}}>
+                <Button
+                    type="primary"
+                    icon="left"
+                    onClick={() => this.setState({ displayDetails: false })}>
+                    Back
+                </Button>
+
                 <Form layout="vertical"> 
                     <div style={{padding:'20px', marginBottom:'10px'}}>
                         <h2 style={{paddingBottom:'10px'}}>Order Ref. No. {this.state.order.order_ref_num}</h2>    
