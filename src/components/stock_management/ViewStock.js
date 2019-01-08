@@ -42,6 +42,10 @@ class ViewStock extends Component {
         this._isMounted = false;
     }
 
+    componentWillReceiveProps() {
+        this.showListStock();
+    }
+
     getPermissions() {
         var access_token = sessionStorage.getItem('access_token');
         checkAccess(this.state.required, access_token)

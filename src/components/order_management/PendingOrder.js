@@ -32,6 +32,11 @@ class PendingOrder extends Component {
         this._isMounted = false;
     }
 
+    componentWillReceiveProps() {
+        if(this._isMounted) this.setState({ processOrder: false });
+        this.showOrderlistPending();
+    }
+
     getPermissions() {
         var access_token = sessionStorage.getItem('access_token');
         checkAccess(this.state.required, access_token)

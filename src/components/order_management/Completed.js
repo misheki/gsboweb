@@ -34,6 +34,11 @@ class Completed extends Component {
         this._isMounted = false;
     }
 
+    componentWillReceiveProps() {
+        if(this._isMounted) this.setState({ displayDetails: false });
+        this.showOrderlistCompleted();
+    }
+
     getPermissions() {
         var access_token = sessionStorage.getItem('access_token');
         checkAccess(this.state.required, access_token)
