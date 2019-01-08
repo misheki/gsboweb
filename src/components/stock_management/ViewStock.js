@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Layout,  Table, AutoComplete, Input, Button, Icon, Modal, Form, Select } from 'antd';
+import { Layout,  Table, AutoComplete, Input, Button, Icon, Modal, Form, Select, Row, Col,  } from 'antd';
 import { listStock, writeOff } from '../../helpers/StockController';
 import { checkAccess } from '../../helpers/PermissionController';
 import { Helmet } from 'react-helmet';
@@ -56,10 +56,15 @@ class ViewStock extends Component {
             .then(result => {            
                 if (result.result === 'GOOD') {
                     if(this._isMounted) this.setState({ 
-                                            stocks: result.data, 
-                                            skus: result.sku_list, 
-                                            packages:result.packages_list, 
-                                            statuses:result.status_list  });
+                                                stocks: result.data, 
+                                                skus: result.sku_list, 
+                                                packages:result.packages_list, 
+                                                statuses:result.status_list,
+                                                available_count:result.available_count,
+                                                reserved_count:result.reserved_count,
+                                                sold_count: result.sold_count,
+                                                writeoff_count: result.writeoff_count
+                                          });
                 }
             })
             .catch(error => {
@@ -142,7 +147,7 @@ class ViewStock extends Component {
             return (
                 <Select
                     showSearch
-                    style={{ width: 180, marginRight:5}}
+                    style={{ width: 150, marginRight:5}}
                     placeholder="Filter by SKU"
                     value={this.state.sku_filter ? this.state.sku_filter : undefined}
                     onChange={this.handleSkuFilter}>
@@ -178,7 +183,7 @@ class ViewStock extends Component {
             return (
                 <Select
                     showSearch
-                    style={{ width: 180, marginRight:5}}
+                    style={{ width: 150, marginRight:5}}
                     placeholder="Filter by Status"
                     value={this.state.status_filter ? this.state.status_filter : undefined}
                     onChange={this.handleStatusFilter}>
@@ -218,8 +223,22 @@ class ViewStock extends Component {
                                 </Button>
                             )} />
                         </AutoComplete>
-                        <Button type="primary" style={{marginLeft:60 }} onClick={this.handleClearFilter}>Clear Filter</Button>
+                        <Button type="primary" style={{marginLeft:60 }} onClick={this.handleClearFilter}>Clear Filter</Button>   
                     </div>
+                    <Row gutter={16} style={{paddingLeft:'30px'}}>
+                        <Col span={3} >
+                          <p style={{color:'green' }}>Available : {this.state.available_count}</p>
+                        </Col>
+                        <Col span={3} >
+                           <p style={{color:'orange'}}>Reserved  : {this.state.reserved_count}</p>
+                        </Col>
+                        <Col span={3} >
+                           <p style={{color:'grey'}}>Sold : {this.state.sold_count}</p>
+                        </Col>
+                        <Col span={3} >
+                            <p style={{color:'red'}}>Write Off :  {this.state.writeoff_count}</p>
+                        </Col>
+                    </Row>
                     <div style={{ padding:'30px', paddingTop:'0px' }}>
                         <Table
                             dataSource={stocks}
