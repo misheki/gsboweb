@@ -4,6 +4,7 @@ import { createOrder, saleChannelList } from '../../helpers/OrderController';
 import { listSku, listSkuPackage } from '../../helpers/SkuController';
 import { checkAccess } from '../../helpers/PermissionController';
 import { Helmet } from 'react-helmet';
+import { validateNumber, validateName, validateAmount } from '../../helpers/Validator';
 
 const { Header } = Layout;
 const FormItem = Form.Item;
@@ -191,7 +192,11 @@ class NewOrder extends Component {
                     <Col span={3}>
                         <FormItem>
                             {getFieldDecorator(`package_details[${k}]quantity`, {
-                                rules: [{ required: true, message: 'Please input the quantity!' }]
+                                rules: [{
+                                    pattern: new RegExp(validateAmount), message: 'The quantity must be a number!'
+                                }, {
+                                    required: true, message: 'Please input the quantity!'
+                                }]
                             })(
                                 <Input />
                             )}
@@ -200,7 +205,11 @@ class NewOrder extends Component {
                     <Col span={3}>
                         <FormItem>
                             {getFieldDecorator(`package_details[${k}]unit_price`, {
-                                rules: [{ required: true, message: 'Please input unit price!' }]
+                                rules: [{
+                                    pattern: new RegExp(validateAmount), message: 'The unit price can be a decimal number.'
+                                }, {
+                                    required: true, message: 'Please input unit price!'
+                                }]
                             })(
                                 <Input />
                             )}
@@ -274,7 +283,11 @@ class NewOrder extends Component {
                             </Row>
                             <FormItem  label="Customer Name">
                                 {getFieldDecorator('customer_name', {
-                                    rules: [{ required: true, message: 'Please input customer name!' }]
+                                    rules: [{
+                                        pattern: new RegExp(validateName), message: 'Alphabet or Chinese characters only!'
+                                    }, {
+                                        required: true, message: 'Please input the customer name!'
+                                    }]
                                 })(
                                     <Input />
                                 )}
@@ -286,7 +299,7 @@ class NewOrder extends Component {
                                             rules: [{
                                                 type: 'email', message: 'Please input a valid E-mail!'
                                             }, {    
-                                                required: true, message: 'Please input Email!'
+                                                required: true, message: 'Please input the email!'
                                             }]
                                         })(
                                             <Input />
@@ -296,7 +309,11 @@ class NewOrder extends Component {
                                 <Col span={12}>
                                     <FormItem label="Contact Number">
                                         {getFieldDecorator('customer_contact_num', {
-                                            rules: [{ required: true, message: 'Please input customer contact number!' }]
+                                            rules: [{
+                                                pattern: new RegExp(validateNumber), message: 'The contact number must be a number!'
+                                            }, {
+                                                required: true, message: 'Please input the customer contact number!'
+                                            }]
                                         })(
                                             <Input />
                                         )}
@@ -313,9 +330,11 @@ class NewOrder extends Component {
                                     </FormItem>
                                 </Col>
                                 <Col span={4}>
-                                    <FormItem label="Shipping Amount">
+                                    <FormItem label="Shipping Amount (RM)">
                                         {getFieldDecorator('shipping_fee', {
-                                            type: 'number', 
+                                            rules: [{
+                                                pattern: new RegExp(validateAmount), message: 'The shipping amount can be a decimal number.'
+                                            }]
                                         })(
                                             <Input />
                                         )}
@@ -351,7 +370,10 @@ class NewOrder extends Component {
                                     </Col>
                                     <Col span={10}>
                                         <FormItem label='Postcode'>
-                                            {getFieldDecorator('customer_postcode', {     
+                                            {getFieldDecorator('customer_postcode', {
+                                                rules: [{
+                                                    pattern: new RegExp(validateNumber), message: 'The postcode must be a number!'
+                                                }]
                                             })(
                                                 <Input />
                                             )}
@@ -381,7 +403,7 @@ class NewOrder extends Component {
                                         <p>Quantity</p>
                                     </Col>
                                     <Col span={3}>
-                                        <p>Unit Price</p>
+                                        <p>Unit Price (RM)</p>
                                     </Col>
                                     {/* <Col span={3}>
                                         <p>Total</p>
