@@ -161,7 +161,7 @@ class ViewStock extends Component {
                             optionFilterProp="children"
                             filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                            >
-                            {sku_filter.map(sku => <Option key={sku[0]}>{sku[1]}</Option>)}
+                            {/* {sku_filter.map(sku => <Option key={sku[0]}>{sku[1]}</Option>)} */}
                         </Select>
                         <Select
                             showSearch

@@ -41,12 +41,6 @@ class ProductPackage extends Component {
         this._isMounted = false;
     }
 
-    getPermissions() {
-        var access_token = sessionStorage.getItem('access_token');
-        checkAccess(this.state.required, access_token)
-            .then(result => (this._isMounted === true) ? this.setState({ allowed : result }) : null);
-    }
-
     showPackageList() {
         var access_token = sessionStorage.getItem('access_token');
         listPackage(access_token)
@@ -54,12 +48,6 @@ class ProductPackage extends Component {
                 if (result.result === 'GOOD') {
                     if(this._isMounted) this.setState({ packages: result.data });
                 }
-            })
-            .catch(error => {
-                Modal.error({
-                    title: 'Error',
-                    content: error
-                })
             })
     }
 
@@ -71,12 +59,12 @@ class ProductPackage extends Component {
                     if(this._isMounted) this.setState({ skus: result.data });
                 }
             })
-            .catch(error => {
-                Modal.error({
-                    title: 'Error',
-                    content: error
-                })
-            })
+    }
+
+    getPermissions() {
+        var access_token = sessionStorage.getItem('access_token');
+        checkAccess(this.state.required, access_token)
+            .then(result => (this._isMounted === true) ? this.setState({ allowed : result }) : null);
     }
 
     showAddPackagesModal = () => {
@@ -123,12 +111,6 @@ class ProductPackage extends Component {
                         this.showPackageList();
                     }
                 })
-                .catch(error => {
-                    Modal.error({
-                        title: 'Error',
-                        content: error
-                    })
-                })
         });
     }
 
@@ -149,12 +131,6 @@ class ProductPackage extends Component {
                         this.handleCancel();
                         this.showPackageList();
                     }
-                })
-                .catch(error => {
-                    Modal.error({
-                        title: 'Error',
-                        content: error
-                    })
                 })
         });
     }
@@ -178,12 +154,6 @@ class ProductPackage extends Component {
                         this.showSkuList();
                     }
                 })
-                .catch(error => {
-                    Modal.error({
-                        title: 'Error',
-                        content: error
-                    })
-                })
         });
     }
 
@@ -206,12 +176,6 @@ class ProductPackage extends Component {
                         this.showSkuList();
                     }
                 })
-                .catch(error => {
-                    Modal.error({
-                        title: 'Error',
-                        content: error
-                    })
-                })
         });
     }
 
@@ -230,18 +194,16 @@ class ProductPackage extends Component {
                                 content:'You have successfully deleted this SKU.',
                                 onOk: () => {
                                     this.showSkuList();
-                                }
-                            });
+                            }});
+                        } else  if (result.result === 'STOCKEXIST') {
+                            Modal.error({
+                                title:'Error',
+                                content:'You cannot delete this SKU because it has stocks under it.',
+                                onOk: () => {
+                                    this.showSkuList();
+                            }});
                         }
-                    })
-                    .catch(error => {
-                        Modal.error({
-                            title: 'Error',
-                            content: error,
-                            onOk: () => {
-                                this.showSkuList();
-                            }
-                        })
+                       
                     })
             }
         })
@@ -262,18 +224,16 @@ class ProductPackage extends Component {
                                 content:'You have successfully deleted this package.',
                                 onOk: () => {
                                     this.showPackageList();
-                                }
-                            });
+                            }});
+                        } else  if (result.result === 'STOCKEXIST') {
+                            Modal.error({
+                                title:'Error',
+                                content:'You cannot delete this package because there are stocks under it.',
+                                onOk: () => {
+                                    this.showPackageList();
+                            }});
                         }
-                    })
-                    .catch(error => {
-                        Modal.error({
-                            title: 'Error',
-                            content: error,
-                            onOk: () => {
-                                this.showPackageList();
-                            }
-                        })
+                       
                     })
             }
         })
@@ -330,7 +290,7 @@ class ProductPackage extends Component {
                         dataSource={skus}
                         rowKey={skus => skus.id}>
                         <Column title="SKU" dataIndex="sku" key="sku" />
-                        <Column title="Required Activation" dataIndex="activation_status" key="activation_status" />
+                        <Column title="Required Activation" dataIndex="require_activation" key="require_activation" />
                         <Column
                             title='Action'
                             key="action"
