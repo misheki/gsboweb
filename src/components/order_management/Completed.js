@@ -119,12 +119,12 @@ class Completed extends Component {
                         </Form.Item>
                     </Col>
                     
-                    <Col span={6}>
+                    <Col span={4}>
                         <Form.Item>
                             <Input value={stock.serial_number} disabled />
                         </Form.Item>
                     </Col>
-                    <Col span={3}>
+                    <Col span={5}>
                         <Form.Item>
                             <Input  value={stock.sim_card_number} disabled />
                         </Form.Item>
@@ -188,10 +188,10 @@ class Completed extends Component {
                                 <Col span={7}>
                                     <p>Package</p>
                                 </Col>
-                                <Col span={6}>
+                                <Col span={4}>
                                     <p>Sim Card Number</p>
                                 </Col>
-                                <Col span={3}>
+                                <Col span={5}>
                                     <p>Serial Number</p>
                                 </Col>
                                 <Col span={2}>
