@@ -24,7 +24,7 @@ class OrderSteps extends Component {
             method: 'Self Pickup',
             tracking_number: '',
             shipping_method_id: '',
-            required: ['processOrder', 'shipOrder'],
+            required: ['processOrder', 'shipOrder', 'cancelOrder'],
             allowed: [],
             incomplete: false,
             order_overview: ''
@@ -801,7 +801,7 @@ class OrderSteps extends Component {
                     {allowed.includes('shipOrder') ? (current < steps.length - 1 && current !== 0 && <Button loading={next_loading} type="primary" onClick={() => this.next()}>Next</Button>) : null}
                     {allowed.includes('processOrder') ? (current === 0 && (order.status === 'pending' ?
                     <div>
-                        {order.status === 'pending' ? <Button loading={cancel_loading} type="danger" style={{ marginRight: 8 }} onClick={() => this.handleCancelOrder()}>Cancel this order</Button> : null}
+                        {allowed.includes('cancelOrder') ? ((order.status === 'pending') ? <Button loading={cancel_loading} type="danger" style={{ marginRight: 8 }} onClick={() => this.handleCancelOrder()}>Cancel this order</Button> : null) : null}
                         <Button disabled={incomplete} loading={request_stock_loading} type="primary" onClick={() => this.handleRequestStock()}>Save, Request Stock & Continue</Button>
                     </div>
                     : <Button type="primary" onClick={() => this.next()}>Next</Button>)) : null}

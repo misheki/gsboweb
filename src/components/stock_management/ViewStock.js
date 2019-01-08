@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Layout,  Table, AutoComplete, Input, Button, Icon, Modal, Form } from 'antd';
+import { Layout,  Table, AutoComplete, Input, Button, Icon, Modal, Form, Select } from 'antd';
 import { listStock, writeOff } from '../../helpers/StockController';
 import { checkAccess } from '../../helpers/PermissionController';
 import { Helmet } from 'react-helmet';
@@ -8,6 +8,7 @@ const { Header } = Layout;
 const { Column } = Table;
 const FormItem = Form.Item;
 const confirm = Modal.confirm;
+const Option = Select.Option;
 
 class ViewStock extends Component {
     _isMounted = false;
@@ -16,12 +17,16 @@ class ViewStock extends Component {
         super(props);
         this.state = {
            stocks: [],
-           search: '',
+           search: null,
+           sku_filter: null,
+           package_filter: null,
+           status_filter: null,
            visible: false,
            loading: false,
            stock_id: '',
            required: ['viewStock', 'writeoffStock'],
-           allowed: []
+           allowed: [],
+
         };
     }
 
@@ -44,9 +49,13 @@ class ViewStock extends Component {
     showListStock() {
         var access_token = sessionStorage.getItem('access_token');
         listStock(null, access_token)
-            .then(result => {
+            .then(result => {               
                 if (result.result === 'GOOD') {
-                    if(this._isMounted) this.setState({ stocks: result.data });
+                    if(this._isMounted) this.setState({ 
+                                            stocks: result.data, 
+                                            sku_filter: result.sku_list, 
+                                            package_filter:result.packages_list, 
+                                            status_filter:result.status_list  });
                 }
             })
             .catch(error => {
@@ -73,6 +82,10 @@ class ViewStock extends Component {
                     content: error
                 })
             })
+    }
+
+    handleClearFilter(){
+        this.setState({search: null, sku_filter:null, package_filter:null, status_filter:null})
     }
 
     handleCancel = () => {
@@ -124,8 +137,10 @@ class ViewStock extends Component {
     }
 
     render() {
-        const { stocks, visible, loading, allowed } = this.state;
+        const { stocks, visible, loading, allowed, status_filter, sku_filter, package_filter } = this.state;
         const { getFieldDecorator } = this.props.form;
+        console.warn(sku_filter);
+        console.warn(package_filter);
 
         if (allowed.includes('viewStock')) {
             return (
@@ -139,17 +154,44 @@ class ViewStock extends Component {
                         <span>View Stock</span>
                     </Header>    
                     <div className="global-search-wrapper" >
+                         <Select
+                            showSearch
+                            style={{ width: 180, marginRight:5}}
+                            placeholder="Filter by SKU"
+                            optionFilterProp="children"
+                            filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                           >
+                            {sku_filter.map(sku => <Option key={sku[0]}>{sku[1]}</Option>)}
+                        </Select>
+                        <Select
+                            showSearch
+                            style={{ width: 180,  marginRight:5 }}
+                            placeholder="Filter by Packages"
+                            optionFilterProp="children"
+                            filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                        >
+                            
+                        </Select>
+                        <Select
+                            showSearch
+                            style={{ width: 180,  marginRight:5 }}
+                            placeholder="Filter by Status"
+                            optionFilterProp="children"
+                            filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                        >
+                            
+                        </Select>
                         <AutoComplete
                             className="global-search"
-                            size="large"
                             onSearch={(search) => (this._isMounted === true) ? this.setState({ search }) : null}
                             placeholder="Search sim card number">
                             <Input suffix={(
-                                <Button className="search-btn" size="large" type="primary" onClick={() => this.handleSearch()}>
+                                <Button className="search-btn" type="primary" onClick={() => this.handleSearch()}>
                                     <Icon type="search" />
                                 </Button>
                             )} />
                         </AutoComplete>
+                        <Button type="primary" style={{marginLeft:60 }} onClick={this.handleClearFilter}>Clear Filter</Button>
                     </div>
                     <div style={{ padding:'30px', paddingTop:'0px' }}>
                         <Table
