@@ -124,6 +124,7 @@ class ViewStock extends Component {
                             }
                         })
                         .catch(error => {
+                            if(this._isMounted) this.setState({ loading: false });
                             Modal.error({
                                 title: 'Error',
                                 content: error

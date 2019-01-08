@@ -82,9 +82,9 @@ class PendingOrder extends Component {
                             dataSource={pending_orders}
                             rowKey={pending_orders => pending_orders.id}>
                             <Column title="Order Number" dataIndex="order_ref_num" key="order_ref_num" />
-                            <Column title="Order Date" dataIndex="created_at" key="created_at" />
+                            <Column title="Order Date" dataIndex="order_date" key="order_date" />
                             <Column title="Customer Name" dataIndex="customer_name" key="customer_name" />
-                            <Column title="Total" dataIndex="total_amount" key="total_amount" />
+                            <Column title="Total (RM)" dataIndex="total_amount" key="total_amount" />
                             <Column title="Order Status" dataIndex="order_status" key="order_status" />
                             <Column
                                 title='Action'

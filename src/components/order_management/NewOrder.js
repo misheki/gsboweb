@@ -310,7 +310,7 @@ class NewOrder extends Component {
                                     <FormItem label="Contact Number">
                                         {getFieldDecorator('customer_contact_num', {
                                             rules: [{
-                                                pattern: new RegExp(validateNumber), message: 'The contact number must be a number!'
+                                                pattern: new RegExp(validateNumber), message: 'The customer contact number must be a number!'
                                             }, {
                                                 required: true, message: 'Please input the customer contact number!'
                                             }]
@@ -332,9 +332,7 @@ class NewOrder extends Component {
                                 <Col span={4}>
                                     <FormItem label="Shipping Amount (RM)">
                                         {getFieldDecorator('shipping_fee', {
-                                            rules: [{
-                                                pattern: new RegExp(validateAmount), message: 'The shipping amount can be a decimal number.'
-                                            }]
+                                            rules: [{ pattern: new RegExp(validateAmount), message: 'The shipping amount can be a decimal number.' }]
                                         })(
                                             <Input />
                                         )}
@@ -371,9 +369,7 @@ class NewOrder extends Component {
                                     <Col span={10}>
                                         <FormItem label='Postcode'>
                                             {getFieldDecorator('customer_postcode', {
-                                                rules: [{
-                                                    pattern: new RegExp(validateNumber), message: 'The postcode must be a number!'
-                                                }]
+                                                rules: [{ pattern: new RegExp(validateNumber), message: 'The postcode must be a number!' }]
                                             })(
                                                 <Input />
                                             )}

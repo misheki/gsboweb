@@ -472,6 +472,10 @@ export const cancelOrder = (order_id, access_token) => {
                     var error = '';
 
                     switch (responseJson.result) {
+                        case 'NOCANCEL':
+                            error = 'You cannot cancel an order that is already confirmed!';
+                            break;
+
                         default:
                             error = responseJson.msg;
                             break;

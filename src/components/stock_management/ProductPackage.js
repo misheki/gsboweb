@@ -124,6 +124,7 @@ class ProductPackage extends Component {
                     }
                 })
                 .catch(error => {
+                    if(this._isMounted) this.setState({ loading: false });
                     Modal.error({
                         title: 'Error',
                         content: error
@@ -151,6 +152,7 @@ class ProductPackage extends Component {
                     }
                 })
                 .catch(error => {
+                    if(this._isMounted) this.setState({ loading: false });
                     Modal.error({
                         title: 'Error',
                         content: error
@@ -179,6 +181,7 @@ class ProductPackage extends Component {
                     }
                 })
                 .catch(error => {
+                    if(this._isMounted) this.setState({ loading: false });
                     Modal.error({
                         title: 'Error',
                         content: error
@@ -207,6 +210,7 @@ class ProductPackage extends Component {
                     }
                 })
                 .catch(error => {
+                    if(this._isMounted) this.setState({ loading: false });
                     Modal.error({
                         title: 'Error',
                         content: error

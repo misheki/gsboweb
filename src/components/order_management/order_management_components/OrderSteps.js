@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Steps, Button, message, Form, Input, Select, Col, Row, Divider, Modal } from 'antd';
 import { showOrders, requestStock, courierList, completeOrder, shippingUpdateWithCourier, shippingUpdateWithoutCourier, listReadyShip, cancelOrder } from '../../../helpers/OrderController';
 import { checkAccess } from '../../../helpers/PermissionController';
+import { validateName, validateNumber, validateAmount } from '../../../helpers/Validator';
 
 const Option = Select.Option;
 const Step = Steps.Step;
@@ -94,6 +95,7 @@ class OrderSteps extends Component {
                         }
                     })
                     .catch(error => {
+                        if(this._isMounted) this.setState({ next_loading: false });
                         Modal.error({
                             title: 'Error',
                             content: error
@@ -115,6 +117,7 @@ class OrderSteps extends Component {
                     }
                 })
                 .catch(error => {
+                    if(this._isMounted) this.setState({ next_loading: false });
                     Modal.error({
                         title: 'Error',
                         content: error
@@ -204,6 +207,7 @@ class OrderSteps extends Component {
                             }
                         })
                         .catch(error => {
+                            if(this._isMounted) this.setState({ request_stock_loading: false });
                             Modal.error({
                                 title: 'Error',
                                 content: error
@@ -238,6 +242,7 @@ class OrderSteps extends Component {
                         }
                     })
                     .catch(error => {
+                        if(this._isMounted) this.setState({ cancel_loading: false });
                         Modal.error({
                             title: 'Error',
                             content: error
@@ -262,6 +267,7 @@ class OrderSteps extends Component {
                 }
             })
             .catch(error => {
+                if(this._isMounted) this.setState({ complete_order_loading: false });
                 Modal.error({
                     title: 'Error',
                     content: error
@@ -556,7 +562,11 @@ class OrderSteps extends Component {
                     <Form.Item  label="Customer Name">
                         {getFieldDecorator('customer_name', {
                             initialValue: order.customer_name,
-                            rules: [{ required: true, message: 'Please fill in the customer name field!' }]
+                            rules: [{
+                                pattern: new RegExp(validateName), message: 'Alphabet or Chinese characters only!'
+                            }, {
+                                required: true, message: 'Please fill in the customer name field!'
+                            }]
                         })(
                             <Input disabled={order_status} />
                         )}
@@ -581,7 +591,11 @@ class OrderSteps extends Component {
                             <Form.Item label="Contact Number">
                                 {getFieldDecorator('customer_contact_num', {
                                     initialValue: order.customer_contact_num,
-                                    rules: [{ required: true, message: 'Please fill in the customer contact number field!' }]
+                                    rules: [{
+                                        pattern: new RegExp(validateNumber), message: 'The customer contact number must be a number!'
+                                    }, {
+                                        required: true, message: 'Please fill in the customer contact number field!'
+                                    }]
                                 })(
                                     <Input disabled={order_status} />
                                 )}
@@ -662,7 +676,11 @@ class OrderSteps extends Component {
                                 <Form.Item label='Shipping Amount'>
                                     {getFieldDecorator('shipping_fee', {
                                         initialValue: order.shipping_fee,
-                                        rules: [{ required: true, message: 'Please fill in the shipping amount field!' }] 
+                                        rules: [{
+                                            pattern: new RegExp(validateAmount), message: 'The shipping amount can be a decimal number.'
+                                        }, {
+                                            required: true, message: 'Please fill in the shipping amount field!'
+                                        }]
                                     })(
                                         <Input />
                                     )}
@@ -709,7 +727,11 @@ class OrderSteps extends Component {
                                 <Form.Item label='Postcode'>
                                     {getFieldDecorator('customer_postcode', {
                                         initialValue: order.customer_postcode,
-                                        rules: [{ required: true, message: 'Please fill in the customer postcode field!' }] 
+                                        rules: [{
+                                            pattern: new RegExp(validateNumber), message: 'The postcode must be a number!'
+                                        }, {
+                                            required: true, message: 'Please fill in the customer postcode field!'
+                                        }]
                                     })(
                                         <Input />
                                     )}

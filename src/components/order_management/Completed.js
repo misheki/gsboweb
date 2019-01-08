@@ -252,8 +252,13 @@ class Completed extends Component {
                             <Column title="Order Number" dataIndex="order_ref_num" key="order_ref_num" />
                             <Column title="Order Date" dataIndex="order_date" key="order_date" />
                             <Column title="Customer Name" dataIndex="customer_name" key="customer_name" />
-                            <Column title="Total" dataIndex="total" key="total" />
-                            <Column title="Order Status" dataIndex="order_status" key="order_status" />
+                            <Column title="Total (RM)" dataIndex="total" key="total" />
+                            <Column
+                                title="Order Status"
+                                key="order_status"
+                                render={(record) => (
+                                    <span style={record.order_status === 'Shipped' ? { color: 'green' } : { color: 'red' }}>{record.order_status}</span>
+                                )} />
                         </Table>
                     </div>
                 </div>
