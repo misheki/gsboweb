@@ -9,6 +9,7 @@ const Step = Steps.Step;
 const confirm = Modal.confirm;
 
 class OrderSteps extends Component {
+
     constructor(props) {
         super(props);
         this.state = {
@@ -76,9 +77,8 @@ class OrderSteps extends Component {
         }
         else if (method === 'Courier') {
             form.validateFields(['customer_address', 'customer_contact_num', 'customer_state', 'customer_postcode', 'shipping_method_id', 'tracking_number', 'shipping_fee'], (err, values) => {
-                if (err) {
-                    return;
-                }
+                
+                if (err) { return;}
     
                 this.setState({ next_loading: true });
 
@@ -769,7 +769,7 @@ class OrderSteps extends Component {
                                 <p>{order.customer_address}</p> 
                                 <p>{order.customer_postcode}, {order.customer_state}</p> 
                                 <p>{order.customer_contact_num}</p> 
-                                <p>{order.customer_email}</p> 
+                                <p>{order_overview.customer_email}</p> 
                             </Col>
                         </Row>
                     </div>

@@ -305,7 +305,8 @@ export const courierList = (access_token) => {
 
                     switch (responseJson.result) {
                         default:
-                            error = responseJson.msg;
+                            console.log(responseJson.msg);
+                            error = 'Technical error.'
                             break;
                     }
 
@@ -435,7 +436,8 @@ export const completeOrder = (order_id, shipping_method_id, tracking_number, acc
                             break;
                     
                         default:
-                            error = responseJson.msg
+                            console.log(responseJson.msg);
+                            error = 'Technical error.'
                             break;
                     }
 

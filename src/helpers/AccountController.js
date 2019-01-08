@@ -19,14 +19,19 @@ export const changePassword = (current, password, password_confirmation, access_
                 switch (responseJson.result) {
                     case 'GOOD':
                         resolve(true);   
+                        break;
                     case 'PASSWORDCONFIRMATION':
                         reject('Password confirmation did not match.');
+                        break;
                     case 'INCOMPLETEPARAMS':
                         reject('Parameter missing.');
+                        break;
                     case 'INCORRECTPASSWORD':
                         reject('Password is incorrect.');
+                        break;
                     default:
                         reject('Technical error.');
+                        break;
                 }
             })
             .catch((error) => {
