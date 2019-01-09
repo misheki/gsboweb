@@ -237,7 +237,7 @@ class Completed extends Component {
                     </div>
                 </Form>
                 <div className="steps-action">
-                    <Button type="primary" onClick={() => this.handlePrint()}>Print this order</Button>
+                    <Button icon="printer" type="primary" onClick={() => this.handlePrint()}>Print this order</Button>
                 </div>
             </div>
         );
@@ -287,7 +287,7 @@ class Completed extends Component {
                                 </Button>
                             )} />
                         </AutoComplete>
-                        <Button type="primary" style={{marginLeft:60 }} onClick={this.handleClearFilter}>Clear Filter</Button>  
+                        <Button type="primary"  icon="close-circle" style={{marginLeft:60 }} onClick={this.handleClearFilter}>Clear Filter</Button>  
                     </div>
                     <div style={{ padding: '30px', paddingTop:'0px' }}>
                         <Table

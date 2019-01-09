@@ -56,6 +56,7 @@ class ChangePassword extends Component {
                     });
                 })
                 .catch(error => {
+                    if(this._isMounted) this.setState({ loading: false });
                     Modal.error({
                         title: 'Error',
                         content: error
@@ -111,7 +112,7 @@ class ChangePassword extends Component {
                                 )}
                             </Form.Item>
                             <Form.Item >
-                                <Button type="primary" onClick={this.handleSubmit}>Submit</Button>
+                                <Button icon="check-circle" loading={loading} type="primary" onClick={this.handleSubmit}>Submit</Button>
                             </Form.Item>
                         </Form>
                     </div>

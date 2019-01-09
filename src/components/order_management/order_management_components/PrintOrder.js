@@ -174,10 +174,10 @@ class PrintOrder extends Component {
                                     </div>
 
                                     <div className="form-item-center" style={{ paddingTop: '40px' }}>
-                                        <p className="p-no-bottom">This is a computer-generated document. The signature is not required.</p>
-                                        <p>For assistance, you may reach out to our Customer Service via:</p>
+                                        <p className="p-no-bottom">For assistance, you may reach out to our Customer Service via:</p>
                                         <p className="font-bold p-no-bottom">WhatsApp/SMS - +6016-339-9967</p>
                                         <p className="font-bold">Email - cs@globalsim.my</p>
+                                        <p className="p-top-40">This is a computer-generated document. The signature is not required.</p>
                                     </div>
                                 </div>
                             </Form>
@@ -186,12 +186,14 @@ class PrintOrder extends Component {
                         <div className="steps-action">
                             <Button
                                 style={{ marginRight: 8 }}
+                                icon="printer"
                                 onClick={() => this.handlePrint()}>
                                 Print this order
                             </Button>
 
                             <Button
                                 type="primary"
+                                icon="check"
                                 onClick={() => this.handleDone()}>
                                 Done
                             </Button>
