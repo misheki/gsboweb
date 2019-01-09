@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Layout, Form, Table, DatePicker , Select, Button } from 'antd';
+import { Layout, Form, Table, DatePicker , Select, Button, AutoComplete, Input, Icon } from 'antd';
 import { Helmet } from 'react-helmet';
 import moment from 'moment';
 import { listImportLogs } from '../../helpers/ReportController';
@@ -17,11 +17,12 @@ class StockImport extends Component {
         super(props);
         this.state = {
             data:[],
-            user:null,
-            user_filter:null
+            date_from_filter:null,
+            date_to_filter:null,
+            search:null
         };
     }
-    
+
     onChange = (value, dateString) => {
         console.log('Selected Time: ', value);
         console.log('Formatted Selected Time: ', dateString)
@@ -29,43 +30,27 @@ class StockImport extends Component {
     }
 
     handleClearFilter = () => {
-        // if(this._isMounted) this.setState({user_filter:null}, () => this.showStockImportReport());
+        if(this._isMounted) this.setState({ search:null }, () => this.showStockImportReport());
     }
 
     handleUserFilter = (value)  => {
         // if(this._isMounted) this.setState({ user_filter : value }, () => this.showStockImportReport());
     }
 
-    showUserFilter() {
-        const { user } = this.state;
-
-        // if(user != null){
-
-            return (
-                <Select
-                    showSearch
-                    style={{ width: 200, marginLeft:10}}
-                    placeholder="Filter by User"
-                    // value={this.state.user_filter ? this.state.user_filter : undefined}
-                    // onChange={this.handleUserFilter}
-                    >
-                    {/* {statuses.map(status => <Option key={status.id} value={status.id}>{status.name}</Option>)} */}
-                </Select>
-            );
-        // }
-    }
-
     showStockImportReport(){
         var access_token = sessionStorage.getItem('access_token');
-        // listPackage(access_token)
-        //     .then(result => {
-        //         if (result.result === 'GOOD') {
-        //             if(this._isMounted) this.setState({ data: result.data });
-        //         }
-        //     })
+        listImportLogs(access_token)
+            .then(result => {
+                console.log(result.data);
+                if (result.result === 'GOOD') {
+                    if(this._isMounted) this.setState({ data: result.data });
+                }
+            })
     }
 
     render() {
+
+        const { data, allowed } = this.state;
 
         return (
             <div>
@@ -86,15 +71,25 @@ class StockImport extends Component {
                             format={dateFormat}
                             onChange={this.onChange}
                         />
-                        {this.showUserFilter()}
+                        <AutoComplete
+                            className="global-search"
+                            onSearch={(search) => (this._isMounted === true) ? (search.length > 0 ? this.setState({ search }) : this.setState({ search : null })) : null}
+                            placeholder="Search Serial Number"
+                            value={this.state.search}>
+                            <Input suffix={(
+                                <Button className="search-btn" type="primary" onClick={() => this.showStockImportReport()}>
+                                    <Icon type="search" />
+                                </Button>
+                            )} />
+                        </AutoComplete>
                         <Button type="primary" style={{marginLeft:60 }} onClick={this.handleClearFilter}>Clear Filter</Button>  
                     </div> 
                     <Table
-                        // dataSource={data}
-                        // rowKey={data => data.id }
+                        dataSource={data}
+                        rowKey={data => data.id }
                         bordered
                     >
-                    <Column width={'30%'} title="Date" dataIndex="date" key="date" />
+                    <Column width={'30%'} title="Date" dataIndex="created_at" key="created_at" />
                     <Column width={'30%'} title="Import by" dataIndex="user" key="user" />
                     <Column width={'30%'} title="Report file" dataIndex="file" key="file" />
                    
