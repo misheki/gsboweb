@@ -313,13 +313,14 @@ class ProductPackage extends Component {
                         size={'large'}>
                         Add SKU
                     </Button> : null}
-
+                    <div style={{width:'70%'}}>
                     {allowed.includes('viewSku') ? <Table
+                        bordered
                         dataSource={skus}
                         rowKey={skus => skus.id}>
-                        <Column title="SKU" dataIndex="sku" key="sku" />
-                        <Column title="Requires Activation" dataIndex="require_activation" key="require_activation" />
-                        <Column
+                        <Column width={'30%'} title="SKU" dataIndex="sku" key="sku" />
+                        <Column width={'30%'} title="Requires Activation" dataIndex="require_activation" key="require_activation" />
+                        <Column width={'20%'}
                             title='Action'
                             key="action"
                             render={(record) => (
@@ -327,19 +328,23 @@ class ProductPackage extends Component {
                                     {allowed.includes('editSku') ? <Button
                                         style={{ margin:'10px' }}
                                         type="primary"
+                                        icon="edit"
                                         onClick={() => this.setState({ sku: Object.assign({}, record), sku_id: record.id }, () => this.showEditSkuModal())}>
-                                        Edit
+                                     
                                     </Button> : null}
 
                                     {allowed.includes('deleteSku') === true ? <Button
                                         style={{ margin:'10px' }}
                                         type="primary" 
+                                        icon="delete"
                                         onClick={() => this.setState({ sku: Object.assign({}, record), sku_id: record.id }, () => this.handleDeleteSku())}>
-                                        Delete
+                                   
                                     </Button> : null}
                                 </div>
                             )} />
                     </Table> : null}
+                    </div>
+                   
 
                     <Modal
                         visible={this.state.visible_sku}
@@ -376,6 +381,7 @@ class ProductPackage extends Component {
                     </Button> : null}
 
                     {allowed.includes('viewPackage') ? <Table
+                        bordered
                         dataSource={packages}
                         rowKey={packages => packages.id }>
                         <Column title="SKU" dataIndex="sku_name" key="sku_name" />
@@ -391,15 +397,17 @@ class ProductPackage extends Component {
                                     {allowed.includes('editPackage') ? <Button
                                         style={{ margin:'10px' }}
                                         type="primary"
+                                        icon="edit"
                                         onClick={() => this.setState({ newpackage: Object.assign({}, record), package_id: record.id }, () => this.showEditPackagesModal())}>
-                                        Edit
+                                  
                                     </Button> : null}
 
                                     {allowed.includes('deletePackage') ? <Button
                                         style={{ margin:'10px' }}
-                                        type="primary"  
+                                        type="primary"
+                                        icon="delete"  
                                         onClick={() => this.setState({ newpackage: Object.assign({}, record), package_id: record.id }, () => this.handleDeletePackage())}>
-                                        Delete
+                                     
                                     </Button> : null}
                                 </div>
                             )} />
