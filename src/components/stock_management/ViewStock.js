@@ -245,6 +245,7 @@ class ViewStock extends Component {
                     </Row>
                     <div style={{ padding:'30px', paddingTop:'0px' }}>
                         <Table
+                            bordered
                             dataSource={stocks}
                             rowKey={stocks => stocks.id}>
                             <Column title="SKU" dataIndex="sku_name" key="sku_name" />

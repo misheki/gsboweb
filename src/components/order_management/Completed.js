@@ -1,12 +1,16 @@
 import React, { Component } from 'react';
-import { Layout, Form, Row, Col, Table, AutoComplete, Input, Button, Icon, Modal } from 'antd';
+import { Layout, Form, Row, Col, Table, AutoComplete, Input, Button, Icon, Modal, DatePicker, Select } from 'antd';
 import { listCompleted } from '../../helpers/OrderController';
 import { checkAccess } from '../../helpers/PermissionController';
 import { Helmet } from 'react-helmet';
+import moment from 'moment';
 
 const { Header } = Layout;
 const { Column } = Table;
 const FormItem = Form.Item;
+const Option = Select.Option;
+const { RangePicker } = DatePicker;
+const dateFormat = 'YYYY-MM-DD';
 
 class Completed extends Component {
     _isMounted = false;
@@ -53,7 +57,9 @@ class Completed extends Component {
         var access_token = sessionStorage.getItem('access_token');
         const { date_from_filter, date_to_filter, status_filter, search } = this.state;
         listCompleted(date_from_filter, date_to_filter, status_filter, search, access_token)
-            .then(result => {
+            .then(result => {   
+                console.warn(result);
+                            
                 if (result.result === 'GOOD') {
                     if(this._isMounted) this.setState({ completed_orders: result.data });
                 }
@@ -64,6 +70,34 @@ class Completed extends Component {
                     content: error
                 })
             })
+    }
+    
+    onDateChange = (value, dateString) => {     
+      if(this._isMounted)  this.setState({date_from_filter:dateString[0], date_to_filter:dateString[1]}, () => this.showOrderlistCompleted());  
+    }
+
+    handleClearFilter = () => {
+        if(this._isMounted) this.setState({search: null, date_from_filter:null, date_to_filter:null}, () => this.showOrderlistCompleted());
+    }
+
+    handleStatusFilter = (value)  => {
+        if(this._isMounted) this.setState({ status_filter : value }, () => this.showOrderlistCompleted());
+    }
+
+    showStatusFilter() {
+        const { statuses } = this.state;
+        // if(statuses != null){
+            return (
+                <Select
+                    showSearch
+                    style={{ width: 150, marginRight:5}}
+                    placeholder="Filter by Status"
+                    value={this.state.status_filter ? this.state.status_filter : undefined}
+                    onChange={this.handleStatusFilter}>
+                    {/* {statuses.map(status => <Option key={status.id} value={status.id}>{status.name}</Option>)} */}
+                </Select>
+            );
+        // }
     }
 
     next() {
@@ -208,12 +242,12 @@ class Completed extends Component {
     }
 
     render() {
-
         const { completed_orders, allowed } = this.state;
 
         if(this.state.displayDetails){
             return(this.renderDetails());
         }
+
         else if (allowed.includes('viewOrderHistory')) {
             return (
                 <div>
@@ -226,20 +260,29 @@ class Completed extends Component {
                         <span>Completed Orders</span>
                     </Header>
                     <div className="global-search-wrapper" >
+                        <b>Filter by range date : </b>
+                        <RangePicker
+                            defaultValue={[moment('2019-01-01', dateFormat), moment('2019-01-01', dateFormat)]}
+                            format={dateFormat}
+                            onChange={this.onDateChange}
+                            style={{marginRight:'10px', width:'25%'}}
+                        />
+                        {this.showStatusFilter()}
                         <AutoComplete
                             className="global-search"
-                            size="large"
                             onSearch={(search) => this._isMounted === true ? (search.length > 0 ? this.setState({ search }) : this.setState({ search : null })) : null}
-                            placeholder="Search Order Number">
+                            placeholder="Search Order Number/Customer Name">
                             <Input suffix={(
-                                <Button className="search-btn" size="large" type="primary" onClick={() => this.showOrderlistCompleted()}>
+                                <Button className="search-btn"  type="primary" onClick={() => this.showOrderlistCompleted()}>
                                     <Icon type="search" />
                                 </Button>
                             )} />
                         </AutoComplete>
+                        <Button type="primary" style={{marginLeft:60 }} onClick={this.handleClearFilter}>Clear Filter</Button>  
                     </div>
                     <div style={{ padding: '30px', paddingTop:'0px' }}>
                         <Table
+                            bordered
                             dataSource={completed_orders}
                             rowKey={completed_orders => completed_orders.id}
                             onRow={(order) => {
@@ -255,7 +298,7 @@ class Completed extends Component {
                                 title="Order Status"
                                 key="order_status"
                                 render={(record) => (
-                                    <span style={record.order_status === 'Shipped' ? { color: 'green' } : { color: 'red' }}>{record.order_status}</span>
+                                    <p style={record.order_status === 'Shipped' ? { color: 'green',paddingTop:'10px' } : { color: 'red',paddingTop:'10px'  }}>{record.order_status}</p>
                                 )} />
                         </Table>
                     </div>

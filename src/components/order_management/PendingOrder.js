@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
-import { Layout, Table, Button, Modal } from 'antd';
+import { Layout, Table, Button, Modal, DatePicker, AutoComplete, Input, Icon } from 'antd';
 import { listPending } from '../../helpers/OrderController';
 import { checkAccess } from '../../helpers/PermissionController';
 import  OrderSteps from '../order_management/order_management_components/OrderSteps';
+import moment from 'moment';
 import { Helmet } from 'react-helmet';
 
 const { Header } = Layout;
 const { Column } = Table
+const { RangePicker } = DatePicker;
+const dateFormat = 'YYYY-MM-DD';
 
 class PendingOrder extends Component {
     _isMounted = false;
@@ -65,6 +68,15 @@ class PendingOrder extends Component {
             })
     }
 
+    
+    onDateChange = (value, dateString) => {     
+      if(this._isMounted)  this.setState({date_from_filter:dateString[0], date_to_filter:dateString[1]}, () => this.showOrderlistPending());  
+    }
+
+    handleClearFilter = () => {
+        if(this._isMounted) this.setState({search: null, date_from_filter:null,date_to_filter:null}, () => this.showOrderlistPending());
+    }
+
     processOrder(order_id) {
         if(this._isMounted) this.setState({ order_id: order_id }, this.setState({ processOrder: true }));
     }
@@ -88,8 +100,29 @@ class PendingOrder extends Component {
                     <Header style={{ color: 'white', fontSize: '30px' }}>
                         <span>Pending Order</span>
                     </Header>
-                    <div style={{ padding: '30px' }}>
+                    <div className="global-search-wrapper" >
+                        <b>Filter by range date : </b>
+                        <RangePicker
+                            defaultValue={[moment('2019-01-01', dateFormat), moment('2019-01-01', dateFormat)]}
+                            format={dateFormat}
+                            onChange={this.onDateChange}
+                            style={{marginRight:'10px', width:'30%'}}
+                        />
+                        <AutoComplete
+                            className="global-search"
+                            onSearch={(search) => this._isMounted === true ? (search.length > 0 ? this.setState({ search }) : this.setState({ search : null })) : null}
+                            placeholder="Search Order Number/Customer Name">
+                            <Input suffix={(
+                                <Button className="search-btn"  type="primary" onClick={() => this.showOrderlistPending()}>
+                                    <Icon type="search" />
+                                </Button>
+                            )} />
+                        </AutoComplete>
+                        <Button type="primary" style={{marginLeft:60 }} onClick={this.handleClearFilter}>Clear Filter</Button>  
+                    </div>
+                    <div style={{ padding: '30px', paddingTop:'0px' }}>
                         {allowed.includes('viewOrderHistory') ? <Table
+                            bordered
                             dataSource={pending_orders}
                             rowKey={pending_orders => pending_orders.id}>
                             <Column title="Order Number" dataIndex="order_ref_num" key="order_ref_num" />
