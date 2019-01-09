@@ -128,7 +128,8 @@ class PendingOrder extends Component {
                         <AutoComplete
                             className="global-search"
                             onSearch={(search) => this._isMounted === true ? (search.length > 0 ? this.setState({ search }) : this.setState({ search : null })) : null}
-                            placeholder="Search Order Number/Customer Name">
+                            placeholder="Search Order Number/Customer Name"
+                            value={this.state.search}>
                             <Input suffix={(
                                 <Button className="search-btn"  type="primary" onClick={() => this.showOrderlistPending()}>
                                     <Icon type="search" />
