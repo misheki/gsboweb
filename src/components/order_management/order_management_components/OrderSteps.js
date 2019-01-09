@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Steps, Button, message, Form, Input, Select, Col, Row, Divider, Modal, Icon } from 'antd';
+import { Steps, Button, Form, Input, Select, Col, Row, Divider, Modal, Icon } from 'antd';
 import { showOrders, requestStock, courierList, completeOrder, shippingUpdateWithCourier, shippingUpdateWithoutCourier, listReadyShip, cancelOrder } from '../../../helpers/OrderController';
 import { checkAccess } from '../../../helpers/PermissionController';
 import { validateName, validateNumber, validateAmount } from '../../../helpers/Validator';
@@ -262,9 +262,14 @@ class OrderSteps extends Component {
             .then(result => {
                 if (result.result === 'GOOD') {
                     if(this._isMounted) this.setState({ complete_order_loading: false });
-                    message.success('Processing complete!');
-                    this.props.process_order(false);
-                    // this.props.print_order();
+                    Modal.success({
+                        title: 'Sucess',
+                        content: 'You have sucessfully completed this order. Press OK to print',
+                        onOk: () => {
+                            this.props.process_order(false);
+                            this.props.print_order();
+                        }
+                    })
                 }
             })
             .catch(error => {
