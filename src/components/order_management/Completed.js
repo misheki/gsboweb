@@ -58,11 +58,9 @@ class Completed extends Component {
         var access_token = sessionStorage.getItem('access_token');
         const { date_from_filter, date_to_filter, status_filter, search } = this.state;
         listCompleted(date_from_filter, date_to_filter, status_filter, search, access_token)
-            .then(result => {   
-                console.warn(result);
-                            
+            .then(result => {                              
                 if (result.result === 'GOOD') {
-                    if(this._isMounted) this.setState({ completed_orders: result.data });
+                    if(this._isMounted) this.setState({ completed_orders: result.data,  statuses:result.status_list, });
                 }
             })
             .catch(error => {
@@ -78,7 +76,7 @@ class Completed extends Component {
     }
 
     handleClearFilter = () => {
-        if(this._isMounted) this.setState({search: null, date_from_filter:null, date_to_filter:null}, () => this.showOrderlistCompleted());
+        if(this._isMounted) this.setState({search: null, date_from_filter:null, date_to_filter:null, status_filter:null}, () => this.showOrderlistCompleted());
     }
 
     handleStatusFilter = (value)  => {
@@ -87,7 +85,7 @@ class Completed extends Component {
 
     showStatusFilter() {
         const { statuses } = this.state;
-        // if(statuses != null){
+        if(statuses != null){
             return (
                 <Select
                     showSearch
@@ -95,10 +93,10 @@ class Completed extends Component {
                     placeholder="Filter by Status"
                     value={this.state.status_filter ? this.state.status_filter : undefined}
                     onChange={this.handleStatusFilter}>
-                    {/* {statuses.map(status => <Option key={status.id} value={status.id}>{status.name}</Option>)} */}
+                    {statuses.map(status => <Option key={status.id} value={status.id}>{status.name}</Option>)}
                 </Select>
             );
-        // }
+        }
     }
 
     showOrder(order) {
@@ -281,7 +279,8 @@ class Completed extends Component {
                         <AutoComplete
                             className="global-search"
                             onSearch={(search) => this._isMounted === true ? (search.length > 0 ? this.setState({ search }) : this.setState({ search : null })) : null}
-                            placeholder="Search Order Number/Customer Name">
+                            placeholder="Search Order Number/Customer Name"
+                            value={this.state.search}>
                             <Input suffix={(
                                 <Button className="search-btn"  type="primary" onClick={() => this.showOrderlistCompleted()}>
                                     <Icon type="search" />

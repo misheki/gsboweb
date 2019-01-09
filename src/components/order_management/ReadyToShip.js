@@ -73,7 +73,7 @@ class ReadyToShip extends Component {
     }
 
     handleClearFilter = () => {
-        if(this._isMounted) this.setState({search: null, date_from_filter:null,date_to_filter:null }, () => this.showOrderlistReadyToShip());
+        if(this._isMounted) this.setState({search: null, date_from_filter:null, date_to_filter:null }, () => this.showOrderlistReadyToShip());
     }
 
     processOrder(order_id) {
@@ -110,7 +110,9 @@ class ReadyToShip extends Component {
                         <AutoComplete
                             className="global-search"
                             onSearch={(search) => this._isMounted === true ? (search.length > 0 ? this.setState({ search }) : this.setState({ search : null })) : null}
-                            placeholder="Search Order Number/Customer Name">
+                            placeholder="Search Order Number/Customer Name"
+                            value={this.state.search}
+                            >
                             <Input suffix={(
                                 <Button className="search-btn"  type="primary" onClick={() => this.showOrderlistReadyToShip()}>
                                     <Icon type="search" />
