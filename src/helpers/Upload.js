@@ -17,7 +17,7 @@ export const importStocks = (stocksfile, access_token) => {
                     resolve(responseJson);   
                 }
                 else{
-                    reject(responseJson.msg);
+                    reject('Technical error.');
                 }
             })
             .catch((error) => {

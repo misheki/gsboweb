@@ -26,7 +26,7 @@ export const createPackage = (sku_id, code, name, description, cost_price, acces
 
                     switch (responseJson.result) {
                         default:
-                            error = responseJson.msg;
+                            error = 'Technical error.';
                             break;
                     }
 
@@ -61,7 +61,7 @@ export const listPackage = (access_token) => {
 
                     switch (responseJson.result) {
                         default:
-                            error = responseJson.msg;
+                            error = 'Technical error.';
                             break;
                     }
 
@@ -100,7 +100,7 @@ export const deletePackage = (package_id, access_token) => {
                             break;
                     
                         default:
-                            error = responseJson.msg;
+                            error = 'Technical error.';
                             break;
                     }
 

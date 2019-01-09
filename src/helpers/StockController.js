@@ -25,7 +25,7 @@ export const listStock = (serial_number, sku_id, package_id, status_id, access_t
                     
                     switch (responseJson.result) {
                         default:
-                            error = responseJson.msg;
+                            error = 'Technical error.';
                             break;
                     }
                     
@@ -64,7 +64,7 @@ export const writeOff = (stock_id, remarks, access_token) => {
                     
                     switch (responseJson.result) {
                         default:
-                            error = responseJson.msg;
+                            error = 'Technical error.';
                             break;
                     }
                     

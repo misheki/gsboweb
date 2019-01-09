@@ -46,7 +46,7 @@ export const listShippingMethods = (access_token) => {
 
                     switch (responseJson.result) {
                         default:
-                            error = responseJson.msg;
+                            error = 'Technical error.';
                             break;
                     }
 
@@ -85,7 +85,7 @@ export const deleteShippingMethod = (shipping_method_id, access_token) => {
                             break;
 
                         default:
-                            error = responseJson.msg;
+                            error = 'Technical error.';
                             break;
                     }
 
@@ -124,7 +124,7 @@ export const editShippingMethod = (shipping_method_id, name, access_token) => {
 
                     switch (responseJson.result) {
                         default:
-                            error = responseJson.msg;
+                            error = 'Technical error.';
                             break;
                     }
 
