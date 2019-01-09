@@ -10,6 +10,8 @@ const CheckboxGroup = Checkbox.Group;
 const confirm = Modal.confirm;
 
 class ManageUser extends Component {
+    _isMounted = false;
+
     constructor(props) {
         super(props);
         this.state = {
@@ -23,8 +25,13 @@ class ManageUser extends Component {
     }
 
     componentDidMount() {
+        this._isMounted = true;
         this.showListUser();
         this.showListRole();
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
     }
 
     showListUser() {
@@ -32,6 +39,8 @@ class ManageUser extends Component {
 
         listUser(access_token)
             .then(result => {
+                console.warn(result);
+                
                 if (result.result === 'GOOD') {
                     if(this._isMounted) this.setState({ data: result.data });
                 }
@@ -49,7 +58,7 @@ class ManageUser extends Component {
             })
     }
 
-    showAddModal = () => {
+    showAddModal = () => { 
         if(this._isMounted) this.setState({ visible: true, clickAdd: true });
     }
 
@@ -148,7 +157,7 @@ class ManageUser extends Component {
         })
     }
 
-    onChangeNewUser = () => {
+    onChangeNewUser = () => {     
         if(this._isMounted) this.setState({
             user: {
                 name: '',
