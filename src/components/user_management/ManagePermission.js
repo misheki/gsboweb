@@ -127,13 +127,13 @@ class ManagePermission extends Component {
 
         let addModalFooter =
             <div>
-                <Button type="primary" onClick={this.handleCreate}>Create</Button>
+                <Button icon="file-add" type="primary" onClick={this.handleCreate}>Create</Button>
             </div>
 
         let editModalFooter =
             <div>
-                <Button onClick={() => this.handleDelete(permission_id)}>Delete</Button>
-                <Button type="primary" onClick={this.handleEdit}>Save</Button>
+                <Button icon="delete" onClick={() => this.handleDelete(permission_id)}>Delete</Button>
+                <Button icon="save" type="primary" onClick={this.handleEdit}>Save</Button>
             </div>
 
         return (

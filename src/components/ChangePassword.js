@@ -111,7 +111,7 @@ class ChangePassword extends Component {
                                 )}
                             </Form.Item>
                             <Form.Item >
-                                <Button type="primary" onClick={this.handleSubmit}>Submit</Button>
+                                <Button icon="check-circle" type="primary" onClick={this.handleSubmit}>Submit</Button>
                             </Form.Item>
                         </Form>
                     </div>

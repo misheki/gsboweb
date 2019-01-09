@@ -186,12 +186,14 @@ class PrintOrder extends Component {
                         <div className="steps-action">
                             <Button
                                 style={{ marginRight: 8 }}
+                                icon="printer"
                                 onClick={() => this.handlePrint()}>
                                 Print this order
                             </Button>
 
                             <Button
                                 type="primary"
+                                icon="check"
                                 onClick={() => this.handleDone()}>
                                 Done
                             </Button>

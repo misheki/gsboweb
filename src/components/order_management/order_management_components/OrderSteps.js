@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Steps, Button, message, Form, Input, Select, Col, Row, Divider, Modal } from 'antd';
+import { Steps, Button, message, Form, Input, Select, Col, Row, Divider, Modal, Icon } from 'antd';
 import { showOrders, requestStock, courierList, completeOrder, shippingUpdateWithCourier, shippingUpdateWithoutCourier, listReadyShip, cancelOrder } from '../../../helpers/OrderController';
 import { checkAccess } from '../../../helpers/PermissionController';
 import { validateName, validateNumber, validateAmount } from '../../../helpers/Validator';
@@ -822,15 +822,15 @@ class OrderSteps extends Component {
                 </Steps>
                 <div className="steps-content">{steps[current].content}</div>
                 <div className="steps-action">
-                    {current > 0 && (<Button style={{ marginRight: 8 }} onClick={() => this.prev()}>Previous</Button>)}
-                    {current === steps.length - 1 && <Button loading={complete_order_loading} type="primary" onClick={() => this.handleCompleteOrder()}>Complete Order</Button>}
-                    {allowed.includes('shipOrder') ? (current < steps.length - 1 && current !== 0 && <Button loading={next_loading} type="primary" onClick={() => this.next()}>Next</Button>) : null}
+                    {current > 0 && (<Button style={{ marginRight: 8 }} onClick={() => this.prev()}><Icon type="left" />Previous</Button>)}
+                    {current === steps.length - 1 && <Button icon="file-done" loading={complete_order_loading} type="primary" onClick={() => this.handleCompleteOrder()}>Complete Order</Button>}
+                    {allowed.includes('shipOrder') ? (current < steps.length - 1 && current !== 0 && <Button loading={next_loading} type="primary" onClick={() => this.next()}>Next <Icon type="right" /></Button>) : null}
                     {allowed.includes('processOrder') ? (current === 0 && (order.status === 'pending' ?
                     <div>
                         {allowed.includes('cancelOrder') ? ((order.status === 'pending') ? <Button loading={cancel_loading} type="danger" style={{ marginRight: 8 }} onClick={() => this.handleCancelOrder()}>Cancel this order</Button> : null) : null}
                         <Button disabled={incomplete} loading={request_stock_loading} type="primary" onClick={() => this.handleRequestStock()}>Save, Request Stock & Continue</Button>
                     </div>
-                    : <Button type="primary" onClick={() => this.next()}>Next</Button>)) : null}
+                    : <Button  type="primary" onClick={() => this.next()}>Next <Icon type="right" /></Button>)) : null}
                 </div>
             </div>
         );

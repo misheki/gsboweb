@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Layout,  Table, Modal, Button, Form, Input, Select, Switch } from 'antd';
+import { Layout,  Table, Modal, Button, Form, Input, Select, Switch, Icon } from 'antd';
 import { listPackage, createPackage, deletePackage, editPackage } from '../../helpers/PackageController';
 import { listSku, createSku, deleteSku, editSku } from '../../helpers/SkuController';
 import { checkAccess } from '../../helpers/PermissionController';
@@ -327,18 +327,16 @@ class ProductPackage extends Component {
                                 <div>
                                     {allowed.includes('editSku') ? <Button
                                         style={{ margin:'10px' }}
-                                        type="primary"
-                                        icon="edit"
+                                        type="primary"                                       
                                         onClick={() => this.setState({ sku: Object.assign({}, record), sku_id: record.id }, () => this.showEditSkuModal())}>
-                                     
+                                     <Icon type="edit" />
                                     </Button> : null}
 
                                     {allowed.includes('deleteSku') === true ? <Button
                                         style={{ margin:'10px' }}
                                         type="primary" 
-                                        icon="delete"
                                         onClick={() => this.setState({ sku: Object.assign({}, record), sku_id: record.id }, () => this.handleDeleteSku())}>
-                                   
+                                    <Icon type="delete" />
                                     </Button> : null}
                                 </div>
                             )} />
@@ -350,7 +348,7 @@ class ProductPackage extends Component {
                         visible={this.state.visible_sku}
                         onCancel={this.handleCancel}
                         title={clickView ? 'Edit SKU' : 'Add SKU'  }
-                        footer={<Button type="primary" loading={loading} onClick={clickView ? this.submitEditSku : this.submitSku }>Save</Button>}>
+                        footer={<Button icon="save" type="primary" loading={loading} onClick={clickView ? this.submitEditSku : this.submitSku }>Save</Button>}>
                         {sku && <Form layout="vertical">
                             <FormItem label="SKU">
                                 {getFieldDecorator('sku', {
@@ -397,17 +395,15 @@ class ProductPackage extends Component {
                                     {allowed.includes('editPackage') ? <Button
                                         style={{ margin:'10px' }}
                                         type="primary"
-                                        icon="edit"
                                         onClick={() => this.setState({ newpackage: Object.assign({}, record), package_id: record.id }, () => this.showEditPackagesModal())}>
-                                  
+                                  <Icon type="edit" />
                                     </Button> : null}
 
                                     {allowed.includes('deletePackage') ? <Button
                                         style={{ margin:'10px' }}
                                         type="primary"
-                                        icon="delete"  
                                         onClick={() => this.setState({ newpackage: Object.assign({}, record), package_id: record.id }, () => this.handleDeletePackage())}>
-                                     
+                                     <Icon type="delete" />
                                     </Button> : null}
                                 </div>
                             )} />
@@ -417,7 +413,7 @@ class ProductPackage extends Component {
                         visible={this.state.visible}
                         onCancel={this.handleCancel}
                         title={clickView ? 'Edit Package' : 'Add new package' }
-                        footer={<Button type="primary" loading={loading} onClick={clickView ? this.handleSubmitEditPackage : this.handleSubmit }>Save</Button>}>
+                        footer={<Button icon="save" type="primary" loading={loading} onClick={clickView ? this.handleSubmitEditPackage : this.handleSubmit }>Save</Button>}>
                         { newpackage && <Form layout="vertical">
                             <FormItem label="SKU">
                                 {getFieldDecorator('sku_id', {

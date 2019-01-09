@@ -136,7 +136,7 @@ class PendingOrder extends Component {
                                 </Button>
                             )} />
                         </AutoComplete>
-                        <Button type="primary" style={{marginLeft:60 }} onClick={this.handleClearFilter}>Clear Filter</Button>  
+                        <Button type="primary"  icon="close-circle" style={{marginLeft:60 }} onClick={this.handleClearFilter}>Clear Filter</Button>  
                     </div>
                     <div style={{ padding: '30px', paddingTop:'0px' }}>
                         {allowed.includes('viewOrderHistory') ? <Table
@@ -156,6 +156,7 @@ class PendingOrder extends Component {
                                         {allowed.includes('processOrder') ? <Button
                                             style={{ margin:'10px' }}
                                             type="primary"
+                                            icon="file-sync"
                                             onClick={() => this.processOrder(record.id)}>
                                             Process Order
                                         </Button> : null}

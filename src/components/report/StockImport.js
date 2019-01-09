@@ -85,7 +85,7 @@ class StockImport extends Component {
                             onChange={this.onChange}
                         />
                         {this.showUserFilter()}
-                        <Button type="primary" style={{marginLeft:60 }} onClick={this.handleClearFilter}>Clear Filter</Button>  
+                        <Button type="primary" icon="close-circle"  style={{marginLeft:60 }} onClick={this.handleClearFilter}>Clear Filter</Button>  
                     </div> 
                     <Table
                         // dataSource={data}

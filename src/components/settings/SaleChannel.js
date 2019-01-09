@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Layout, Table, Button, Modal, Input, Form } from 'antd';
+import { Layout, Table, Button, Modal, Input, Form, Icon} from 'antd';
 import { listSalesChannels, createSalesChannel, editSalesChannel, deleteSalesChannel } from '../../helpers/SalesChannels';
 import { checkAccess } from '../../helpers/PermissionController';
 import { Helmet } from 'react-helmet';
@@ -198,12 +198,12 @@ class SaleChannel extends Component {
                         render={(record) => (
                             <div>
                                 {allowed.includes('editSalesChannel') ?
-                                    <Button style={{ margin:'10px' }} type="primary"
-                                        onClick={() => this.setState({ channel: Object.assign({}, record), id: record.id }, ()=> this.showEditModal())}>Edit</Button>
+                                    <Button style={{ margin:'10px' }} type="primary" 
+                                        onClick={() => this.setState({ channel: Object.assign({}, record), id: record.id }, ()=> this.showEditModal())}><Icon type="edit"/></Button>
                                 : null }
                                 {allowed.includes('deleteSalesChannel') ?
                                     <Button style={{ margin:'10px' }} type="primary"
-                                        onClick={() => this.setState({ channel: Object.assign({}, record), id: record.id }, ()=> this.handleDelete())}>Delete</Button>
+                                        onClick={() => this.setState({ channel: Object.assign({}, record), id: record.id }, ()=> this.handleDelete())}><Icon type="delete" /></Button>
                                 : null }
                             </div>
                         )} />
@@ -213,7 +213,7 @@ class SaleChannel extends Component {
                     visible={this.state.visible}
                     onCancel={this.handleCancel}
                     title={clickView ? 'Add Channel' : 'Edit' }
-                    footer={<Button type="primary" loading={loading} onClick={clickView ? this.submitSaleChannel : this.editSaleChannel }>Save</Button>}>
+                    footer={<Button icon="save" type="primary" loading={loading} onClick={clickView ? this.submitSaleChannel : this.editSaleChannel }>Save</Button>}>
                     { channel && <Form layout="vertical">
                         <FormItem label="Name">
                             {getFieldDecorator('name', {

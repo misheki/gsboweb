@@ -412,7 +412,7 @@ class NewOrder extends Component {
                             </div>
                             
                             <FormItem>
-                                <Button loading={loading} className="button-right" type="primary" onClick={this.handleSubmit}>
+                                <Button loading={loading} icon="plus-circle" className="button-right" type="primary" onClick={this.handleSubmit}>
                                     Add order
                                 </Button>
                             </FormItem>   
