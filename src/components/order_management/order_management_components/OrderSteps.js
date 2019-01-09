@@ -286,7 +286,7 @@ class OrderSteps extends Component {
             if (package_detail.stocks.length === 0) {
                 counter++;
                 array.push(<React.Fragment key={counter}>
-                    <Row gutter={16}>
+                    <Row gutter={8}>
                         <Col span={2}>
                             <Form.Item>
                                 {getFieldDecorator('id', {
@@ -314,7 +314,7 @@ class OrderSteps extends Component {
                                 )}
                             </Form.Item>
                         </Col>
-                        <Col span={6}>
+                        <Col span={4}>
                             <Form.Item>
                                 {getFieldDecorator(`stock_details.sim_card_number`, {
                                     initialValue: 'No Stock'
@@ -323,7 +323,7 @@ class OrderSteps extends Component {
                                 )}
                             </Form.Item>
                         </Col>
-                        <Col span={4}>
+                        <Col span={6}>
                             <Form.Item>
                                 {getFieldDecorator(`stock_details.serial_number`, {
                                     initialValue: 'No Stock'
@@ -360,7 +360,7 @@ class OrderSteps extends Component {
                 package_detail.stocks.forEach(stock => {
                     counter++;
                     array.push(<React.Fragment key={counter}>
-                        <Row gutter={16}>
+                        <Row gutter={8}>
                             <Col span={2}>
                                 <Form.Item>
                                     {getFieldDecorator('id', {
@@ -388,7 +388,7 @@ class OrderSteps extends Component {
                                     )}
                                 </Form.Item>
                             </Col>
-                            <Col span={6}>
+                            <Col span={4}>
                                 <Form.Item>
                                     {getFieldDecorator(`stock_details[${stock.id}].sim_card_number`, {
                                         initialValue: stock.sim_card_number
@@ -397,7 +397,7 @@ class OrderSteps extends Component {
                                     )}
                                 </Form.Item>
                             </Col>
-                            <Col span={4}>
+                            <Col span={6}>
                                 <Form.Item>
                                     {getFieldDecorator(`stock_details[${stock.id}].serial_number`, {
                                         initialValue: stock.serial_number
@@ -435,7 +435,7 @@ class OrderSteps extends Component {
                 if (package_detail.missing > 0) {
                     counter++;
                     array.push(<React.Fragment key={counter}>
-                        <Row gutter={16}>
+                        <Row gutter={8}>
                             <Col span={2}>
                                 <Form.Item>
                                     {getFieldDecorator('id', {
@@ -528,7 +528,7 @@ class OrderSteps extends Component {
         const steps = [{
             title: 'Order Details',
             content:  
-                <Form layout="vertical" style={{ width: '90%', paddingLeft: '40px' }}>
+                <Form layout="vertical" style={{ width: '95%', paddingLeft: '40px' }}>
                     <Divider orientation="left">Customer Details</Divider>
                     <Row style={{ paddingTop: '20px' }} gutter={8}>
                         <Col span={8}>
@@ -606,7 +606,7 @@ class OrderSteps extends Component {
 
                     <Divider orientation="left">Package Details</Divider>
 
-                    <Row gutter={8} style={{ backgroundColor: '#e8e8e8', padding: '10px', paddingBottom: '0px', marginBottom: '10px', paddingLeft:'0px' }}>
+                    <Row gutter={16} style={{ backgroundColor: '#e8e8e8', padding: '10px', paddingBottom: '0px', marginBottom: '10px',   textAlign: 'left' }}>
                         <Col span={2}>
                             <p>Item</p>
                         </Col>
@@ -616,10 +616,10 @@ class OrderSteps extends Component {
                         <Col span={7}>
                             <p>Package</p>
                         </Col>
-                        <Col span={6}>
+                        <Col span={4}>
                             <p>Sim Card Number</p>
                         </Col>
-                        <Col span={4}>
+                        <Col span={6}>
                             <p>Serial Number</p>
                         </Col>
                         <Col span={2}>
@@ -786,10 +786,10 @@ class OrderSteps extends Component {
                             <Col span={7}>
                                 <p>Package</p>
                             </Col>
-                            <Col span={6}>
+                            <Col span={4}>
                                 <p>Sim Card Number</p>
                             </Col>
-                            <Col span={4}>
+                            <Col span={6}>
                                 <p>Serial Number</p>
                             </Col>
                             <Col span={2}>

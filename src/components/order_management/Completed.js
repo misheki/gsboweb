@@ -20,7 +20,11 @@ class Completed extends Component {
             displayDetails: false,
             required: ['viewOrderHistory'],
             allowed: [],
-            search: '',
+            date_from_filter: null,
+            date_to_filter: null,
+            status_filter: null,
+            search: null,
+            statuses: null,
             print_order: false
         };
     }
@@ -48,25 +52,8 @@ class Completed extends Component {
 
     showOrderlistCompleted() {
         var access_token = sessionStorage.getItem('access_token');
-        listCompleted(null, access_token)
-            .then(result => {
-                if (result.result === 'GOOD') {
-                    if(this._isMounted) this.setState({ completed_orders: result.data });
-                }
-            })
-            .catch(error => {
-                Modal.error({
-                    title: 'Error',
-                    content: error
-                })
-            })
-    }
-
-    handleSearch() {
-        var access_token = sessionStorage.getItem('access_token');
-        const { search } = this.state;
-
-        listCompleted(search, access_token)
+        const { date_from_filter, date_to_filter, status_filter, search } = this.state;
+        listCompleted(date_from_filter, date_to_filter, status_filter, search, access_token)
             .then(result => {
                 if (result.result === 'GOOD') {
                     if(this._isMounted) this.setState({ completed_orders: result.data });
@@ -120,12 +107,12 @@ class Completed extends Component {
                         </Form.Item>
                     </Col>
                     
-                    <Col span={6}>
+                    <Col span={4}>
                         <Form.Item>
                             <Input value={stock.serial_number} disabled />
                         </Form.Item>
                     </Col>
-                    <Col span={3}>
+                    <Col span={5}>
                         <Form.Item>
                             <Input  value={stock.sim_card_number} disabled />
                         </Form.Item>
@@ -161,11 +148,12 @@ class Completed extends Component {
                                     <p>{this.state.order.sales_channel} </p>
                                 </FormItem>
                                 <FormItem  {...formItemLayout} label="Shipping Method : " className="form-item">
-                                    <p>{this.state.order.shipping_method} </p>
+                                    <p>{this.state.order.shipping_method ? this.state.order.shipping_method : 'Self Pickup'} </p>
                                 </FormItem>
+                                {this.state.order.shipping_method ?
                                 <FormItem  {...formItemLayout} label="Tracking Number : " className="form-item">
-                                    <p>{this.state.order.tracking_number} </p>
-                                </FormItem>
+                                    <p>{this.state.order.tracking_number}</p>
+                                </FormItem> : null}
                             </Col>
                             <Col span={12}>
                                 <h3 style={{paddingBottom:'10px'}}>Customer Details </h3>  
@@ -189,10 +177,10 @@ class Completed extends Component {
                                 <Col span={7}>
                                     <p>Package</p>
                                 </Col>
-                                <Col span={6}>
+                                <Col span={4}>
                                     <p>Sim Card Number</p>
                                 </Col>
-                                <Col span={3}>
+                                <Col span={5}>
                                     <p>Serial Number</p>
                                 </Col>
                                 <Col span={2}>
@@ -250,10 +238,10 @@ class Completed extends Component {
                         <AutoComplete
                             className="global-search"
                             size="large"
-                            onSearch={(search) => this._isMounted === true ? this.setState({ search }) : null}
+                            onSearch={(search) => this._isMounted === true ? (search.length > 0 ? this.setState({ search }) : this.setState({ search : null })) : null}
                             placeholder="Search Order Number">
                             <Input suffix={(
-                                <Button className="search-btn" size="large" type="primary" onClick={() => this.handleSearch()}>
+                                <Button className="search-btn" size="large" type="primary" onClick={() => this.showOrderlistCompleted()}>
                                     <Icon type="search" />
                                 </Button>
                             )} />
