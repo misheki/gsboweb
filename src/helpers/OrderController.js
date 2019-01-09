@@ -505,3 +505,38 @@ export const cancelOrder = (order_id, access_token) => {
         )
     ])
 };
+
+export const latestOrder = (access_token) => {
+    return Promise.race([
+        new Promise((resolve, reject) =>
+            fetch(global.URL + 'api/order/latest', {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + access_token
+                }
+            })
+            .then((response) => response.json())
+            .then((responseJson) => {
+                if (responseJson.result === 'GOOD') {
+                    resolve(responseJson);   
+                }
+                else {
+                    var error = '';
+
+                    switch (responseJson.result) {
+                        default:
+                            error = 'Technical error.';
+                            break;
+                    }
+
+                    reject(error);
+                }
+            })
+            .catch((error) => {
+                reject(error);
+            })
+        )
+    ])
+};
