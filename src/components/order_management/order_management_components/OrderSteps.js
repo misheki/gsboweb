@@ -768,7 +768,7 @@ class OrderSteps extends Component {
                                 <h3 style={{paddingBottom: '10px' }}>Customer Details</h3>  
                                 <p>{order.customer_name}</p> 
                                 <p>{order.customer_address}</p> 
-                                <p>{order.customer_postcode}, {order.customer_state}</p> 
+                                {order.customer_postcode ? <p>{order.customer_postcode}, {order.customer_state}</p> : null} 
                                 <p>{order.customer_contact_num}</p> 
                                 <p>{order_overview.customer_email}</p> 
                             </Col>
@@ -800,9 +800,12 @@ class OrderSteps extends Component {
                         <Form.Item  labelCol={{ span: 20 }} wrapperCol={{ span: 4 }} label="Subtotal : " className="form-item-right">
                             <p>RM {order_overview.total_amount}</p> 
                         </Form.Item>
-                        {order_overview.shipping_method_id !== null ? <Form.Item  labelCol={{ span: 20 }} wrapperCol={{ span: 4 }} label="Shipping Fee : " className="form-item-right">
-                            <p>RM {order_overview.shipping_fee}</p>
-                        </Form.Item> : null}
+                        <Form.Item  labelCol={{ span: 20 }} wrapperCol={{ span: 4 }} label="Discount : " className="form-item-right">
+                            <p>RM {order_overview.discount ? order_overview.discount : '0.00'}</p> 
+                        </Form.Item>
+                        <Form.Item  labelCol={{ span: 20 }} wrapperCol={{ span: 4 }} label="Shipping Fee : " className="form-item-right">
+                            <p>RM {order_overview.shipping_method_id ? order_overview.shipping_fee : '0.00'}</p>
+                        </Form.Item>
                         <Form.Item  labelCol={{ span: 20 }} wrapperCol={{ span: 4 }} label="Total Amount : " className="form-item-right">
                             <p>RM {order_overview.total}</p> 
                         </Form.Item>
@@ -834,7 +837,6 @@ class OrderSteps extends Component {
     }
 
     render() {
-        console.log(this.state.order_overview);
         return (
             <div>
                 <Button

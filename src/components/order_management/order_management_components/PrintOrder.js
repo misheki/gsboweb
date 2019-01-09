@@ -28,7 +28,7 @@ class PrintOrder extends Component {
 
     showOrderlistCompleted() {
         var access_token = sessionStorage.getItem('access_token');
-        listCompleted(null, access_token)
+        listCompleted(null, null, null, null, access_token)
             .then(result => {
                 if (result.result === 'GOOD') {
                     result.data.forEach(order => {
@@ -168,7 +168,8 @@ class PrintOrder extends Component {
 
                                     <div style={{ paddingTop: '40px' }} className="form-item-right">
                                         <p><span className="font-bold">Subtotal: </span>RM {order.order_total}</p>
-                                        {order.shipping_fee != null ? <p><span className="font-bold">Shipping Fee: </span>RM {order.shipping_fee}</p> : null}
+                                        <p><span className="font-bold">Discount: </span>RM {order.discount ? order.shipping_fee : '0.00'}</p>
+                                        <p><span className="font-bold">Shipping Fee: </span>RM {order.shipping_fee ? order.shipping_fee : '0.00'}</p>
                                         <p><span className="font-bold">Total Amount: </span>RM {order.total}</p>
                                     </div>
 
