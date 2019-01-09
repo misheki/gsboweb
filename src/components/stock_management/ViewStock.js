@@ -260,7 +260,7 @@ class ViewStock extends Component {
                                     <div>
                                         {allowed.includes('writeoffStock') === true ? 
                                         <Button
-                                            disabled={record.stock_status === 'Sold' ? true : false}
+                                            disabled={record.stock_status === 'Sold' || record.stock_status === 'Write-off' ? true : false}
                                             style={{ margin:'10px' }}
                                             icon="stop" 
                                             type="primary" onClick={() => (this._isMounted === true) ? this.setState({ stock_id: record.id }, this.showWriteOffModal) : null}>
