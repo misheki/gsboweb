@@ -176,9 +176,14 @@ class App extends Component {
                     <Route path="/change-password"
                         render={(props) => <ChangePassword {...props} reloadMenu={this.fetchSideBarMenu.bind(this)} />}/>
                 </Content>
-                <Footer style={{ textAlign: 'center' }}>
-                    Global Sim ©2018
-                </Footer>
+
+                <PrintProvider>
+                    <NoPrint>
+                        <Footer style={{ textAlign: 'center' }}>
+                            Global Sim ©2018
+                        </Footer>
+                    </NoPrint>
+                </PrintProvider>
             </Layout>
         );
     }
@@ -188,16 +193,12 @@ class App extends Component {
 
         if (isLoggedIn) {
             return (
-                <PrintProvider>
-                    <NoPrint>
-                        <Router>
-                            <Layout style={{ minHeight: '100vh' }}>
-                                {show_side_bar ? this.sidebar() : null}
-                                {this.layout()}
-                            </Layout>
-                        </Router>
-                    </NoPrint>
-                </PrintProvider>
+                <Router>
+                    <Layout style={{ minHeight: '100vh' }}>
+                        {show_side_bar ? this.sidebar() : null}
+                        {this.layout()}
+                    </Layout>
+                </Router>
             );   
         }
         else {

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Form, Row, Col, Input, Button, Modal } from 'antd';
+import { Form, Row, Col, Button, Modal } from 'antd';
 import { listCompleted } from '../../../helpers/OrderController';
 import { Helmet } from 'react-helmet';
 import PrintProvider, { Print, NoPrint } from 'react-easy-print';
@@ -166,20 +166,17 @@ class PrintOrder extends Component {
                                     </Row>
                                     {packageDetailItems}
 
-                                    <div style={{ paddingTop: '40px' }}>
-                                        <FormItem labelCol={{ span: 20 }} wrapperCol={{ span: 3 }} label="Subtotal : " className="form-item-right">
-                                            <p>RM {order.order_total}</p> 
-                                        </FormItem>
-                                        {order.shipping_fee != null ? 
-                                            <FormItem labelCol={{ span: 20 }} wrapperCol={{ span: 3 }} label="Shipping Fee : " className="form-item-right">
-                                                <p>RM {order.shipping_fee}</p> 
-                                            </FormItem>: <FormItem labelCol={{ span: 20 }} wrapperCol={{ span: 3 }} label="Shipping Fee : " className="form-item-right">
-                                                <p>RM 0.00</p> 
-                                            </FormItem>
-                                        }
-                                        <FormItem  labelCol={{ span: 20 }} wrapperCol={{ span: 3 }} label="Total Amount : " className="form-item-right">
-                                            <p>RM {order.total}</p> 
-                                        </FormItem>
+                                    <div style={{ paddingTop: '40px' }} className="form-item-right">
+                                        <p><span className="font-bold">Subtotal: </span>RM {order.order_total}</p>
+                                        {order.shipping_fee != null ? <p><span className="font-bold">Shipping Fee: </span>RM {order.shipping_fee}</p> : null}
+                                        <p><span className="font-bold">Total Amount: </span>RM {order.total}</p>
+                                    </div>
+
+                                    <div className="form-item-center" style={{ paddingTop: '40px' }}>
+                                        <p className="p-no-bottom">This is a computer-generated document. The signature is not required.</p>
+                                        <p>For assistance, you may reach out to our Customer Service via:</p>
+                                        <p className="font-bold p-no-bottom">WhatsApp/SMS - +6016-339-9967</p>
+                                        <p className="font-bold">Email - cs@globalsim.my</p>
                                     </div>
                                 </div>
                             </Form>
