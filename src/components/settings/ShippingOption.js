@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Layout, Table, Button,  Modal, Input, Form  } from 'antd';
+import { Layout, Table, Button,  Modal, Input, Form, Icon  } from 'antd';
 import { listShippingMethods, createShippingMethod, editShippingMethod, deleteShippingMethod } from '../../helpers/ShippingMethods';
 import { checkAccess } from '../../helpers/PermissionController';
 import { Helmet } from 'react-helmet';
@@ -187,11 +187,11 @@ class ShippingOption extends Component {
                             <div>
                                 {allowed.includes('editShippingMethod') ?
                                     <Button style={{ margin:'10px' }} type="primary"
-                                    onClick={() => this.setState({ shipping: Object.assign({}, record), id: record.id }, () => this.showEditModal())}>Edit</Button>
+                                    onClick={() => this.setState({ shipping: Object.assign({}, record), id: record.id }, () => this.showEditModal())}><Icon type="edit" /></Button>
                                 : null }
                                 {allowed.includes('deleteShippingMethod') ?
                                     <Button style={{ margin:'10px' }} type="primary"
-                                    onClick={() => this.setState({ shipping: Object.assign({}, record), id: record.id }, () => this.handleDelete())}>Delete</Button>
+                                    onClick={() => this.setState({ shipping: Object.assign({}, record), id: record.id }, () => this.handleDelete())}><Icon type="delete" /></Button>
                                 : null }
                             </div>
                         )} />
@@ -201,7 +201,7 @@ class ShippingOption extends Component {
                     visible={this.state.visible}
                     onCancel={this.handleCancel}
                     title={clickView ? 'Add Shipping Provider' : 'Edit Shipping Provider' }
-                    footer={<Button type="primary" loading={loading} onClick={clickView ? this.submitShippingMethod : this.editShippingMethod }>Save</Button>}>
+                    footer={<Button icon="save" type="primary" loading={loading} onClick={clickView ? this.submitShippingMethod : this.editShippingMethod }>Save</Button>}>
                     { shipping && <Form layout="vertical">
                         <FormItem label="Name">
                             {getFieldDecorator('courier_name', {

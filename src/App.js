@@ -138,7 +138,7 @@ class App extends Component {
                 </Menu>
                 <div style={{ paddingTop: '40px', textAlign: 'center' }}>
                     <Link to="/">
-                        <Button type="primary" onClick={() => this.logout()}>Logout</Button>
+                        <Button icon="logout" type="primary" onClick={() => this.logout()}>Logout</Button>
                     </Link>
                 </div>
             </Sider>

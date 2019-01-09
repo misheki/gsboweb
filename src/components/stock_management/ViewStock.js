@@ -227,7 +227,7 @@ class ViewStock extends Component {
                                 </Button>
                             )} />
                         </AutoComplete>
-                        <Button type="primary" style={{marginLeft:60 }} onClick={this.handleClearFilter}>Clear Filter</Button>   
+                        <Button type="primary"  icon="close-circle" style={{marginLeft:60 }} onClick={this.handleClearFilter}>Clear Filter</Button>   
                     </div>
                     <Row gutter={16} style={{paddingLeft:'30px'}}>
                         <Col span={3} >
@@ -258,12 +258,20 @@ class ViewStock extends Component {
                                 key="action"
                                 render={(record) => (
                                     <div>
-                                        {allowed.includes('writeoffStock') === true ? <Button
+                                        {allowed.includes('writeoffStock') === true ? 
+                                        <Button
                                             disabled={record.stock_status === 'Sold' ? true : false}
                                             style={{ margin:'10px' }}
+                                            icon="stop" 
                                             type="primary" onClick={() => (this._isMounted === true) ? this.setState({ stock_id: record.id }, this.showWriteOffModal) : null}>
                                             Write Off
                                         </Button> : null}
+                                        <Button
+                                            style={{ margin:'10px' }}
+                                            icon="eye" 
+                                            type="primary">
+                                            View
+                                        </Button> 
                                     </div>
                                 )} />
                         </Table>
@@ -272,7 +280,7 @@ class ViewStock extends Component {
                             visible={visible}
                             onCancel={this.handleCancel}
                             title="Write Off"
-                            footer={<Button type="primary" loading={loading} onClick={this.handleWriteOff}>Write Off</Button>}>
+                            footer={<Button icon="stop" type="primary" loading={loading} onClick={this.handleWriteOff}>Write Off</Button>}>
                             <Form layout="vertical">
                                 <FormItem label="Reason to Write Off">
                                     {getFieldDecorator('remarks', {

@@ -445,10 +445,20 @@ class NewOrder extends Component {
                                     </Col>
                                 </Row>
                                 {formItems}
+                                <Form.Item
+                                    label="Discount :"
+                                    labelCol={{ span: 2 }}
+                                    wrapperCol={{ span: 4 }}
+                                    >
+                                       {getFieldDecorator('discount', {
+                                        })(
+                                            <Input />
+                                        )}
+                                </Form.Item>
                             </div>
                             
                             <FormItem>
-                                <Button loading={loading} className="button-right" type="primary" onClick={this.handleSubmit}>
+                                <Button loading={loading} icon="plus-circle" className="button-right" type="primary" onClick={this.handleSubmit}>
                                     Add order
                                 </Button>
                             </FormItem>   

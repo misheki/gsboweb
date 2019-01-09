@@ -248,24 +248,24 @@ class ManageMenu extends Component {
 
         let addMenuModalFooter =
             <div>
-                <Button type="primary" onClick={this.handleMenuCreate}>Create</Button>
+                <Button icon="file-add" type="primary" onClick={this.handleMenuCreate}>Create</Button>
             </div>
 
         let editMenuModalFooter =
             <div>
-                <Button onClick={() => this.handleMenuDelete(menu_id)}>Delete</Button>
-                <Button type="primary" onClick={() => this.handleMenuEdit(menu_id)}>Save</Button>
+                <Button icon="delete" onClick={() => this.handleMenuDelete(menu_id)}>Delete</Button>
+                <Button icon="save" type="primary" onClick={() => this.handleMenuEdit(menu_id)}>Save</Button>
             </div>
 
         let addSubMenuModalFooter =
             <div>
-                <Button type="primary" onClick={this.handleSubMenuCreate}>Create</Button>
+                <Button icon="file-add" type="primary" onClick={this.handleSubMenuCreate}>Create</Button>
             </div>
 
         let editSubMenuModalFooter =
             <div>
-                <Button onClick={() => this.handleSubMenuDelete(submenu_id)}>Delete</Button>
-                <Button type="primary" onClick={() => this.handleSubMenuEdit(submenu_id)}>Save</Button>
+                <Button icon="delete" onClick={() => this.handleSubMenuDelete(submenu_id)}>Delete</Button>
+                <Button icon="save" type="primary" onClick={() => this.handleSubMenuEdit(submenu_id)}>Save</Button>
             </div>
 
         return (

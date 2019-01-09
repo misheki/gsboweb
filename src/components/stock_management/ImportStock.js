@@ -112,7 +112,7 @@ class ImportStock extends Component {
                     <div style={{ padding: '2%', border: '1px solid #d2d2d2', margin: '3%' }}>
                         <form onSubmit={this.onFormSubmit}>
                             <input type="file"  onChange={this.onChange} />
-                            <button type="submit">Upload</button>
+                            <button type="submit" >Upload</button>
                         </form>
                     </div> 
                     {this.renderResult()}  
