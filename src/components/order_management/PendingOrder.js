@@ -18,7 +18,10 @@ class PendingOrder extends Component {
             processOrder: false,
             order_id: '',
             required: ['viewOrderHistory', 'processOrder'],
-            allowed: []
+            allowed: [],
+            date_from_filter: null,
+            date_to_filter: null,
+            search: null
         };
     }
 
@@ -45,7 +48,10 @@ class PendingOrder extends Component {
 
     showOrderlistPending() {
         var access_token = sessionStorage.getItem('access_token');
-        listPending(access_token)
+
+        const { date_from_filter, date_to_filter, search } = this.state;
+        
+        listPending(date_from_filter, date_to_filter, search, access_token)
             .then(result => {
                 if (result.result === 'GOOD') {
                     if(this._isMounted) this.setState({ pending_orders: result.data });

@@ -57,16 +57,21 @@ export const createOrder = (sale_channel_id, order_ref_num, customer_name, custo
     ])
 };
 
-export const listPending = (access_token) => {
+export const listPending = (date_from, date_to, search, access_token) => {
     return Promise.race([
         new Promise((resolve, reject) =>
             fetch(global.URL + 'api/order/list/pending', {
-                method: 'GET',
+                method: 'POST',
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
                     'Authorization': 'Bearer ' + access_token
-                }
+                },
+                body: JSON.stringify({
+                    date_from,
+                    date_to,
+                    search
+                })
             })
             .then((response) => response.json())
             .then((responseJson) => {
@@ -92,16 +97,21 @@ export const listPending = (access_token) => {
     ])
 };
 
-export const listReadyShip = (access_token) => {
+export const listReadyShip = (date_from, date_to, search, access_token) => {
     return Promise.race([
         new Promise((resolve, reject) =>
             fetch(global.URL + 'api/order/list/ready/ship', {
-                method: 'GET',
+                method: 'POST',
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
                     'Authorization': 'Bearer ' + access_token
-                }
+                },
+                body: JSON.stringify({
+                    date_from,
+                    date_to,
+                    search
+                })
             })
             .then((response) => response.json())
             .then((responseJson) => {
@@ -127,7 +137,7 @@ export const listReadyShip = (access_token) => {
     ])
 }
 
-export const listCompleted = (search, access_token) => {
+export const listCompleted = (date_from, date_to, status_id, search, access_token) => {
     return Promise.race([
         new Promise((resolve, reject) =>
             fetch(global.URL + 'api/order/list/completed', {
@@ -138,7 +148,10 @@ export const listCompleted = (search, access_token) => {
                     'Authorization': 'Bearer ' + access_token
                 },
                 body: JSON.stringify({
-                    search
+                    date_from,
+                    date_to,
+                    search,
+                    status_id
                 })
             })
             .then((response) => response.json())

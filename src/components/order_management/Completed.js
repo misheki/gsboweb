@@ -20,7 +20,11 @@ class Completed extends Component {
             displayDetails: false,
             required: ['viewOrderHistory'],
             allowed: [],
-            search: ''
+            date_from_filter: null,
+            date_to_filter: null,
+            status_filter: null,
+            search: null,
+            statuses: null
         };
     }
 
@@ -47,25 +51,8 @@ class Completed extends Component {
 
     showOrderlistCompleted() {
         var access_token = sessionStorage.getItem('access_token');
-        listCompleted(null, access_token)
-            .then(result => {
-                if (result.result === 'GOOD') {
-                    if(this._isMounted) this.setState({ completed_orders: result.data });
-                }
-            })
-            .catch(error => {
-                Modal.error({
-                    title: 'Error',
-                    content: error
-                })
-            })
-    }
-
-    handleSearch() {
-        var access_token = sessionStorage.getItem('access_token');
-        const { search } = this.state;
-
-        listCompleted(search, access_token)
+        const { date_from_filter, date_to_filter, status_filter, search } = this.state;
+        listCompleted(date_from_filter, date_to_filter, status_filter, search, access_token)
             .then(result => {
                 if (result.result === 'GOOD') {
                     if(this._isMounted) this.setState({ completed_orders: result.data });
@@ -242,10 +229,10 @@ class Completed extends Component {
                         <AutoComplete
                             className="global-search"
                             size="large"
-                            onSearch={(search) => this._isMounted === true ? this.setState({ search }) : null}
+                            onSearch={(search) => this._isMounted === true ? (search.length > 0 ? this.setState({ search }) : this.setState({ search : null })) : null}
                             placeholder="Search Order Number">
                             <Input suffix={(
-                                <Button className="search-btn" size="large" type="primary" onClick={() => this.handleSearch()}>
+                                <Button className="search-btn" size="large" type="primary" onClick={() => this.showOrderlistCompleted()}>
                                     <Icon type="search" />
                                 </Button>
                             )} />
