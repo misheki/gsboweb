@@ -168,7 +168,7 @@ class App extends Component {
                     <Route path="/pending-orders"
                         render={(props) => <PendingOrder {...props} reloadMenu={this.fetchSideBarMenu.bind(this)} showSideBar={this.showSideBar.bind(this)} />}/>
                     <Route path="/ready-to-ship-orders"
-                        render={(props) => <ReadyToShip {...props} reloadMenu={this.fetchSideBarMenu.bind(this)} />}/>
+                        render={(props) => <ReadyToShip {...props} reloadMenu={this.fetchSideBarMenu.bind(this)} showSideBar={this.showSideBar.bind(this)} />}/>
                     <Route path="/completed-orders"
                         render={(props) => <Completed {...props} reloadMenu={this.fetchSideBarMenu.bind(this)} showSideBar={this.showSideBar.bind(this)} />}/>
                     <Route path="/sale-channel"
