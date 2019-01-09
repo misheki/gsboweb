@@ -121,7 +121,11 @@
 .form-item-right {
   margin-bottom: 0px;
   text-align-last: right;
+}
 
+.form-item-center {
+  margin-bottom: 0px;
+  text-align: center;
 }
 
 .ant-checkbox-group-item {
@@ -136,3 +140,10 @@
   padding: 0px 15px;
 }
 
+.font-bold {
+  font-weight: bold
+}
+
+.p-no-bottom {
+  margin-bottom: 0px
+}
