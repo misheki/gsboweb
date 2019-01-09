@@ -128,3 +128,7 @@
   display: flex;
   height: 25px;
 }
+
+.font-bold {
+  font-weight: bold
+}

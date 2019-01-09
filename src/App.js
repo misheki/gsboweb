@@ -22,6 +22,8 @@ import SaleChannel from './components/settings/SaleChannel';
 import ShippingOption from './components/settings/ShippingOption';
 import ChangePassword from './components/ChangePassword';
 
+import PrintProvider, { Print, NoPrint } from 'react-easy-print';
+
 const { Content, Footer, Sider } = Layout;
 const SubMenu = Menu.SubMenu;
 
@@ -31,7 +33,8 @@ class App extends Component {
         this.state = {
             collapsed: false,
             sidebar: [],
-            isLoggedIn: false
+            isLoggedIn: false,
+            show_side_bar: true
         };
     }
 
@@ -65,6 +68,10 @@ class App extends Component {
     logout() {
         sessionStorage.removeItem('access_token'); 
         this.setState({ isLoggedIn : false });
+    }
+
+    showSideBar(value) {
+        this.setState({ show_side_bar: value });
     }
 
     sidebar() {
@@ -157,11 +164,11 @@ class App extends Component {
                     <Route path="/new-order"
                         render={(props) => <NewOrder {...props} reloadMenu={this.fetchSideBarMenu.bind(this)} />}/>
                     <Route path="/pending-orders"
-                        render={(props) => <PendingOrder {...props} reloadMenu={this.fetchSideBarMenu.bind(this)} />}/>
+                        render={(props) => <PendingOrder {...props} reloadMenu={this.fetchSideBarMenu.bind(this)} showSideBar={this.showSideBar.bind(this)} />}/>
                     <Route path="/ready-to-ship-orders"
                         render={(props) => <ReadyToShip {...props} reloadMenu={this.fetchSideBarMenu.bind(this)} />}/>
                     <Route path="/completed-orders"
-                        render={(props) => <Completed {...props} reloadMenu={this.fetchSideBarMenu.bind(this)} />}/>
+                        render={(props) => <Completed {...props} reloadMenu={this.fetchSideBarMenu.bind(this)} showSideBar={this.showSideBar.bind(this)} />}/>
                     <Route path="/sale-channel"
                         render={(props) => <SaleChannel {...props} reloadMenu={this.fetchSideBarMenu.bind(this)} />}/>
                     <Route path="/shipping-option"
@@ -177,16 +184,20 @@ class App extends Component {
     }
 
     render() {
-        const { isLoggedIn } = this.state;
+        const { isLoggedIn, show_side_bar } = this.state;
 
         if (isLoggedIn) {
             return (
-                <Router>
-                    <Layout style={{ minHeight: '100vh' }}>
-                        {this.sidebar()}
-                        {this.layout()}
-                    </Layout>
-                </Router>
+                <PrintProvider>
+                    <NoPrint>
+                        <Router>
+                            <Layout style={{ minHeight: '100vh' }}>
+                                {show_side_bar ? this.sidebar() : null}
+                                {this.layout()}
+                            </Layout>
+                        </Router>
+                    </NoPrint>
+                </PrintProvider>
             );   
         }
         else {

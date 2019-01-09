@@ -3,6 +3,7 @@ import { Layout, Form, Row, Col, Table, AutoComplete, Input, Button, Icon, Modal
 import { listCompleted } from '../../helpers/OrderController';
 import { checkAccess } from '../../helpers/PermissionController';
 import { Helmet } from 'react-helmet';
+import PrintOrder from '../order_management/order_management_components/PrintOrder';
 
 const { Header } = Layout;
 const { Column } = Table;
@@ -20,7 +21,8 @@ class Completed extends Component {
             displayDetails: false,
             required: ['viewOrderHistory'],
             allowed: [],
-            search: ''
+            search: '',
+            print_order: false
         };
     }
 
@@ -91,6 +93,16 @@ class Completed extends Component {
 
     showOrder(order) {
         if(this._isMounted) this.setState({ order : order}, () => this.setState({ displayDetails : true }))
+    }
+
+    handlePrint() {
+        this.setState({ print_order: true });
+        this.props.showSideBar(false);
+    }
+
+    handleHidePrintOrder() {
+        this.setState({ print_order: false });
+        this.props.showSideBar(true);
     }
 
     renderDetails() {
@@ -199,7 +211,7 @@ class Completed extends Component {
                                 </Col>
                             </Row>
                             {packageDetailItems}
-                             {/* <div style={{float:'right', width:'23%'}}> */}
+                            {/* <div style={{float:'right', width:'23%'}}> */}
                                 <FormItem  labelCol={{ span: 20 }} wrapperCol={{ span: 3 }} label="Subtotal : "  className="form-item-right">
                                         <p>RM {this.state.order.order_total}</p> 
                                 </FormItem>
@@ -215,15 +227,23 @@ class Completed extends Component {
                             {/* </div> */}
                     </div>
                 </Form>
+                <div className="steps-action">
+                    <Button type="primary" onClick={() => this.handlePrint()}>Print this order</Button>
+                </div>
             </div>
         );
     }
 
     render() {
 
-        const { completed_orders, allowed } = this.state;
+        const { displayDetails, completed_orders, allowed, print_order, order } = this.state;
 
-        if(this.state.displayDetails){
+        if (print_order) {
+            return (
+                <PrintOrder order_id={order.id} hidePrintOrder={this.handleHidePrintOrder.bind(this)} />
+            );
+        }
+        else if (displayDetails) {
             return(this.renderDetails());
         }
         else if (allowed.includes('viewOrderHistory')) {
@@ -272,7 +292,7 @@ class Completed extends Component {
                         </Table>
                     </div>
                 </div>
-            ); 
+            );
         }
         else {
             return (
