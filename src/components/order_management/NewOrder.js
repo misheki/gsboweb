@@ -409,6 +409,16 @@ class NewOrder extends Component {
                                     </Col>
                                 </Row>
                                 {formItems}
+                                <Form.Item
+                                    label="Discount :"
+                                    labelCol={{ span: 2 }}
+                                    wrapperCol={{ span: 4 }}
+                                    >
+                                       {getFieldDecorator('discount', {
+                                        })(
+                                            <Input />
+                                        )}
+                                </Form.Item>
                             </div>
                             
                             <FormItem>

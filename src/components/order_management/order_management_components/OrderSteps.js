@@ -632,6 +632,16 @@ class OrderSteps extends Component {
                         </Col>
                     </Row>
                     {this.packageDetailItems()}
+                    <Form.Item
+                        label="Discount :"
+                        labelCol={{ span: 2 }}
+                        wrapperCol={{ span: 4 }}
+                        >
+                            {getFieldDecorator('discount', {
+                            })(
+                                <Input />
+                            )}
+                    </Form.Item>
                 </Form>
         }, {
             title: 'Shipping Details',
