@@ -4,6 +4,7 @@ import { listPending } from '../../helpers/OrderController';
 import { checkAccess } from '../../helpers/PermissionController';
 import  OrderSteps from '../order_management/order_management_components/OrderSteps';
 import { Helmet } from 'react-helmet';
+import PrintOrder from '../order_management/order_management_components/PrintOrder';
 
 const { Header } = Layout;
 const { Column } = Table
@@ -18,7 +19,8 @@ class PendingOrder extends Component {
             processOrder: false,
             order_id: '',
             required: ['viewOrderHistory', 'processOrder'],
-            allowed: []
+            allowed: [],
+            print_order: false
         };
     }
 
@@ -68,10 +70,25 @@ class PendingOrder extends Component {
         this.showOrderlistPending();
     }
 
-    render() {
-        const { pending_orders, processOrder, allowed, order_id } = this.state;
+    handlePrint() {
+        this.setState({ print_order: true });
+        this.props.showSideBar(false);
+    }
 
-        if (processOrder === false) {
+    handleHidePrintOrder() {
+        this.setState({ print_order: false });
+        this.props.showSideBar(true);
+    }
+
+    render() {
+        const { pending_orders, processOrder, allowed, order_id, print_order } = this.state;
+
+        if (print_order) {
+            return (
+                <PrintOrder order_id={order_id} hidePrintOrder={this.handleHidePrintOrder.bind(this)} />
+            );
+        }
+        else if (processOrder === false) {
             return (
                 <div>
                     <Helmet>
@@ -120,7 +137,7 @@ class PendingOrder extends Component {
                     <Header style={{ color: 'white', fontSize: '30px' }}>
                         <span>Pending Order</span>
                     </Header>
-                    <OrderSteps order_id={order_id} process_order={this.handleProcessOrder.bind(this)} />
+                    <OrderSteps order_id={order_id} process_order={this.handleProcessOrder.bind(this)} print_order={this.handlePrint.bind(this)} />
                 </div>
             );
         }

@@ -15,7 +15,6 @@ class Completed extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            current: 0,
             completed_orders: [],
             order: null,
             displayDetails: false,
@@ -79,16 +78,6 @@ class Completed extends Component {
                     content: error
                 })
             })
-    }
-
-    next() {
-        const current = this.state.current + 1;
-        if(this._isMounted) this.setState({ current });
-    }
-
-    prev() {
-        const current = this.state.current - 1;
-        if(this._isMounted) this.setState({ current });
     }
 
     showOrder(order) {

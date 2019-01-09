@@ -22,7 +22,7 @@ import SaleChannel from './components/settings/SaleChannel';
 import ShippingOption from './components/settings/ShippingOption';
 import ChangePassword from './components/ChangePassword';
 
-import PrintProvider, { Print, NoPrint } from 'react-easy-print';
+import PrintProvider, { NoPrint } from 'react-easy-print';
 
 const { Content, Footer, Sider } = Layout;
 const SubMenu = Menu.SubMenu;

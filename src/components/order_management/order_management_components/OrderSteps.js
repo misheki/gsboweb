@@ -264,6 +264,7 @@ class OrderSteps extends Component {
                     if(this._isMounted) this.setState({ complete_order_loading: false });
                     message.success('Processing complete!');
                     this.props.process_order(false);
+                    this.props.print_order();
                 }
             })
             .catch(error => {
