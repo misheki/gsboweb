@@ -1,4 +1,4 @@
-export const listImportLogs = (access_token) => {
+export const listImportLogs = (date_from, date_to, search, access_token) => {
     return Promise.race([
         new Promise((resolve, reject) =>
             fetch(global.URL + 'api/reports/import', {
@@ -7,7 +7,12 @@ export const listImportLogs = (access_token) => {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
                     'Authorization': 'Bearer ' + access_token
-                }
+                },
+                body: JSON.stringify({
+                    date_from,
+                    date_to,
+                    search
+                })
             })
             .then((response) => response.json())
             .then((responseJson) => {
@@ -33,7 +38,7 @@ export const listImportLogs = (access_token) => {
     ])
 };
 
-export const listWriteoffLogs = (access_token) => {
+export const listWriteoffLogs = (date_from, date_to, search, access_token) => {
     return Promise.race([
         new Promise((resolve, reject) =>
             fetch(global.URL + 'api/reports/writeoff', {
@@ -42,7 +47,12 @@ export const listWriteoffLogs = (access_token) => {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
                     'Authorization': 'Bearer ' + access_token
-                }
+                },
+                body: JSON.stringify({
+                    date_from,
+                    date_to,
+                    search
+                })
             })
             .then((response) => response.json())
             .then((responseJson) => {
