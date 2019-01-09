@@ -43,7 +43,7 @@ export const createOrder = (sale_channel_id, order_ref_num, customer_name, custo
                             break;
 
                         default:
-                            error = responseJson.msg;
+                            error = 'Technical error.';
                             break;
                     }
 
@@ -83,7 +83,7 @@ export const listPending = (date_from, date_to, search, access_token) => {
 
                     switch (responseJson.result) {
                         default:
-                            error = responseJson.msg;
+                            error = 'Technical error.';
                             break;
                     }
 
@@ -123,7 +123,7 @@ export const listReadyShip = (date_from, date_to, search, access_token) => {
 
                     switch (responseJson.result) {
                         default:
-                            error = responseJson.msg;
+                            error = 'Technical error.';
                             break;
                     }
 
@@ -164,7 +164,7 @@ export const listCompleted = (date_from, date_to, status_id, search, access_toke
 
                     switch (responseJson.result) {
                         default:
-                            error = responseJson.msg;
+                            error = 'Technical error.';
                             break;
                     }
 
@@ -199,7 +199,7 @@ export const saleChannelList = (access_token) => {
 
                     switch (responseJson.result) {
                         default:
-                            error = responseJson.msg;
+                            error = 'Technical error.';
                             break;
                     }
 
@@ -237,7 +237,7 @@ export const showOrders = (order_id, access_token) => {
 
                     switch (responseJson.result) {
                         default:
-                            error = responseJson.msg;
+                            error = 'Technical error.';
                             break;
                     }
 
@@ -283,7 +283,7 @@ export const requestStock = (order_id, package_details, customer_name, customer_
                             break;
                     
                         default:
-                            error = responseJson.msg;
+                            error = 'Technical error.';
                             break;
                     }
 
@@ -318,7 +318,7 @@ export const courierList = (access_token) => {
 
                     switch (responseJson.result) {
                         default:
-                            console.log(responseJson.msg);
+                            console.log('Technical error.');
                             error = 'Technical error.'
                             break;
                     }
@@ -364,7 +364,7 @@ export const shippingUpdateWithCourier = (order_id, customer_address, customer_c
 
                     switch (responseJson.result) {
                         default:
-                            error = responseJson.msg;
+                            error = 'Technical error.';
                             break;
                     }
 
@@ -405,7 +405,7 @@ export const shippingUpdateWithoutCourier = (order_id, shipping_method_id, shipp
 
                     switch (responseJson.result) {
                         default:
-                            error = responseJson.msg;
+                            error = 'Technical error.';
                             break;
                     }
 
@@ -449,7 +449,7 @@ export const completeOrder = (order_id, shipping_method_id, tracking_number, acc
                             break;
                     
                         default:
-                            console.log(responseJson.msg);
+                            console.log('Technical error.');
                             error = 'Technical error.'
                             break;
                     }
@@ -492,7 +492,7 @@ export const cancelOrder = (order_id, access_token) => {
                             break;
 
                         default:
-                            error = responseJson.msg;
+                            error = 'Technical error.';
                             break;
                     }
 

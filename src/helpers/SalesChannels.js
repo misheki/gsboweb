@@ -22,7 +22,7 @@ export const createSalesChannel = (name, access_token) => {
 
                     switch (responseJson.result) {                    
                         default:
-                            error = responseJson.msg;
+                            error = 'Technical error.';
                             break;
                     }
 
@@ -57,7 +57,7 @@ export const listSalesChannels = (access_token) => {
 
                     switch (responseJson.result) {                    
                         default:
-                            error = responseJson.msg;
+                            error = 'Technical error.';
                             break;
                     }
 
@@ -96,7 +96,7 @@ export const deleteSalesChannel = (salechannel_id, access_token) => {
                             break;
                     
                         default:
-                            error = responseJson.msg;
+                            error = 'Technical error.';
                             break;
                     }
 
@@ -135,7 +135,7 @@ export const editSalesChannel = (salechannel_id, name, access_token) => {
 
                     switch (responseJson.result) {                    
                         default:
-                            error = responseJson.msg;
+                            error = 'Technical error.';
                             break;
                     }
 
