@@ -299,7 +299,7 @@ class ManageMenu extends Component {
                         }}>
                         <Column title="Order" dataIndex="order" key="order" />
                         <Column title="Menu" dataIndex="name" key="name" />
-                        <Column title="Role" dataIndex="roles_name" key="roles_name"  render={(val) => <p style={{marginTop: 10}}>{val}</p>}/>
+                        <Column title="Role" dataIndex="roles_name" key="roles_name" render={(val) => <p style={{marginTop: 10}}>{val.join()}</p>}/>
                     </Table>
 
                     <Modal
@@ -372,7 +372,7 @@ class ManageMenu extends Component {
                         <Column title="Order" dataIndex="order" key="order" />
                         <Column title="Sub Menu" dataIndex="name" key="name" />
                         <Column title="Menu" dataIndex="menu" key="menu" />
-                        <Column title="Role" dataIndex="roles_name" key="roles_name"  render={(val) => <p style={{marginTop: 10}}>{val}</p>} />
+                        <Column title="Role" dataIndex="roles_name" key="roles_name"  render={(val) => <p style={{marginTop: 10}}>{val.join()}</p>} />
                     </Table>
 
                     <Modal

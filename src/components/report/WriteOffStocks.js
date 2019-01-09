@@ -82,7 +82,7 @@ class WriteOffStocks extends Component {
                     </Header>
                     <div style={{ padding: '30px', width:'90%'}}>
                         <div style={{ paddingBottom: '20px'}}>
-                            <b>Filter by range date : </b>
+                            <b>Filter by Date : </b>
                             <RangePicker
                                 defaultValue={[moment('2019-01-01', dateFormat), moment('2019-01-01', dateFormat)]}
                                 format={dateFormat}
