@@ -19,7 +19,7 @@ export const listSku = (access_token) => {
 
                     switch (responseJson.result) {
                         default:
-                            error = responseJson.msg;
+                            error = 'Technical error.';
                             break;
                     }
 
@@ -57,7 +57,7 @@ export const listSkuPackage = (sku_id, access_token) => {
 
                     switch (responseJson.result) {
                         default:
-                            error = responseJson.msg;
+                            error = 'Technical error.';
                             break;
                     }
 
@@ -155,7 +155,7 @@ export const deleteSku = (sku_id, access_token) => {
                             break;
                     
                         default:
-                            error = responseJson.msg;
+                            error = 'Technical error.';
                             break;
                     }
 

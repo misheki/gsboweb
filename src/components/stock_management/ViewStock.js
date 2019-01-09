@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Layout,  Table, AutoComplete, Input, Button, Icon, Modal, Form, Select, Row, Col,  } from 'antd';
-import { listStock, writeOff } from '../../helpers/StockController';
+import { Layout,  Table, AutoComplete, Input, Button, Icon, Modal, Form, Select, Row, Col, List  } from 'antd';
+import { listStock, writeOff, statusLog } from '../../helpers/StockController';
 import { checkAccess } from '../../helpers/PermissionController';
 import { Helmet } from 'react-helmet';
 
@@ -16,6 +16,7 @@ class ViewStock extends Component {
     constructor(props) {
         super(props);
         this.state = {
+           data:[],
            stocks: [],
            skus: null,
            packages: null,
@@ -25,6 +26,7 @@ class ViewStock extends Component {
            package_filter: null,
            status_filter: null,
            visible: false,
+           visible_view: false,
            loading: false,
            stock_id: '',
            required: ['viewStock', 'writeoffStock'],
@@ -79,6 +81,24 @@ class ViewStock extends Component {
             })
     }
 
+    showStatusLog() {
+        var access_token = sessionStorage.getItem('access_token');
+        const { stock_id } = this.state;
+        
+        statusLog(stock_id, access_token)
+            .then(result => {            
+                if (result.result === 'GOOD') {
+                    if(this._isMounted) this.setState({  data: result.data });
+                }
+            })
+            .catch(error => {
+                Modal.error({
+                    title: 'Error',
+                    content: error
+                })
+            })
+    }
+
     handleSkuFilter = (value)  => {
         if(this._isMounted) this.setState({ sku_filter : value }, () => this.showListStock());
     }
@@ -98,12 +118,17 @@ class ViewStock extends Component {
     handleCancel = () => {
         const form = this.props.form;
         form.resetFields();
-        if(this._isMounted) this.setState({ visible: false });
+        if(this._isMounted) this.setState({ visible: false, visible_view: false});
     }
 
     showWriteOffModal = () => {
         if(this._isMounted) this.setState({ visible: true });
     }
+
+    showViewModal = () => {
+        if(this._isMounted) this.setState({ visible_view: true }, () => this.showStatusLog());
+    }
+
 
     handleWriteOff = () => {
         var access_token = sessionStorage.getItem('access_token');
@@ -198,7 +223,7 @@ class ViewStock extends Component {
     }
 
     render() {
-        const { stocks, visible, loading, allowed } = this.state;
+        const { stocks, visible, loading, allowed, data } = this.state;
         const { getFieldDecorator } = this.props.form;
 
         if (allowed.includes('viewStock')) {
@@ -260,7 +285,7 @@ class ViewStock extends Component {
                                     <div>
                                         {allowed.includes('writeoffStock') === true ? 
                                         <Button
-                                            disabled={record.stock_status === 'Sold' ? true : false}
+                                            disabled={record.stock_status === 'Sold' || record.stock_status === 'Write-off' ? true : false}
                                             style={{ margin:'10px' }}
                                             icon="stop" 
                                             type="primary" onClick={() => (this._isMounted === true) ? this.setState({ stock_id: record.id }, this.showWriteOffModal) : null}>
@@ -269,7 +294,7 @@ class ViewStock extends Component {
                                         <Button
                                             style={{ margin:'10px' }}
                                             icon="eye" 
-                                            type="primary">
+                                            type="primary" onClick={() => (this._isMounted === true) ? this.setState({ stock_id: record.id }, this.showViewModal) : null}>
                                             
                                         </Button> 
                                     </div>
@@ -290,6 +315,19 @@ class ViewStock extends Component {
                                     )}
                                 </FormItem>
                             </Form>
+                        </Modal>
+
+                        <Modal
+                            visible={this.state.visible_view}
+                            onCancel={this.handleCancel}
+                            title="Status Log"
+                            footer={<Button type="primary" onClick={this.handleCancel}>OK</Button>}>
+                              <List
+                                size="small"
+                                bordered
+                                dataSource={data}
+                                renderItem={item => (<List.Item>{item}</List.Item>)}
+                            />
                         </Modal>
                     </div>           
                 </div>

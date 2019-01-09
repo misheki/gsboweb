@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Layout, Form, Input, Button, Row, Col, Select, Icon, Modal } from 'antd';
-import { createOrder, saleChannelList } from '../../helpers/OrderController';
+import { createOrder, saleChannelList, latestOrder } from '../../helpers/OrderController';
 import { listSku, listSkuPackage } from '../../helpers/SkuController';
 import { checkAccess } from '../../helpers/PermissionController';
 import { Helmet } from 'react-helmet';
@@ -23,7 +23,9 @@ class NewOrder extends Component {
             loading: false,
             package_key: 0,
             required: ['newOrder'],
-            allowed: []
+            allowed: [],
+            disable_order_number: true,
+            pre_order_ref_num: null
         };
     }
 
@@ -145,9 +147,43 @@ class NewOrder extends Component {
         });
     }
 
+    handleDirectSale(sale_channel_name) {
+        const { form } = this.props;
+        const { pre_order_ref_num } = this.state;
+        var access_token = sessionStorage.getItem('access_token');
+
+        this.setState({ disable_order_number: false });
+
+        if (sale_channel_name === 'Direct Sales') {
+            latestOrder(access_token)
+                .then(result => {
+                    if (result.result === 'GOOD') {
+                        form.setFieldsValue({
+                            order_ref_num: result.data
+                        });
+
+                        this.setState({ pre_order_ref_num: result.data });
+                    }
+                })
+                .catch(error => {
+                    Modal.error({
+                        title: 'Error',
+                        content: error
+                    })
+                })
+        }
+        else {
+            if (form.getFieldValue('order_ref_num') === pre_order_ref_num) {
+                form.setFieldsValue({
+                    order_ref_num: null
+                });   
+            }
+        }
+    }
+
     render() {
         const { getFieldDecorator, getFieldValue } = this.props.form;
-        const { skus, packages, sale_channels, loading, allowed } = this.state;
+        const { skus, packages, sale_channels, loading, allowed, disable_order_number } = this.state;
 
         getFieldDecorator('keys', { initialValue: [0] });
         const keys = getFieldValue('keys');
@@ -259,24 +295,24 @@ class NewOrder extends Component {
                             <h3 style={{paddingBottom:'10px'}}>Customer Details</h3>
                             <Row gutter={16}>
                                 <Col span={12}>
-                                    <FormItem label="Order Number">
-                                        {getFieldDecorator('order_ref_num', {
-                                            rules: [{ required: true, message: 'Please input order number!' }]
-                                        })(
-                                            <Input />
-                                        )}
-                                    </FormItem>
-                                </Col>
-                                <Col span={12}>
-                                    <FormItem label="Sale Channel">
+                                    <FormItem label="Sales Channel">
                                         {getFieldDecorator('sale_channel_id', {
                                             rules: [{ required: true, message: 'Please select sale channel!' }]
                                         })(
                                             <Select placeholder="Please select the courier">
                                                 {sale_channels.map((sale_channel) =>
-                                                    <Option key={sale_channel.id} value={sale_channel.id}>{sale_channel.name}</Option>
+                                                    <Option key={sale_channel.id} value={sale_channel.id} onClick={() => this.handleDirectSale(sale_channel.name)}>{sale_channel.name}</Option>
                                                 )}
                                         </Select>
+                                        )}
+                                    </FormItem>
+                                </Col>
+                                <Col span={12}>
+                                    <FormItem label="Order Number">
+                                        {getFieldDecorator('order_ref_num', {
+                                            rules: [{ required: true, message: 'Please input order number!' }]
+                                        })(
+                                            <Input disabled={disable_order_number} placeholder={disable_order_number ? 'Please choose the sales channel first!' : null} />
                                         )}
                                     </FormItem>
                                 </Col>

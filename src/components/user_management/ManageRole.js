@@ -179,7 +179,7 @@ class ManageRole extends Component {
                                 onClick: () => {if(this._isMounted) this.setState({ role: Object.assign({}, record), role_id: record.role_id }, this.showEditModal)}
                             };
                         }}>
-                        <Column title="Role" dataIndex="role_name" key="role_name" width="20%"/>
+                        <Column title="Role" dataIndex="role_name" key="role_name" width="20%"  render={(val) => <p style={{marginTop: 10}}>{val}</p>}/>
                         <Column title="Permissions" dataIndex="permissions_name" key="permissions_name"  render={(text => text.join(', '))} />
                     </Table>
 

@@ -24,7 +24,7 @@ export const listImportLogs = (date_from, date_to, search, access_token) => {
 
                     switch (responseJson.result) {
                         default:
-                            error = responseJson.msg;
+                            error = 'Technical error.';
                             break;
                     }
 
@@ -64,7 +64,7 @@ export const listWriteoffLogs = (date_from, date_to, search, access_token) => {
 
                     switch (responseJson.result) {
                         default:
-                            error = responseJson.msg;
+                            error = 'Technical error.';
                             break;
                     }
 
