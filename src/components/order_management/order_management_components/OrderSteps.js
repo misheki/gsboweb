@@ -129,7 +129,7 @@ class OrderSteps extends Component {
     fetchListReadyShip() {
         var access_token = sessionStorage.getItem('access_token');
 
-        listReadyShip(access_token)
+        listReadyShip(null, null, null, access_token)
             .then(result => {
                 if (result.result === 'GOOD') {
                     result.data.forEach(order => {
@@ -264,7 +264,7 @@ class OrderSteps extends Component {
                     if(this._isMounted) this.setState({ complete_order_loading: false });
                     message.success('Processing complete!');
                     this.props.process_order(false);
-                    this.props.print_order();
+                    // this.props.print_order();
                 }
             })
             .catch(error => {
@@ -834,6 +834,7 @@ class OrderSteps extends Component {
     }
 
     render() {
+        console.log(this.state.order_overview);
         return (
             <div>
                 <Button
