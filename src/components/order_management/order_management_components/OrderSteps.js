@@ -186,7 +186,7 @@ class OrderSteps extends Component {
         const current = this.state.current + 1;
         var access_token = sessionStorage.getItem('access_token');
 
-        form.validateFields(['customer_name', 'customer_email', 'customer_contact_num', 'stock_details'], (err, values) => {
+        form.validateFields(['customer_name', 'customer_email', 'customer_contact_num', 'discount', 'stock_details'], (err, values) => {
             if (err) {
                 return;
             }
@@ -200,7 +200,7 @@ class OrderSteps extends Component {
                     });
 
                     this.setState({ request_stock_loading: true });
-                    requestStock(order_id, filtered_stocks, values.customer_name, values.customer_email, values.customer_contact_num, access_token)
+                    requestStock(order_id, filtered_stocks, values.customer_name, values.customer_email, values.customer_contact_num, values.discount, access_token)
                         .then(result => {
                             if (result.result === 'GOOD') {
                                 if(this._isMounted) this.setState({ request_stock_loading: false, current });
@@ -633,11 +633,15 @@ class OrderSteps extends Component {
                     </Row>
                     {this.packageDetailItems()}
                     <Form.Item
-                        label="Discount :"
+                        label="Discount (RM)"
                         labelCol={{ span: 2 }}
                         wrapperCol={{ span: 4 }}
                         >
                             {getFieldDecorator('discount', {
+                                initialValue: order.discount,
+                                rules: [{
+                                    pattern: new RegExp(validateAmount), message: 'The discount amount must be a decimal number.'
+                                }]
                             })(
                                 <Input />
                             )}
@@ -693,7 +697,7 @@ class OrderSteps extends Component {
                                     {getFieldDecorator('shipping_fee', {
                                         initialValue: order.shipping_fee,
                                         rules: [{
-                                            pattern: new RegExp(validateAmount), message: 'The shipping amount can be a decimal number.'
+                                            pattern: new RegExp(validateAmount), message: 'The shipping amount must be a decimal number.'
                                         }, {
                                             required: true, message: 'Please fill in the shipping amount field!'
                                         }]

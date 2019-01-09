@@ -1,4 +1,4 @@
-export const createOrder = (sale_channel_id, order_ref_num, customer_name, customer_email, customer_contact_num, customer_address, customer_postcode, customer_state, package_details, shipping_fee, access_token) => {
+export const createOrder = (sale_channel_id, order_ref_num, customer_name, customer_email, customer_contact_num, customer_address, customer_postcode, customer_state, package_details, shipping_fee, discount, access_token) => {
     return Promise.race([
         new Promise((resolve, reject) =>
             fetch(global.URL + 'api/order/create', {
@@ -18,7 +18,8 @@ export const createOrder = (sale_channel_id, order_ref_num, customer_name, custo
                     customer_postcode,
                     customer_state,
                     package_details,
-                    shipping_fee
+                    shipping_fee,
+                    discount
                 })
             })
             .then((response) => response.json())
@@ -251,7 +252,7 @@ export const showOrders = (order_id, access_token) => {
     ])
 };
 
-export const requestStock = (order_id, package_details, customer_name, customer_email, customer_contact_num, access_token) => {
+export const requestStock = (order_id, package_details, customer_name, customer_email, customer_contact_num, discount, access_token) => {
     return Promise.race([
         new Promise((resolve, reject) =>
             fetch(global.URL + 'api/order/request/stock', {
@@ -266,7 +267,8 @@ export const requestStock = (order_id, package_details, customer_name, customer_
                     package_details,
                     customer_name,
                     customer_email,
-                    customer_contact_num
+                    customer_contact_num,
+                    discount
                 })
             })
             .then((response) => response.json())

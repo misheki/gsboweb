@@ -124,7 +124,7 @@ class NewOrder extends Component {
             }
 
             if(this._isMounted) this.setState({ loading: true });
-            createOrder(values.sale_channel_id, values.order_ref_num, values.customer_name, values.customer_email, values.customer_contact_num, values.customer_address, values.customer_postcode, values.customer_state, values.package_details, values.shipping_fee, access_token)
+            createOrder(values.sale_channel_id, values.order_ref_num, values.customer_name, values.customer_email, values.customer_contact_num, values.customer_address, values.customer_postcode, values.customer_state, values.package_details, values.shipping_fee, values.discount, access_token)
                 .then(result => {
                     if (result.result === 'GOOD') {
                         if(this._isMounted) this.setState({ loading: false });
@@ -410,13 +410,13 @@ class NewOrder extends Component {
                                 </Row>
                                 {formItems}
                                 <Form.Item
-                                    label="Discount :"
+                                    label="Discount (RM)"
                                     labelCol={{ span: 2 }}
                                     wrapperCol={{ span: 4 }}
                                     >
                                        {getFieldDecorator('discount', {
                                         })(
-                                            <Input />
+                                            <Input placeholder="(optional)"/>
                                         )}
                                 </Form.Item>
                             </div>

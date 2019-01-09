@@ -270,7 +270,7 @@ class ViewStock extends Component {
                                             style={{ margin:'10px' }}
                                             icon="eye" 
                                             type="primary">
-                                            View
+                                            
                                         </Button> 
                                     </div>
                                 )} />
