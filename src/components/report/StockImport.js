@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Layout, Form, Table, DatePicker , Select, Button } from 'antd';
 import { Helmet } from 'react-helmet';
 import moment from 'moment';
+import { listImportLogs } from '../../helpers/ReportController';
 
 const { Header } = Layout;
 const { Column } = Table;
@@ -20,6 +21,7 @@ class StockImport extends Component {
             user_filter:null
         };
     }
+    
     onChange = (value, dateString) => {
         console.log('Selected Time: ', value);
         console.log('Formatted Selected Time: ', dateString)
