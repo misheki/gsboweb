@@ -165,7 +165,7 @@ class ManagePermission extends Component {
                                 onClick: () => {if(this._isMounted) this.setState({ permission: Object.assign({}, record), permission_id: record.id }, this.showEditModal)}
                             };
                         }}>
-                        <Column title="Permission Name" dataIndex="name" key="name" />
+                        <Column title="Permission Name" dataIndex="name" key="name"  render={(val) => <p style={{marginTop: 10}}>{val}</p>}/>
                     </Table>
 
                     <Modal

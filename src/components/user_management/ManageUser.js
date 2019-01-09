@@ -207,7 +207,7 @@ class ManageUser extends Component {
                         <Column title="Username" dataIndex="username" key="username" />
                         <Column title="Email" dataIndex="email" key="email" />
                         <Column title="Roles" dataIndex="roles_name" key="roles_name" />
-                        <Column title="Status" dataIndex="status" key="status" />
+                        <Column title="Status" dataIndex="status" key="status"  render={(val) => <p style={{marginTop: 10}}>{val}</p>} />
                     </Table>
                     
                     <Modal
