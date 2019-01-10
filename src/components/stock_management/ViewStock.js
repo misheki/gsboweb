@@ -179,7 +179,8 @@ class ViewStock extends Component {
                     style={{ width: 150, marginRight:5}}
                     placeholder="Filter by SKU"
                     value={this.state.sku_filter ? this.state.sku_filter : undefined}
-                    onChange={this.handleSkuFilter}>
+                    onChange={this.handleSkuFilter}
+                    filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}>
                     {skus.map(sku => <Option key={sku.id} value={sku.id}>{sku.sku}</Option>)}
                 </Select>
             );
@@ -197,7 +198,8 @@ class ViewStock extends Component {
                     style={{ width: 180, marginRight:5}}
                     placeholder="Filter by Package"
                     value={this.state.package_filter ? this.state.package_filter : undefined}
-                    onChange={this.handlePackageFilter}>
+                    onChange={this.handlePackageFilter}
+                    filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}>
                     {packages.map(pkg => <Option key={pkg.id} value={pkg.id}>{pkg.code}</Option>)}
                 </Select>
             );
@@ -215,7 +217,8 @@ class ViewStock extends Component {
                     style={{ width: 150, marginRight:5}}
                     placeholder="Filter by Status"
                     value={this.state.status_filter ? this.state.status_filter : undefined}
-                    onChange={this.handleStatusFilter}>
+                    onChange={this.handleStatusFilter}
+                    filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}>
                     {statuses.map(status => <Option key={status.id} value={status.id}>{status.name}</Option>)}
                 </Select>
             );
