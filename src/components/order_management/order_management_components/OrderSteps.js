@@ -633,8 +633,8 @@ class OrderSteps extends Component {
                     </Row>
                     {this.packageDetailItems()}
                     <Form.Item
-                        label="Discount (RM)"
-                        labelCol={{ span: 2 }}
+                        label="Discount (RM) :"
+                        labelCol={{ span: 3 }}
                         wrapperCol={{ span: 4 }}
                         >
                             {getFieldDecorator('discount', {
@@ -643,7 +643,7 @@ class OrderSteps extends Component {
                                     pattern: new RegExp(validateAmount), message: 'The discount amount must be a decimal number.'
                                 }]
                             })(
-                                <Input />
+                                <Input disabled={order_status}/>
                             )}
                     </Form.Item>
                 </Form>
