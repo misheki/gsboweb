@@ -446,13 +446,14 @@ class NewOrder extends Component {
                                 </Row>
                                 {formItems}
                                 <Form.Item
-                                    label="Discount (RM)"
+                                    label="Discount"
                                     labelCol={{ span: 2 }}
                                     wrapperCol={{ span: 4 }}
                                     >
                                        {getFieldDecorator('discount', {
+                                           rules: [{ pattern: new RegExp(validateAmount), message: 'The discount amount must be a decimal number.' }]
                                         })(
-                                            <Input placeholder="(optional)"/>
+                                            <Input addonBefore={'RM'} placeholder="(optional)"/>
                                         )}
                                 </Form.Item>
                             </div>
