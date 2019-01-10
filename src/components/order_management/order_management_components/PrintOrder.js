@@ -58,7 +58,7 @@ class PrintOrder extends Component {
         const { order } = this.state;
 
         const formItemLayout = {
-            labelCol: { span: 8 },
+            labelCol: { span: 9 },
             wrapperCol: { span: 10 }
         };
 

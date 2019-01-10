@@ -702,7 +702,7 @@ class OrderSteps extends Component {
                                             required: true, message: 'Please fill in the shipping amount field!'
                                         }]
                                     })(
-                                        <Input />
+                                        <Input addonBefore={'RM'} />
                                     )}
                                 </Form.Item>
                             </Col>

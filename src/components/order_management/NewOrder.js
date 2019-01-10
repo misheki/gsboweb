@@ -366,11 +366,11 @@ class NewOrder extends Component {
                                     </FormItem>
                                 </Col>
                                 <Col span={4}>
-                                    <FormItem label="Shipping Amount (RM)">
+                                    <FormItem label="Shipping Amount">
                                         {getFieldDecorator('shipping_fee', {
                                             rules: [{ pattern: new RegExp(validateAmount), message: 'The shipping amount can be a decimal number.' }]
                                         })(
-                                            <Input />
+                                            <Input addonBefore={'RM'} />
                                         )}
                                     </FormItem> 
                                 </Col>
