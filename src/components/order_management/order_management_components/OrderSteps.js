@@ -770,7 +770,7 @@ class OrderSteps extends Component {
                             <Col span={12}>
                             <h3 style={{paddingBottom:'10px'}}>Order Details </h3>  
                                 <Form.Item {...formItemLayout} label="Order Date : "  className="form-item">
-                                <p>{order.created_at}</p> 
+                                <p>{order_overview.order_date}</p> 
                                 </Form.Item>
                                 <Form.Item {...formItemLayout} label="Sales Channel : " className="form-item">
                                     <p>{order.sale_channel_name} </p>
@@ -779,15 +779,15 @@ class OrderSteps extends Component {
                                     <p>{order_overview.shipping_method ? order_overview.shipping_method : 'Self Pickup'} </p>
                                 </Form.Item>
                                 {order_overview.shipping_method_id !== null ? <Form.Item {...formItemLayout} label="Tracking Number : " className="form-item">
-                                    <p>{order.tracking_number} </p>
+                                    <p>{order_overview.tracking_number} </p>
                                 </Form.Item> : null}
 
                             </Col>
                             <Col span={12}>
                                 <h3 style={{paddingBottom: '10px' }}>Customer Details</h3>  
                                 <p>{order.customer_name}</p> 
-                                <p>{order.customer_address}</p> 
-                                {order.customer_postcode ? <p>{order.customer_postcode}, {order.customer_state}</p> : null} 
+                                <p>{order_overview.customer_address}</p> 
+                                {order_overview.customer_postcode ? <p>{order_overview.customer_postcode}, {order_overview.customer_state}</p> : null} 
                                 <p>{order.customer_contact_num}</p> 
                                 <p>{order_overview.customer_email}</p> 
                             </Col>
@@ -820,10 +820,10 @@ class OrderSteps extends Component {
                             <p>RM {order_overview.total_amount}</p> 
                         </Form.Item>
                         <Form.Item  labelCol={{ span: 20 }} wrapperCol={{ span: 4 }} label="Discount : " className="form-item-right">
-                            <p>RM {order_overview.discount ? order_overview.discount : '0.00'}</p> 
+                            <p>RM - {order_overview.discount ? order_overview.discount : '0.00'}</p> 
                         </Form.Item>
                         <Form.Item  labelCol={{ span: 20 }} wrapperCol={{ span: 4 }} label="Shipping Fee : " className="form-item-right">
-                            <p>RM {order_overview.shipping_method_id ? order_overview.shipping_fee : '0.00'}</p>
+                            <p>RM {order_overview.shipping_fee ? order_overview.shipping_fee : '0.00'}</p>
                         </Form.Item>
                         <Form.Item  labelCol={{ span: 20 }} wrapperCol={{ span: 4 }} label="Total Amount : " className="form-item-right">
                             <p>RM {order_overview.total}</p> 

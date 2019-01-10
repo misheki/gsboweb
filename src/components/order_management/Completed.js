@@ -225,10 +225,10 @@ class Completed extends Component {
                                         <p>RM {this.state.order.order_total}</p> 
                                 </FormItem>
                                 <Form.Item  labelCol={{ span: 20 }} wrapperCol={{ span: 3 }} label="Discount : " className="form-item-right">
-                                    <p>RM {this.state.order.discount ? this.state.order.discount : '0.00'}</p> 
+                                    <p>- RM {this.state.order.discount ? this.state.order.discount : '0.00'}</p> 
                                 </Form.Item>
                                 <Form.Item  labelCol={{ span: 20 }} wrapperCol={{ span: 3 }} label="Shipping Fee : " className="form-item-right">
-                                    <p>RM {this.state.order.shipping_method_id ? this.state.order.shipping_fee : '0.00'}</p>
+                                    <p>RM {this.state.order.shipping_fee ? this.state.order.shipping_fee : '0.00'}</p>
                                 </Form.Item>
                                 <FormItem  labelCol={{ span: 20 }} wrapperCol={{ span: 3 }} label="Total Amount : "  className="form-item-right">
                                         <p>RM {this.state.order.total}</p> 
