@@ -816,16 +816,16 @@ class OrderSteps extends Component {
                             </Col>
                         </Row>
                         {this.packageDetailItems()}
-                        <Form.Item  labelCol={{ span: 20 }} wrapperCol={{ span: 4 }} label="Subtotal : " className="form-item-right">
+                        <Form.Item labelCol={{ span: 20 }} wrapperCol={{ span: 4 }} label="Subtotal : " className="form-item-right">
                             <p>RM {order_overview.total_amount}</p> 
                         </Form.Item>
-                        <Form.Item  labelCol={{ span: 20 }} wrapperCol={{ span: 4 }} label="Discount : " className="form-item-right">
-                            <p>RM - {order_overview.discount ? order_overview.discount : '0.00'}</p> 
-                        </Form.Item>
-                        <Form.Item  labelCol={{ span: 20 }} wrapperCol={{ span: 4 }} label="Shipping Fee : " className="form-item-right">
+                        <Form.Item labelCol={{ span: 20 }} wrapperCol={{ span: 4 }} label="Shipping : " className="form-item-right">
                             <p>RM {order_overview.shipping_fee ? order_overview.shipping_fee : '0.00'}</p>
                         </Form.Item>
-                        <Form.Item  labelCol={{ span: 20 }} wrapperCol={{ span: 4 }} label="Total Amount : " className="form-item-right">
+                        <Form.Item labelCol={{ span: 20 }} wrapperCol={{ span: 4 }} label="Less : " className="form-item-right">
+                            <p>RM {order_overview.discount ? order_overview.discount : '0.00'}</p> 
+                        </Form.Item>
+                        <Form.Item labelCol={{ span: 20 }} wrapperCol={{ span: 4 }} label="Total Amount : " className="form-item-right">
                             <p>RM {order_overview.total}</p> 
                         </Form.Item>
                     </div>
