@@ -120,7 +120,7 @@ class PendingOrder extends Component {
                     <div className="global-search-wrapper" >
                         <b>Filter by range date : </b>
                         <RangePicker
-                            defaultValue={[moment('2019-01-01', dateFormat), moment('2019-01-01', dateFormat)]}
+                            defaultValue={[moment('2019-01-01', dateFormat), moment()]}
                             format={dateFormat}
                             onChange={this.onDateChange}
                             style={{marginRight:'10px', width:'30%'}}

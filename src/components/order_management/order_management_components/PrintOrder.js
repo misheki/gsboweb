@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import { Form, Row, Col, Button, Modal } from 'antd';
+import { Form, Row, Col, Button, Modal, Table } from 'antd';
 import { listCompleted } from '../../../helpers/OrderController';
 import { Helmet } from 'react-helmet';
 import PrintProvider, { Print, NoPrint } from 'react-easy-print';
 import logo from '../../../logo.png';
 
 const FormItem = Form.Item;
+const { Column } = Table;
 
 class PrintOrder extends Component {
     _isMounted = false;
@@ -33,6 +34,7 @@ class PrintOrder extends Component {
                 if (result.result === 'GOOD') {
                     result.data.forEach(order => {
                         if (order.id === this.props.order_id) {
+                            console.log(order);
                             if(this._isMounted) this.setState({ order }, () => window.print());
                         }
                     });
@@ -62,45 +64,20 @@ class PrintOrder extends Component {
             wrapperCol: { span: 10 }
         };
 
-        const packageDetailItems = order.order_details.map((item, i) =>
-            item.stocks.map((stock, j) =>
-                <React.Fragment key={j}>
-                    <Row gutter={8} style={{ paddingBottom: '20px' }}>
-                        <Col span={2}>
-                            <div>
-                                { i + j + 1}
-                            </div>
-                        </Col>
-                        <Col span={3}>
-                            <div>
-                                {item.sku}
-                            </div>
-                        </Col>
-                        <Col span={6}>
-                            <div>
-                                {item.package}
-                            </div>
-                        </Col>
-                        
-                        <Col span={5}>
-                            <div>
-                                {stock.serial_number}
-                            </div>
-                        </Col>
-                        <Col span={5}>
-                            <div>
-                                {stock.sim_card_number}
-                            </div>
-                        </Col>
-                        <Col span={3}>
-                            <div>
-                                {item.unit_price}
-                            </div>
-                        </Col>
-                    </Row>
-                </React.Fragment>    
-                )
-        )
+        const packageDetailItems = order.order_details.reduce(function(newArray, item) {
+            return newArray.concat(item.stocks.map(function(stock, i) { 
+                return {
+                    id: i + 1,
+                    sku: item.sku,
+                    package_name: item.package,
+                    serial_number: stock.serial_number,
+                    sim_card_number: stock.sim_card_number,
+                    unit_price: item.unit_price
+                };
+            }));
+        }, []);
+                                  
+        console.log(packageDetailItems);
 
         return (
             <PrintProvider>
@@ -112,72 +89,70 @@ class PrintOrder extends Component {
                             </div>
 
                             <Form layout="vertical"> 
-                                <div style={{ padding: '20px', paddingBottom: '0px' }}>
-                                    <h2 style={{ paddingBottom: '10px' }}>Order Ref. No. {order.order_ref_num}</h2>
+                                <div style={{ padding: '20px', paddingBottom: '0px', fontSize: '10px' }}>
+                                    <h1 style={{ textAlign: "center" }}>ORDER CONFIRMATION</h1><hr></hr>
+                                    <h3 style={{ paddingBottom: '10px' }}>Order Ref. No. {order.order_ref_num}</h3>
 
                                     <Row gutter={8}>
-                                        <Col span={12}>
-                                        <h3 style={{paddingBottom:'10px'}}>Order Details </h3>
-                                            <FormItem {...formItemLayout} label="Order Date : " className="form-item">
-                                            <p>{order.order_date}</p> 
-                                            </FormItem>
-                                            <FormItem {...formItemLayout} label="Sales Channel : " className="form-item">
-                                                <p>{order.sales_channel}</p>
-                                            </FormItem>
-                                            <FormItem {...formItemLayout} label="Shipping Method : " className="form-item">
-                                                <p>{order.shipping_method}</p>
-                                            </FormItem>
-                                            <FormItem {...formItemLayout} label="Tracking Number : " className="form-item">
-                                                <p>{order.tracking_number}</p>
-                                            </FormItem>
+                                        <Col span={10} style={{border: '1px solid black', padding: '10px'}}>
+                                            <h4 style={{paddingBottom:'10px'}}>Customer Details</h4>  
+                                            Attn: {order.customer_name}<br />
+                                            Address: {order.customer_address}<br />
+                                            {order.customer_postcode}, {order.customer_state}<br />
+                                            Tel: {order.customer_contact_num} <br />
+                                            Email: {order.customer_email}<br />
                                         </Col>
-                                        <Col span={12}>
-                                            <h3 style={{paddingBottom:'10px'}}>Customer Details</h3>  
-                                            <p>{order.customer_name}</p> 
-                                            <p>{order.customer_address}</p> 
-                                            <p>{order.customer_postcode}, {order.customer_state}</p> 
-                                            <p>{order.customer_contact_num}</p> 
-                                            <p>{order.customer_email}</p> 
+                                        <Col span={1}>
+                                           
                                         </Col>
+                                        <Col span={13} style={{border: '1px solid black', padding: '10px', fontSize: '10px'}}>
+                                            <h4 style={{paddingBottom:'10px'}}>Order Details </h4>
+                                            Order Date: {order.order_date}<br /> 
+                                            Shipping Method: {order.shipping_method ? order.shipping_method : 'Self Pickup'}<br />
+                                            {order.shipping_method ? <p>{'Tracking Number: ' + order.tracking_number}</p> : <br />}
+                                        </Col>
+                                       
                                     </Row>
                                 </div>
 
                                 <div style={{ padding: '20px' }}>
-                                    <h3 style={{paddingBottom:' 10px' }}>Product Details</h3>
-                                    <Row gutter={16} style={{ backgroundColor: '#e8e8e8', padding: '10px', paddingBottom: '0px', marginBottom: '10px' }}>
-                                        <Col span={2}>
-                                            <p className="font-bold">Item</p>
-                                        </Col>
-                                        <Col span={3}>
-                                            <p className="font-bold">SKU</p>
-                                        </Col>
-                                        <Col span={6}>
-                                            <p className="font-bold">Package</p>
-                                        </Col>
-                                        <Col span={5}>
-                                            <p className="font-bold">Sim Card Number</p>
-                                        </Col>
-                                        <Col span={5}>
-                                            <p className="font-bold">Serial Number</p>
-                                        </Col>
-                                        <Col span={3}>
-                                            <p className="font-bold">Unit Price</p>
-                                        </Col>
-                                    </Row>
-                                    {packageDetailItems}
+                                    <h4 style={{paddingBottom:' 10px' }}>Product Details</h4>
 
-                                    <div style={{ paddingTop: '40px' }} className="form-item-right">
-                                        <p><span className="font-bold">Subtotal: </span>RM {order.order_total}</p>
-                                        <p><span className="font-bold">Discount: </span>- RM {order.discount ? order.shipping_fee : '0.00'}</p>
-                                        <p><span className="font-bold">Shipping Fee: </span>RM {order.shipping_fee ? order.shipping_fee : '0.00'}</p>
-                                        <p><span className="font-bold">Total Amount: </span>RM {order.total}</p>
+                                    <Table
+                                        bordered
+                                        pagination={false}
+                                        dataSource={packageDetailItems}
+                                        rowKey={item => packageDetailItems.id}>
+                                            <Column title="Item" dataIndex="id" key="id" className="printOrder" />
+                                            <Column title="SKU" dataIndex="sku" key="sku" className="printOrder" />
+                                            <Column title="Package" dataIndex="package_name" key="package_name" className="printOrder" />
+                                            <Column title="Serial Number" dataIndex="serial_number" key="serial_number" className="printOrder" />
+                                            <Column title="Mobile Number" dataIndex="sim_card_number" key="sim_card_number" className="printOrder" />
+                                            <Column title="Unit Price (RM)" dataIndex="unit_price" key="unit_price" className="printOrder" />
+                                    </Table>
+
+                                    {/* <table>
+                                        <tr>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td>Subtotal:</td>
+                                            <td>RM {order.order_total}</td>
+                                        </tr>
+                                    </table> */}
+                                    <div style={{ paddingTop: '40px', fontSize: '10px' }} className="form-item-right">
+                                        <span className="font-bold">Subtotal: </span>RM {order.order_total}<br />
+                                        <span className="font-bold">Shipping: </span>RM {order.shipping_fee ? order.shipping_fee : '0.00'}<br />
+                                        <span className="font-bold">Less (Discount): </span> RM {order.discount ? order.discount : '0.00'}<br />
+                                        <span className="font-bold">Total Amount: </span>RM {order.total}<br />
                                     </div>
 
-                                    <div className="form-item-center" style={{ paddingTop: '40px' }}>
-                                        <p className="p-no-bottom">For assistance, you may reach out to our Customer Service via:</p>
-                                        <p className="font-bold p-no-bottom">WhatsApp/SMS - +6016-339-9967</p>
-                                        <p className="font-bold">Email - cs@globalsim.my</p>
-                                        <p className="p-top-40">This is a computer-generated document. The signature is not required.</p>
+                                    <div className="form-item-center" style={{ paddingTop: '40px', fontSize: '10px' }}>
+                                        <span className="p-no-bottom">For assistance, you may reach out to our Customer Service via:</span><br />
+                                        <span className="font-bold p-no-bottom">WhatsApp/SMS - +6016-339-9967</span><br />
+                                        <span className="font-bold">Email - cs@globalsim.my</span><br />
+                                        <span className="p-top-40">This is a computer-generated document. The signature is not required.</span><br />
                                     </div>
                                 </div>
                             </Form>
