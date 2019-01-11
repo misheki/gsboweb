@@ -221,16 +221,16 @@ class Completed extends Component {
                             </Row>
                             {packageDetailItems}
                             {/* <div style={{float:'right', width:'23%'}}> */}
-                                <FormItem  labelCol={{ span: 20 }} wrapperCol={{ span: 3 }} label="Subtotal : "  className="form-item-right">
+                                <FormItem labelCol={{ span: 20 }} wrapperCol={{ span: 3 }} label="Subtotal : "  className="form-item-right">
                                         <p>RM {this.state.order.order_total}</p> 
                                 </FormItem>
-                                <Form.Item  labelCol={{ span: 20 }} wrapperCol={{ span: 3 }} label="Discount : " className="form-item-right">
-                                    <p>- RM {this.state.order.discount ? this.state.order.discount : '0.00'}</p> 
-                                </Form.Item>
-                                <Form.Item  labelCol={{ span: 20 }} wrapperCol={{ span: 3 }} label="Shipping Fee : " className="form-item-right">
+                                <Form.Item labelCol={{ span: 20 }} wrapperCol={{ span: 3 }} label="Shipping : " className="form-item-right">
                                     <p>RM {this.state.order.shipping_fee ? this.state.order.shipping_fee : '0.00'}</p>
                                 </Form.Item>
-                                <FormItem  labelCol={{ span: 20 }} wrapperCol={{ span: 3 }} label="Total Amount : "  className="form-item-right">
+                                <Form.Item labelCol={{ span: 20 }} wrapperCol={{ span: 3 }} label="Less : " className="form-item-right">
+                                    <p>RM {this.state.order.discount ? this.state.order.discount : '0.00'}</p> 
+                                </Form.Item>
+                                <FormItem labelCol={{ span: 20 }} wrapperCol={{ span: 3 }} label="Total Amount : "  className="form-item-right">
                                         <p>RM {this.state.order.total}</p> 
                                 </FormItem>
                             {/* </div> */}
