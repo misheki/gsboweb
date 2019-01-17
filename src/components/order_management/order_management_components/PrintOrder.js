@@ -84,8 +84,8 @@ class PrintOrder extends Component {
                         <Print>
                             <Form layout="vertical"> 
                                 <div style={{ padding: '20px', paddingBottom: '0px', fontSize: '12px' }}>
-                                    <img src={logo} alt="logo" style={{ width: '15%', marginRight: '110px' }} />
-                                    <span style={{fontSize: '25px', fontWeight: 'bold', color:'black'}}>ORDER CONFIRMATION</span>
+                                    <img src={logo} alt="logo" style={{ width: '20%', marginRight: '110px' }} />
+                                    <span style={{fontSize: '20px', fontWeight: 'bold', color:'black'}}>ORDER CONFIRMATION</span>
                                     <hr></hr>
                                     <h3 style={{ paddingBottom: '10px' }}>Order Ref. No. {order.order_ref_num}</h3>
 
@@ -156,7 +156,7 @@ class PrintOrder extends Component {
                                         pagination={false}
                                         dataSource={packageDetailItems}
                                         rowKey={item => packageDetailItems.id}>
-                                            <Column title="No." dataIndex="id" key="id" className="printOrder" />
+                                            <Column title="#" dataIndex="id" key="id" className="printOrder" />
                                             <Column title="SKU" dataIndex="sku" key="sku" className="printOrder" />
                                             <Column title="Package" dataIndex="package_name" key="package_name" className="printOrder" />
                                             <Column title="Serial Number" dataIndex="serial_number" key="serial_number" className="printOrder" />
@@ -164,16 +164,16 @@ class PrintOrder extends Component {
                                     </Table>
 
                                     <div style={{ paddingTop: '40px', fontSize: '12px', textAlign: 'right' }}>
-                                        <span style={{display: 'inline-block', width: '150px', fontWeight: 'bold', marginRight: '20px'}}>Subtotal : </span><span style={{textAlign: 'left', display: 'inline-block', width: '80px', fontWeight: 'bold'}}>RM {order.order_total}</span><br />
-                                        <span style={{display: 'inline-block', width: '150px', fontWeight: 'bold', marginRight: '20px'}}>Shipping : </span><span style={{textAlign: 'left', display: 'inline-block', width: '80px', fontWeight: 'bold'}}>RM {order.shipping_fee ? order.shipping_fee : '0.00'}</span><br />
-                                        <span style={{display: 'inline-block', width: '150px', fontWeight: 'bold', marginRight: '20px'}}>Less (Discount) : </span><span style={{textAlign: 'left', display: 'inline-block', width: '80px', fontWeight: 'bold'}}>RM {order.discount ? order.discount : '0.00'}</span><br />
-                                        <span style={{display: 'inline-block', width: '150px', fontWeight: 'bold', marginRight: '20px'}}>Total Amount : </span><span style={{textAlign: 'left', display: 'inline-block', width: '80px', fontWeight: 'bold'}}>RM {order.total}</span><br />
+                                        <span style={{display: 'inline-block', width: '150px', fontWeight: 'bold', marginRight: '20px'}}>Subtotal : </span><span style={{textAlign: 'left', display: 'inline-block', width: '77px'}}>RM {order.order_total}</span><br />
+                                        <span style={{display: 'inline-block', width: '150px', fontWeight: 'bold', marginRight: '20px'}}>Shipping : </span><span style={{textAlign: 'left', display: 'inline-block', width: '77px'}}>RM {order.shipping_fee ? order.shipping_fee : '0.00'}</span><br />
+                                        <span style={{display: 'inline-block', width: '150px', fontWeight: 'bold', marginRight: '20px'}}>Less (Discount) : </span><span style={{textAlign: 'left', display: 'inline-block', width: '77px'}}>RM {order.discount ? order.discount : '0.00'}</span><br />
+                                        <span style={{display: 'inline-block', width: '150px', fontWeight: 'bold', marginRight: '20px'}}>Total Amount : </span><span style={{textAlign: 'left', display: 'inline-block', width: '77px', fontWeight: 'bold'}}>RM {order.total}</span><br />
                                     </div>
 
                                     <div className="form-item-center" style={{ paddingTop: '40px', fontSize: '10px' }}>
                                         <span className="p-no-bottom">For assistance, you may reach out to our Customer Service via:</span><br />
-                                        <span className="font-bold p-no-bottom">WhatsApp/SMS - +6016-339-9967</span><br />
-                                        <span className="font-bold">Email - cs@globalsim.my</span><br />
+                                        <span className="font-bold p-no-bottom">WhatsApp/SMS : +6016-339-9967</span><br />
+                                        <span className="font-bold">Email : cs@globalsim.my</span><br />
                                         <span className="p-top-40">This is a computer-generated document. No signature is required.</span><br />
                                     </div>
                                 </div>
