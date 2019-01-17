@@ -186,7 +186,7 @@ class App extends Component {
                 <PrintProvider>
                     <NoPrint>
                         <Footer style={{ textAlign: 'center' }}>
-                            Global Sim ©2018
+                            Global Sim ©2019
                         </Footer>
                     </NoPrint>
                 </PrintProvider>

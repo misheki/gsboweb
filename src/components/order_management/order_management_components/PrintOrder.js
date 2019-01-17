@@ -162,10 +162,10 @@ class PrintOrder extends Component {
                                     </Table>
 
                                     <div style={{ paddingTop: '40px', fontSize: '12px', textAlign: 'right' }}>
-                                        <span style={{display: 'inline-block', width: '150px', fontWeight: 'bold', marginRight: '20px'}}>Subtotal : </span><span style={{textAlign: 'left', display: 'inline-block', width: '77px'}}>RM {order.order_total}</span><br />
-                                        <span style={{display: 'inline-block', width: '150px', fontWeight: 'bold', marginRight: '20px'}}>Shipping : </span><span style={{textAlign: 'left', display: 'inline-block', width: '77px'}}>RM {order.shipping_fee ? order.shipping_fee : '0.00'}</span><br />
-                                        <span style={{display: 'inline-block', width: '150px', fontWeight: 'bold', marginRight: '20px'}}>Less (Discount) : </span><span style={{textAlign: 'left', display: 'inline-block', width: '77px'}}>RM {order.discount ? order.discount : '0.00'}</span><br />
-                                        <span style={{display: 'inline-block', width: '150px', fontWeight: 'bold', marginRight: '20px'}}>Total Amount : </span><span style={{textAlign: 'left', display: 'inline-block', width: '77px', fontWeight: 'bold'}}>RM {order.total}</span><br />
+                                        <span style={{display: 'inline-block', width: '150px', fontWeight: 'bold', marginRight: '20px'}}>Subtotal :&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RM</span><span style={{textAlign: 'right', display: 'inline-block', width: '36px', marginRight: '5px'}}>{order.order_total}</span><br />
+                                        <span style={{display: 'inline-block', width: '150px', fontWeight: 'bold', marginRight: '20px'}}>Shipping :&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RM</span><span style={{textAlign: 'right', display: 'inline-block', width: '36px', marginRight: '5px'}}>{order.shipping_fee ? order.shipping_fee : '0.00'}</span><br />
+                                        <span style={{display: 'inline-block', width: '150px', fontWeight: 'bold', marginRight: '20px'}}>Discount :&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(RM</span><span style={{textAlign: 'right', display: 'inline-block', width: '36px', marginRight: '5px'}}>{order.discount ? order.discount : '0.00'})</span><br />
+                                        <span style={{display: 'inline-block', width: '150px', fontWeight: 'bold', marginRight: '20px'}}>Total Amount :&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RM</span><span style={{textAlign: 'right', display: 'inline-block', width: '36px', marginRight: '5px', fontWeight: 'bold'}}>{order.total}</span><br />
                                     </div>
 
                                     <div className="form-item-center" style={{ paddingTop: '40px', fontSize: '10px' }}>
