@@ -141,12 +141,12 @@ class Completed extends Component {
                     
                     <Col span={4}>
                         <Form.Item>
-                            <Input value={stock.serial_number} disabled />
+                            <Input value={stock.sim_card_number} disabled />
                         </Form.Item>
                     </Col>
                     <Col span={5}>
                         <Form.Item>
-                            <Input  value={stock.sim_card_number} disabled />
+                            <Input  value={stock.serial_number} disabled />
                         </Form.Item>
                     </Col>
                     <Col span={2}>
