@@ -164,10 +164,10 @@ class PrintOrder extends Component {
                                     </Table>
 
                                     <div style={{ paddingTop: '40px', fontSize: '12px', textAlign: 'right' }}>
-                                        <span style={{display: 'inline-block', width: '150px', fontWeight: 'bold', marginRight: '20px'}}>Subtotal : </span><span style={{textAlign: 'left', display: 'inline-block', width: '125px', fontWeight: 'bold'}}>RM {order.order_total}</span><br />
-                                        <span style={{display: 'inline-block', width: '150px', fontWeight: 'bold', marginRight: '20px'}}>Shipping : </span><span style={{textAlign: 'left', display: 'inline-block', width: '125px', fontWeight: 'bold'}}>RM {order.shipping_fee ? order.shipping_fee : '0.00'}</span><br />
-                                        <span style={{display: 'inline-block', width: '150px', fontWeight: 'bold', marginRight: '20px'}}>Less (Discount) : </span><span style={{textAlign: 'left', display: 'inline-block', width: '125px', fontWeight: 'bold'}}>RM {order.discount ? order.discount : '0.00'}</span><br />
-                                        <span style={{display: 'inline-block', width: '150px', fontWeight: 'bold', marginRight: '20px'}}>Total Amount : </span><span style={{textAlign: 'left', display: 'inline-block', width: '125px', fontWeight: 'bold'}}>RM {order.total}</span><br />
+                                        <span style={{display: 'inline-block', width: '150px', fontWeight: 'bold', marginRight: '20px'}}>Subtotal : </span><span style={{textAlign: 'left', display: 'inline-block', width: '80px', fontWeight: 'bold'}}>RM {order.order_total}</span><br />
+                                        <span style={{display: 'inline-block', width: '150px', fontWeight: 'bold', marginRight: '20px'}}>Shipping : </span><span style={{textAlign: 'left', display: 'inline-block', width: '80px', fontWeight: 'bold'}}>RM {order.shipping_fee ? order.shipping_fee : '0.00'}</span><br />
+                                        <span style={{display: 'inline-block', width: '150px', fontWeight: 'bold', marginRight: '20px'}}>Less (Discount) : </span><span style={{textAlign: 'left', display: 'inline-block', width: '80px', fontWeight: 'bold'}}>RM {order.discount ? order.discount : '0.00'}</span><br />
+                                        <span style={{display: 'inline-block', width: '150px', fontWeight: 'bold', marginRight: '20px'}}>Total Amount : </span><span style={{textAlign: 'left', display: 'inline-block', width: '80px', fontWeight: 'bold'}}>RM {order.total}</span><br />
                                     </div>
 
                                     <div className="form-item-center" style={{ paddingTop: '40px', fontSize: '10px' }}>
