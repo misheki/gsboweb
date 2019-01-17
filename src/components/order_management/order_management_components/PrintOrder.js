@@ -64,10 +64,10 @@ class PrintOrder extends Component {
             wrapperCol: { span: 10 }
         };
 
-        const packageDetailItems = order.order_details.reduce(function(newArray, item) {
-            return newArray.concat(item.stocks.map(function(stock, i) { 
+        const packageDetailItems = order.order_details.reduce(function(newArray, item, i) {
+            return newArray.concat(item.stocks.map(function(stock, j) { 
                 return {
-                    id: i + 1,
+                    id: i + j + 1,
                     sku: item.sku,
                     package_name: item.package,
                     serial_number: stock.serial_number,
@@ -89,24 +89,71 @@ class PrintOrder extends Component {
                             </div>
 
                             <Form layout="vertical"> 
-                                <div style={{ padding: '20px', paddingBottom: '0px', fontSize: '10px' }}>
+                                <div style={{ padding: '20px', paddingBottom: '0px', fontSize: '12px' }}>
                                     <h1 style={{ textAlign: "center" }}>ORDER CONFIRMATION</h1><hr></hr>
                                     <h3 style={{ paddingBottom: '10px' }}>Order Ref. No. {order.order_ref_num}</h3>
 
                                     <Row gutter={8}>
                                         <Col span={10} style={{border: '1px solid black', padding: '10px'}}>
                                             <h4 style={{paddingBottom:'10px'}}>Customer Details</h4>  
+                                            <Row gutter={8}>
+                                                <Col span={8}>Name</Col>
+                                                <Col span={2}>:</Col>
+                                                <Col span={8}>{order.customer_name}</Col>
+                                            </Row>
+                                            <Row gutter={8}>
+                                                <Col span={8}>Address</Col>
+                                                <Col span={2}>:</Col>
+                                                <Col span={8}>{order.customer_address ? order.customer_address : 'N/A'}</Col>
+                                            </Row>
+                                            {order.customer_postcode ? 
+                                                <Row gutter={8}>
+                                                    <Col span={8}></Col>
+                                                    <Col span={2}></Col>
+                                                    <Col span={8}> {order.customer_postcode ? order.customer_postcode + ', ' : null} {order.customer_state}</Col>
+                                                </Row>
+                                            : null}
+                                            <Row gutter={8}>
+                                                <Col span={8}>Contact No.</Col>
+                                                <Col span={2}>:</Col>
+                                                <Col span={8}> {order.customer_contact_num ? order.customer_contact_num : 'N/A'}</Col>
+                                            </Row>
+                                            <Row gutter={8}>
+                                                <Col span={8}>Email</Col>
+                                                <Col span={2}>:</Col>
+                                                <Col span={8}>{order.customer_email ? order.customer_email : 'N/A'}</Col>
+                                            </Row>
                                             Attn: {order.customer_name}<br />
-                                            Address: {order.customer_address}<br />
-                                            {order.customer_postcode}, {order.customer_state}<br />
-                                            Tel: {order.customer_contact_num} <br />
-                                            Email: {order.customer_email}<br />
+                                            Address: {order.customer_address ? order.customer_address : 'N/A'}<br />
+                                            {order.customer_postcode ? order.customer_postcode + ', ' : null} {order.customer_state}<br />
+                                            Tel: {order.customer_contact_num ? order.customer_contact_num : 'N/A'} <br />
+                                            Email: {order.customer_email ? order.customer_email : 'N/A'}<br />
                                         </Col>
                                         <Col span={1}>
                                            
                                         </Col>
                                         <Col span={13} style={{border: '1px solid black', padding: '10px', fontSize: '10px'}}>
                                             <h4 style={{paddingBottom:'10px'}}>Order Details </h4>
+                                            <Row gutter={8}>
+                                                <Col span={8}>Order ID</Col>
+                                                <Col span={2}>:</Col>
+                                                <Col span={8}>{order.order_ref_num}</Col>
+                                            </Row>
+                                            <Row gutter={8}>
+                                                <Col span={8}>Order Date</Col>
+                                                <Col span={2}>:</Col>
+                                                <Col span={8}>{order.order_date}</Col>
+                                            </Row>
+                                            <Row gutter={8}>
+                                                <Col span={8}>Shipping Method</Col>
+                                                <Col span={2}>:</Col>
+                                                <Col span={8}>{order.shipping_method ? order.shipping_method : 'Self Pickup'}</Col>
+                                            </Row>
+                                            <Row gutter={8}>
+                                                <Col span={8}>Tracking No.</Col>
+                                                <Col span={2}>:</Col>
+                                                <Col span={8}>{order.tracking_number ? order.tracking_number : 'N/A'}</Col>
+                                            </Row>
                                             Order Date: {order.order_date}<br /> 
                                             Shipping Method: {order.shipping_method ? order.shipping_method : 'Self Pickup'}<br />
                                             {order.shipping_method ? <p>{'Tracking Number: ' + order.tracking_number}</p> : <br />}
@@ -141,7 +188,7 @@ class PrintOrder extends Component {
                                             <td>RM {order.order_total}</td>
                                         </tr>
                                     </table> */}
-                                    <div style={{ paddingTop: '40px', fontSize: '10px' }} className="form-item-right">
+                                    <div style={{ paddingTop: '40px', fontSize: '12px' }} className="form-item-right">
                                         <span className="font-bold">Subtotal: </span>RM {order.order_total}<br />
                                         <span className="font-bold">Shipping: </span>RM {order.shipping_fee ? order.shipping_fee : '0.00'}<br />
                                         <span className="font-bold">Less (Discount): </span> RM {order.discount ? order.discount : '0.00'}<br />
