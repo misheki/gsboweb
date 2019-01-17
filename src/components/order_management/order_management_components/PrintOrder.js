@@ -86,8 +86,6 @@ class PrintOrder extends Component {
                                 <div style={{ padding: '20px', paddingBottom: '0px', fontSize: '12px' }}>
                                     <img src={logo} alt="logo" style={{ width: '20%', marginRight: '110px' }} />
                                     <span style={{fontSize: '20px', fontWeight: 'bold', color:'black'}}>ORDER CONFIRMATION</span>
-                                    <hr></hr>
-                                    <h3 style={{ paddingBottom: '10px' }}>Order Ref. No. {order.order_ref_num}</h3>
 
                                     <Row gutter={16}>
                                         <Col span={11} style={{border: '1px solid black', padding: '10px'}}>
