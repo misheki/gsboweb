@@ -385,7 +385,6 @@ class ProductPackage extends Component {
                         <Column title="SKU" dataIndex="sku_name" key="sku_name" />
                         <Column title="Code" dataIndex="code" key="code" />
                         <Column title="Name" dataIndex="name" key="name" />
-                        <Column title="Cost Price" dataIndex="cost_price" key="cost_price" />
                         <Column title="Requires Activation" dataIndex="require_activation" key="require_activation" />
                         <Column
                             title='Action'

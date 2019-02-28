@@ -228,7 +228,7 @@ class ViewStock extends Component {
     render() {
         const { stocks, visible, loading, allowed, data } = this.state;
         const { getFieldDecorator } = this.props.form;
-
+        console.log(stocks);
         if (allowed.includes('viewStock')) {
             return (
                 <div>
@@ -281,6 +281,8 @@ class ViewStock extends Component {
                             <Column title="Stock Status" dataIndex="stock_status" key="stock_status" />
                             <Column title="Package Code" dataIndex="package_code" key="package_code" />
                             <Column title="Sim Card Number" dataIndex="sim_card_number" key="sim_card_number" />
+                            <Column title="Expires On" dataIndex="stock_expiry" key="stock_expiry" />
+                            <Column title="Cost Price" dataIndex="cost_price" key="cost_price" />
                             <Column
                                 title='Action'
                                 key="action"

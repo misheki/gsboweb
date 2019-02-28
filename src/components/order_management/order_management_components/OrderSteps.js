@@ -7,6 +7,7 @@ import { validateName, validateNumber, validateAmount } from '../../../helpers/V
 const Option = Select.Option;
 const Step = Steps.Step;
 const confirm = Modal.confirm;
+const { TextArea } = Input;
 
 class OrderSteps extends Component {
 
@@ -26,10 +27,12 @@ class OrderSteps extends Component {
             method: 'Self Pickup',
             tracking_number: '',
             shipping_method_id: '',
-            required: ['processOrder', 'shipOrder', 'cancelOrder'],
+            required: ['processOrder', 'shipOrder', 'cancelPendingOrder', 'cancelConfirmedOrder'],
             allowed: [],
             incomplete: false,
-            order_overview: ''
+            order_overview: '',
+            reason_modal_visible: false,
+            reason: ''
         };
     }
 
@@ -219,7 +222,7 @@ class OrderSteps extends Component {
     }
 
     handleCancelOrder() {
-        const { order } = this.state;
+        const { order, reason } = this.state;
         var order_id = order.id;
         var access_token = sessionStorage.getItem('access_token');
 
@@ -228,7 +231,7 @@ class OrderSteps extends Component {
             content: 'Are you sure you want to cancel this order?',
             onOk: () => {
                 if(this._isMounted) this.setState({ cancel_loading: true });
-                cancelOrder(order_id, access_token)
+                cancelOrder(order_id, reason, access_token)
                     .then(result => {
                         if (result.result === 'GOOD') {
                             if(this._isMounted) this.setState({ cancel_loading: false });
@@ -846,7 +849,6 @@ class OrderSteps extends Component {
                     {allowed.includes('shipOrder') ? (current < steps.length - 1 && current !== 0 && <Button loading={next_loading} type="primary" onClick={() => this.next()}>Next <Icon type="right" /></Button>) : null}
                     {allowed.includes('processOrder') ? (current === 0 && (order.status === 'pending' ?
                     <div>
-                        {allowed.includes('cancelOrder') ? ((order.status === 'pending') ? <Button loading={cancel_loading} type="danger" style={{ marginRight: 8 }} onClick={() => this.handleCancelOrder()}>Cancel this order</Button> : null) : null}
                         <Button disabled={incomplete} loading={request_stock_loading} type="primary" onClick={() => this.handleRequestStock()}>Save, Request Stock & Continue</Button>
                     </div>
                     : <Button  type="primary" onClick={() => this.next()}>Next <Icon type="right" /></Button>)) : null}
@@ -856,6 +858,7 @@ class OrderSteps extends Component {
     }
 
     render() {
+        const { allowed, order, cancel_loading } = this.state;
         return (
             <div>
                 <Button
@@ -865,8 +868,16 @@ class OrderSteps extends Component {
                     style={{ margin: '20px', marginLeft: '40px' }}>
                     Back
                 </Button>
-
+                {(allowed.includes('cancelPendingOrder') && (order.status == 'pending')) || (allowed.includes('cancelConfirmedOrder') && (order.status == 'confirmed')) ? <Button loading={cancel_loading} type="danger" style={{ marginRight: 8 }} onClick={() => this.setState({ reason_modal_visible : true })}>Cancel this order</Button> : null}
                 {this.renderProcessOrder()}
+                <Modal
+                    title="What is your reason for cancellation?"
+                    visible={this.state.reason_modal_visible}
+                    onOk={() => this.setState({ reason_modal_visible : false }, this.handleCancelOrder)}
+                    onCancel={() => this.setState({ reason_modal_visible : false })}
+                >
+                    <TextArea placeholder="" autosize={{ minRows: 2, maxRows: 4 }} onChange = {(e) => this.setState({reason : e.target.value}) } />
+                </Modal>
             </div>
         );
     }

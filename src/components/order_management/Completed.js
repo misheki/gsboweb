@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Layout, Form, Row, Col, Table, AutoComplete, Input, Button, Icon, Modal, DatePicker, Select } from 'antd';
-import { listCompleted } from '../../helpers/OrderController';
+import { listCompleted, cancelOrder } from '../../helpers/OrderController';
 import { checkAccess } from '../../helpers/PermissionController';
 import { Helmet } from 'react-helmet';
 import moment from 'moment';
@@ -12,6 +12,8 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
 const dateFormat = 'YYYY-MM-DD';
+const confirm = Modal.confirm;
+const { TextArea } = Input;
 
 class Completed extends Component {
     _isMounted = false;
@@ -22,14 +24,17 @@ class Completed extends Component {
             completed_orders: [],
             order: null,
             displayDetails: false,
-            required: ['viewOrderHistory'],
+            required: ['viewOrderHistory', 'cancelCompletedOrder'],
             allowed: [],
             date_from_filter: null,
             date_to_filter: null,
             status_filter: null,
             search: null,
             statuses: null,
-            print_order: false
+            print_order: false,
+            cancel_loading: false,
+            reason_modal_visible: false,
+            reason: ''
         };
     }
 
@@ -113,51 +118,129 @@ class Completed extends Component {
         this.props.showSideBar(true);
     }
 
+    handleCancelOrder() {
+        const { order, reason } = this.state;
+        var order_id = order.id;
+        var access_token = sessionStorage.getItem('access_token');
+
+        confirm({
+            title: 'Confirm',
+            content: 'Are you sure you want to cancel this order?',
+            onOk: () => {
+                if(this._isMounted) this.setState({ cancel_loading: true });
+                cancelOrder(order_id, reason, access_token)
+                    .then(result => {
+                        if (result.result === 'GOOD') {
+                            if(this._isMounted) this.setState({ cancel_loading: false });
+                            Modal.success({
+                                title:'Success',
+                                content:'You have successfully cancelled this order.',
+                                onOk: () => {
+                                    this.showOrderlistCompleted();
+                                    this.setState({ displayDetails: false })
+                                }
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        if(this._isMounted) this.setState({ cancel_loading: false });
+                        Modal.error({
+                            title: 'Error',
+                            content: error
+                        })
+                    })
+            }
+        })
+    }
+
     renderDetails() {
         const formItemLayout = {
             labelCol: { span: 8 },
             wrapperCol: { span: 10 }
         };
 
-        const packageDetailItems =  this.state.order.order_details.map((item, i) =>
-        item.stocks.map((stock, j) =>
-            <React.Fragment key={j}>
-                <Row gutter={8}>
-                    <Col span={2}>
-                        <Form.Item>
-                            <Input value={ i + j + 1} disabled />
-                        </Form.Item>
-                    </Col>
-                    <Col span={3}>
-                        <Form.Item>
-                            <Input value={item.sku} disabled />
-                        </Form.Item>
-                    </Col>
-                    <Col span={7}>
-                        <Form.Item>
-                            <Input value={item.package} disabled />
-                        </Form.Item>
-                    </Col>
-                    
-                    <Col span={4}>
-                        <Form.Item>
-                            <Input value={stock.sim_card_number} disabled />
-                        </Form.Item>
-                    </Col>
-                    <Col span={5}>
-                        <Form.Item>
-                            <Input  value={stock.serial_number} disabled />
-                        </Form.Item>
-                    </Col>
-                    <Col span={2}>
-                        <Form.Item>
-                            <Input  value={item.unit_price} disabled />
-                        </Form.Item>
-                    </Col>
-                </Row>
-            </React.Fragment>    
-            )
+        const { cancel_loading, allowed } = this.state;
+
+        const packageDetailItems =  this.state.order.order_details.map((item, i) => {
+            if(this.state.order.order_status == 'Cancelled'){
+                return <React.Fragment key={i}>
+                    <Row gutter={8}>
+                        <Col span={2}>
+                            <Form.Item>
+                                <Input value={item.quantity} disabled />
+                            </Form.Item>
+                        </Col>
+                        <Col span={3}>
+                            <Form.Item>
+                                <Input value={item.sku} disabled />
+                            </Form.Item>
+                        </Col>
+                        <Col span={7}>
+                            <Form.Item>
+                                <Input value={item.package} disabled />
+                            </Form.Item>
+                        </Col>
+                        
+                        <Col span={4}>
+                            <Form.Item>
+                                <Input value={''} disabled />
+                            </Form.Item>
+                        </Col>
+                        <Col span={5}>
+                            <Form.Item>
+                                <Input  value={''} disabled />
+                            </Form.Item>
+                        </Col>
+                        <Col span={2}>
+                            <Form.Item>
+                                <Input  value={item.unit_price} disabled />
+                            </Form.Item>
+                        </Col>
+                    </Row>
+                </React.Fragment>  
+            }else {
+                return item.stocks.map((stock, j) =>
+                    <React.Fragment key={j}>
+                        <Row gutter={8}>
+                            <Col span={2}>
+                                <Form.Item>
+                                    <Input value={ i + j + 1} disabled />
+                                </Form.Item>
+                            </Col>
+                            <Col span={3}>
+                                <Form.Item>
+                                    <Input value={item.sku} disabled />
+                                </Form.Item>
+                            </Col>
+                            <Col span={7}>
+                                <Form.Item>
+                                    <Input value={item.package} disabled />
+                                </Form.Item>
+                            </Col>
+                            
+                            <Col span={4}>
+                                <Form.Item>
+                                    <Input value={stock.sim_card_number} disabled />
+                                </Form.Item>
+                            </Col>
+                            <Col span={5}>
+                                <Form.Item>
+                                    <Input  value={stock.serial_number} disabled />
+                                </Form.Item>
+                            </Col>
+                            <Col span={2}>
+                                <Form.Item>
+                                    <Input  value={item.unit_price} disabled />
+                                </Form.Item>
+                            </Col>
+                        </Row>
+                    </React.Fragment>    
+                )
+            }
+        }
         )
+
+        
         return(
             <div style={{padding:'30px', backgroundColor:'white'}}>
                 <Button
@@ -165,7 +248,10 @@ class Completed extends Component {
                     icon="left"
                     onClick={() => this.setState({ displayDetails: false })}>
                     Back
-                </Button>
+                </Button> 
+
+                { allowed.includes('cancelCompletedOrder') && this.state.order.order_status != 'Cancelled' &&
+                    <Button loading={cancel_loading} type="danger" style={{ marginLeft: 8 }} onClick={() => this.setState({ reason_modal_visible : true })}>Cancel this order</Button>}
 
                 <Form layout="vertical"> 
                     <div style={{padding:'20px', marginBottom:'10px'}}>
@@ -201,7 +287,7 @@ class Completed extends Component {
                         <h3 style={{paddingBottom:'10px'}}>Product Details</h3>
                             <Row gutter={16} style={{ backgroundColor: '#e8e8e8', padding: '10px', paddingBottom: '0px', marginBottom: '10px' }}>
                                 <Col span={2}>
-                                    <p>Item</p>
+                                {this.state.order.order_status == 'Cancelled' ? <p>Qty</p> : <p>Item</p> }
                                 </Col>
                                 <Col span={3}>
                                     <p>SKU</p>
@@ -239,6 +325,14 @@ class Completed extends Component {
                 <div className="steps-action">
                     <Button icon="printer" type="primary" onClick={() => this.handlePrint()}>Print this order</Button>
                 </div>
+                <Modal
+                    title="What is your reason for cancellation?"
+                    visible={this.state.reason_modal_visible}
+                    onOk={() => this.setState({ reason_modal_visible : false }, this.handleCancelOrder)}
+                    onCancel={() => this.setState({ reason_modal_visible : false })}
+                >
+                    <TextArea placeholder="" autosize={{ minRows: 2, maxRows: 4 }} onChange = {(e) => this.setState({reason : e.target.value}) } />
+                </Modal>
             </div>
         );
     }
@@ -255,7 +349,6 @@ class Completed extends Component {
         else if (displayDetails) {
             return(this.renderDetails());
         }
-
         else if (allowed.includes('viewOrderHistory')) {
             return (
                 <div>
@@ -289,7 +382,7 @@ class Completed extends Component {
                         </AutoComplete>
                         <Button type="primary"  icon="close-circle" style={{marginLeft:60 }} onClick={this.handleClearFilter}>Clear Filter</Button>  
                     </div>
-                    <div style={{ padding: '30px', paddingTop:'0px' }}>
+                    <div style={{ padding: '30px', paddingTop:'0px', cursor: 'pointer' }}>
                         <Table
                             bordered
                             dataSource={completed_orders}

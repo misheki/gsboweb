@@ -69,7 +69,6 @@ class PendingOrder extends Component {
                 })
             })
     }
-
     
     onDateChange = (value, dateString) => {     
       if(this._isMounted)  this.setState({date_from_filter:dateString[0], date_to_filter:dateString[1]}, () => this.showOrderlistPending());  
